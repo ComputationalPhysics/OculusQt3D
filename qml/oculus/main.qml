@@ -6,17 +6,18 @@ import FileIO 1.0
 
 Rectangle {
     id: rectRoot
-    property point lensOffsetFromCenter: Qt.point(0.05,0.0)
-    property color distortion: Qt.rgba(1, 0.22, 0.24, 0.1)
-    property real aspectRatio: width / height;
-    property real fillScale: 0.2;
-    width: 1000
+    property point lensOffsetFromCenter: Qt.point(0.1,0.0)
+    property rect distortion: Qt.rect(1, 0.22, 0.24, 0.0)
+    property real aspectRatio: width / height * 0.8;
+    property real fillScale: 1.5;
+    width: 1280
     height: 800
+
     StereoViewport {
         id: viewportRoot
         fillColor: "black"
         anchors.fill: parent
-        stereoType: StereoViewport.LeftRight
+        stereoType: StereoViewport.RightLeft
         light: Light {
             position: Qt.vector3d(2.0, 1.0, 3.0)
         }
@@ -108,7 +109,7 @@ Rectangle {
 
         property variant qt_Texture0: shaderEffectSourceLeft
         property point lensOffsetFromCenter: rectRoot.lensOffsetFromCenter
-        property color distortion: rectRoot.distortion
+        property rect distortion: rectRoot.distortion
         property real aspectRatio: rectRoot.aspectRatio
         property real fillScale: rectRoot.fillScale
         vertexShader: vertexShaderFile.read()
@@ -125,7 +126,7 @@ Rectangle {
 
         property variant qt_Texture0: shaderEffectSourceRight
         property point lensOffsetFromCenter: Qt.point(-rectRoot.lensOffsetFromCenter.x, rectRoot.lensOffsetFromCenter.y)
-        property color distortion: rectRoot.distortion
+        property rect distortion: rectRoot.distortion
         property real aspectRatio: rectRoot.aspectRatio
         property real fillScale: rectRoot.fillScale
         vertexShader: vertexShaderFile.read()
