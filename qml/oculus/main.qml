@@ -16,7 +16,8 @@ Rectangle {
     StereoViewport {
         id: viewportRoot
         fillColor: "black"
-        anchors.fill: parent
+        width: rectRoot.width * 1.8
+        height: rectRoot.height * 1.8 // TODO: Check real ratio
         stereoType: StereoViewport.RightLeft
         light: Light {
             position: Qt.vector3d(2.0, 1.0, 3.0)
@@ -73,11 +74,11 @@ Rectangle {
 
     ShaderEffectSource {
         id: shaderEffectSourceLeft
-        width: viewportRoot.width / 2
+        width: rectRoot.width / 2
         anchors {
-            left: viewportRoot.left
-            top: viewportRoot.top
-            bottom: viewportRoot.bottom
+            left: rectRoot.left
+            top: rectRoot.top
+            bottom: rectRoot.bottom
         }
         visible: false
 
@@ -88,11 +89,11 @@ Rectangle {
 
     ShaderEffectSource {
         id: shaderEffectSourceRight
-        width: viewportRoot.width / 2
+        width: rectRoot.width / 2
         anchors {
-            right: viewportRoot.right
-            top: viewportRoot.top
-            bottom: viewportRoot.bottom
+            right: rectRoot.right
+            top: rectRoot.top
+            bottom: rectRoot.bottom
         }
         visible: false
 
@@ -102,11 +103,11 @@ Rectangle {
     }
 
     Item {
-        width: viewportRoot.width / 2
+        width: rectRoot.width / 2
         anchors {
-            left: viewportRoot.left
-            top: viewportRoot.top
-            bottom: viewportRoot.bottom
+            left: rectRoot.left
+            top: rectRoot.top
+            bottom: rectRoot.bottom
         }
         clip: true
         ShaderEffect {
@@ -125,11 +126,11 @@ Rectangle {
     }
 
     Item {
-        width: viewportRoot.width / 2
+        width: rectRoot.width / 2
         anchors {
-            right: viewportRoot.right
-            top: viewportRoot.top
-            bottom: viewportRoot.bottom
+            right: rectRoot.right
+            top: rectRoot.top
+            bottom: rectRoot.bottom
         }
         clip: true
         ShaderEffect {
