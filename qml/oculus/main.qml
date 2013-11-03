@@ -6,7 +6,7 @@ import FileIO 1.0
 
 Rectangle {
     id: rectRoot
-    property point lensOffsetFromCenter: Qt.point(0.1,0.0)
+    property point lensOffsetFromCenter: Qt.point(0,0.0)
     property rect distortion: Qt.rect(1, 0.22, 0.24, 0.0)
     property real aspectRatio: width / height * 0.8;
     property real fillScale: 1.5;
@@ -23,8 +23,8 @@ Rectangle {
         }
 
         camera: Camera {
-            nearPlane: 0.1
-            farPlane: 100
+            nearPlane: 0.5
+            farPlane: 1000
             fieldOfView: 90
             center: Qt.vector3d(0,0,0)
             eye: Qt.vector3d(3,2,2)
@@ -79,6 +79,7 @@ Rectangle {
             top: viewportRoot.top
             bottom: viewportRoot.bottom
         }
+        visible: false
 
         hideSource: true
         sourceItem: viewportRoot
@@ -93,6 +94,7 @@ Rectangle {
             top: viewportRoot.top
             bottom: viewportRoot.bottom
         }
+        visible: false
 
         hideSource: true
         sourceItem: viewportRoot
