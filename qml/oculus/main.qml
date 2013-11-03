@@ -9,7 +9,7 @@ Rectangle {
     property point lensOffsetFromCenter: Qt.point(0,0.0)
     property rect distortion: Qt.rect(1, 0.22, 0.24, 0.0)
     property real aspectRatio: width / height * 0.8;
-    property real fillScale: 1.5;
+    property real fillScale: 1.8;
     width: 1280
     height: 800
 
@@ -101,37 +101,49 @@ Rectangle {
         sourceRect: Qt.rect(viewportRoot.width / 2, 0, viewportRoot.width / 2, viewportRoot.height)
     }
 
-    ShaderEffect {
+    Item {
         width: viewportRoot.width / 2
         anchors {
             left: viewportRoot.left
             top: viewportRoot.top
             bottom: viewportRoot.bottom
         }
+        clip: true
+        ShaderEffect {
+            width: parent.width + 100
+            height: parent.height
+            x: 0
 
-        property variant qt_Texture0: shaderEffectSourceLeft
-        property point lensOffsetFromCenter: rectRoot.lensOffsetFromCenter
-        property rect distortion: rectRoot.distortion
-        property real aspectRatio: rectRoot.aspectRatio
-        property real fillScale: rectRoot.fillScale
-        vertexShader: vertexShaderFile.read()
-        fragmentShader: fragmentShaderFile.read()
+            property variant qt_Texture0: shaderEffectSourceLeft
+            property point lensOffsetFromCenter: rectRoot.lensOffsetFromCenter
+            property rect distortion: rectRoot.distortion
+            property real aspectRatio: rectRoot.aspectRatio
+            property real fillScale: rectRoot.fillScale
+            vertexShader: vertexShaderFile.read()
+            fragmentShader: fragmentShaderFile.read()
+        }
     }
 
-    ShaderEffect {
+    Item {
         width: viewportRoot.width / 2
         anchors {
             right: viewportRoot.right
             top: viewportRoot.top
             bottom: viewportRoot.bottom
         }
+        clip: true
+        ShaderEffect {
+            width: parent.width + 100
+            height: parent.height
+            x: -100
 
-        property variant qt_Texture0: shaderEffectSourceRight
-        property point lensOffsetFromCenter: Qt.point(-rectRoot.lensOffsetFromCenter.x, rectRoot.lensOffsetFromCenter.y)
-        property rect distortion: rectRoot.distortion
-        property real aspectRatio: rectRoot.aspectRatio
-        property real fillScale: rectRoot.fillScale
-        vertexShader: vertexShaderFile.read()
-        fragmentShader: fragmentShaderFile.read()
+            property variant qt_Texture0: shaderEffectSourceRight
+            property point lensOffsetFromCenter: Qt.point(-rectRoot.lensOffsetFromCenter.x, rectRoot.lensOffsetFromCenter.y)
+            property rect distortion: rectRoot.distortion
+            property real aspectRatio: rectRoot.aspectRatio
+            property real fillScale: rectRoot.fillScale
+            vertexShader: vertexShaderFile.read()
+            fragmentShader: fragmentShaderFile.read()
+        }
     }
 }
