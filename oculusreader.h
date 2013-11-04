@@ -3,6 +3,8 @@
 #include <OVR.h>
 #include <QObject>
 #include <QTimer>
+#include <QGLCamera>
+#include <QVector3D>
 
 using namespace OVR;
 
@@ -12,11 +14,18 @@ class OculusReader : public QObject
     Q_PROPERTY(double phi READ phi WRITE setPhi NOTIFY phiChanged)
     Q_PROPERTY(double theta READ theta WRITE setTheta NOTIFY thetaChanged)
     Q_PROPERTY(double psi READ psi WRITE setPsi NOTIFY psiChanged)
+    Q_PROPERTY(QGLCamera* camera READ camera WRITE setCamera NOTIFY cameraChanged)
 private:
     double m_phi;
     double m_theta;
     double m_psi;
+    Quatf  m_oldOrientation;
+    bool   m_isFirst;
     QTimer timer;
+    QVector3D upVectorStart;
+    QVector3D viewVectorStart;
+
+    QGLCamera* m_camera;
 
 public:
     OculusReader();
@@ -38,6 +47,11 @@ public:
     double psi() const
     {
         return m_psi;
+    }
+
+    QGLCamera* camera() const
+    {
+        return m_camera;
     }
 
 public slots:
@@ -65,9 +79,18 @@ public slots:
     }
 
     void readSensors();
+    void setCamera(QGLCamera* arg)
+    {
+        if (m_camera != arg) {
+            m_camera = arg;
+            emit cameraChanged(arg);
+        }
+    }
+
 signals:
     void phiChanged(double arg);
     void thetaChanged(double arg);
     void psiChanged(double arg);
+    void cameraChanged(QGLCamera* arg);
 };
 #endif //OCULUSREADER_H

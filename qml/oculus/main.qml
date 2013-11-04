@@ -15,26 +15,27 @@ Rectangle {
     height: 1050
 
     OculusReader {
-        property bool isFirst: true;
-        property double previousPsi: 0;
-        property double previousTheta: 0;
-        property double previousPhi: 0;
+        camera: viewportRoot.camera
+//        property bool isFirst: true;
+//        property double previousPsi: 0;
+//        property double previousTheta: 0;
+//        property double previousPhi: 0;
 
-        onPsiChanged: {
-            if(!isFirst) {
-                var deltaTheta = (theta - previousTheta)*180/Math.PI
-                var deltaPsi = (psi - previousPsi)*180/Math.PI
-                var deltaPhi = (phi - previousPhi)*180/Math.PI
-                deltaPhi = 0;
-                viewportRoot.camera.tiltPanRollEye(-deltaPsi, -deltaTheta, -deltaPhi)
-            }
+//        onPsiChanged: {
+//            if(!isFirst) {
+//                var deltaTheta = (theta - previousTheta)*180/Math.PI
+//                var deltaPsi = (psi - previousPsi)*180/Math.PI
+//                var deltaPhi = (phi - previousPhi)*180/Math.PI
+//                deltaPhi = 0;
+//                viewportRoot.camera.tiltPanRollEye(-deltaPsi, -deltaTheta, -deltaPhi)
+//            }
 
-            previousPhi = phi
-            previousTheta = theta
-            previousPsi = psi
+//            previousPhi = phi
+//            previousTheta = theta
+//            previousPsi = psi
 
-            isFirst = false;
-        }
+//            isFirst = false;
+//        }
     }
 
     StereoViewport {
@@ -51,8 +52,8 @@ Rectangle {
             nearPlane: 0.5
             farPlane: 1000
             fieldOfView: 90
-            center: Qt.vector3d(0,0,0)
-            eye: Qt.vector3d(3,2,2)
+            center: Qt.vector3d(1,0,0)
+            eye: Qt.vector3d(5,0,0)
             eyeSeparation: 0.1
         }
 
@@ -78,6 +79,34 @@ Rectangle {
 
         Cube {
             z: 1.5
+            effect: Effect {
+                color: "yellow"
+            }
+        }
+
+        Cube {
+            x: -4
+            effect: Effect {
+                color: "yellow"
+            }
+        }
+
+        Cube {
+            x: -1.5
+            effect: Effect {
+                color: "yellow"
+            }
+        }
+
+        Cube {
+            y: -1.5
+            effect: Effect {
+                color: "yellow"
+            }
+        }
+
+        Cube {
+            z: -1.5
             effect: Effect {
                 color: "yellow"
             }
