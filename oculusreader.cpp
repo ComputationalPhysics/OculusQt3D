@@ -80,20 +80,3 @@ void OculusReader::readSensors() {
 
     m_isFirst = false;
 }
-
-//void OculusReader::readSensors() {
-//    Quatf orient = SFusion.GetOrientation();
-//    double PI = 3.141592;
-//    double roll = atan2(2*(orient.x*orient.y + orient.z*orient.w), (1 - 2*(orient.y*orient.y + orient.z*orient.z)));
-//    double pitch = asin(2*(orient.x*orient.z - orient.w*orient.y));
-//    double yaw = atan2(2*(orient.x*orient.w + orient.y*orient.z), (1 - 2*(orient.z*orient.z + orient.w*orient.w)));
-
-//    roll *= 180/PI;
-//    yaw *= 180/PI;
-//    pitch *= 180/PI;
-
-//    m_camera->setUpVector(QVector3D(0,1,0));
-//    m_camera->setCenter(m_camera->eye() + QVector3D(1,0,0));
-
-//    m_camera->tiltPanRollEye(-yaw, pitch, roll);
-//}

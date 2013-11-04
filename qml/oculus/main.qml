@@ -16,26 +16,6 @@ Rectangle {
 
     OculusReader {
         camera: viewportRoot.camera
-//        property bool isFirst: true;
-//        property double previousPsi: 0;
-//        property double previousTheta: 0;
-//        property double previousPhi: 0;
-
-//        onPsiChanged: {
-//            if(!isFirst) {
-//                var deltaTheta = (theta - previousTheta)*180/Math.PI
-//                var deltaPsi = (psi - previousPsi)*180/Math.PI
-//                var deltaPhi = (phi - previousPhi)*180/Math.PI
-//                deltaPhi = 0;
-//                viewportRoot.camera.tiltPanRollEye(-deltaPsi, -deltaTheta, -deltaPhi)
-//            }
-
-//            previousPhi = phi
-//            previousTheta = theta
-//            previousPsi = psi
-
-//            isFirst = false;
-//        }
     }
 
     StereoViewport {
