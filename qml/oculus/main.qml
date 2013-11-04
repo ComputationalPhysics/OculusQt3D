@@ -7,12 +7,12 @@ import OculusReader 1.0
 
 Rectangle {
     id: rectRoot
-    property point lensOffsetFromCenter: Qt.point(0,0.0)
+    property point lensOffsetFromCenter: Qt.point(0,0)
     property rect distortion: Qt.rect(1, 0.22, 0.24, 0.0)
     property real aspectRatio: width / height;
     property real fillScale: 1.8;
-    width: 1680
-    height: 1050
+    width: 1280
+    height: 800
 
     OculusReader {
         camera: viewportRoot.camera

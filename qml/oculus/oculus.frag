@@ -21,7 +21,7 @@ vec2 offsetCoordFromTexCoor(vec2 texCoord) {
     offsetCoord *= 2.0;
     offsetCoord -= 1.0;
     offsetCoord -= lensOffsetFromCenter;
-    offsetCoord.y / aspectRatio;
+    offsetCoord.y /= aspectRatio;
     return offsetCoord;
 }
 
