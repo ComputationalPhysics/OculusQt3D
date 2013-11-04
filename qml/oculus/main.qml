@@ -3,15 +3,39 @@ import Qt3D 2.0
 import Qt3D.Shapes 2.0
 import StereoViewport 1.0
 import FileIO 1.0
+import OculusReader 1.0
 
 Rectangle {
     id: rectRoot
     property point lensOffsetFromCenter: Qt.point(0,0.0)
     property rect distortion: Qt.rect(1, 0.22, 0.24, 0.0)
-    property real aspectRatio: width / height * 0.8;
+    property real aspectRatio: width / height;
     property real fillScale: 1.8;
-    width: 1280
-    height: 800
+    width: 1680
+    height: 1050
+
+    OculusReader {
+        property bool isFirst: true;
+        property double previousPsi: 0;
+        property double previousTheta: 0;
+        property double previousPhi: 0;
+
+        onPsiChanged: {
+            if(!isFirst) {
+                var deltaTheta = (theta - previousTheta)*180/Math.PI
+                var deltaPsi = (psi - previousPsi)*180/Math.PI
+                var deltaPhi = (phi - previousPhi)*180/Math.PI
+                deltaPhi = 0;
+                viewportRoot.camera.tiltPanRollEye(-deltaPsi, -deltaTheta, -deltaPhi)
+            }
+
+            previousPhi = phi
+            previousTheta = theta
+            previousPsi = psi
+
+            isFirst = false;
+        }
+    }
 
     StereoViewport {
         id: viewportRoot
