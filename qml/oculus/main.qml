@@ -5,6 +5,8 @@ import StereoViewport 1.0
 import FileIO 1.0
 import OculusReader 1.0
 import Mts0_io 1.0
+import MultiBillboard 1.0
+
 Rectangle {
     id: rectRoot
     property point lensOffsetFromCenter: Qt.point(0,0)
@@ -41,58 +43,24 @@ Rectangle {
             eyeSeparation: 0.1
         }
 
-        Cube {
+        MultiBillboard {
+            id: multiSphere
+            cullFaces: Item3D.CullBackFaces
+            sortPoints: Item3D.BackToFront
             effect: Effect {
-                color: "yellow"
+                texture: "particle.png"
+                blending: true
+                useLighting: true
             }
+
+            mts0_io: mts0_io
         }
 
-        Cube {
-            x: 1.5
+        // TODO Fix bug in MolecularDynamics class and remove this Sphere
+        Sphere {
+            x: -100
             effect: Effect {
-                color: "yellow"
-            }
-        }
-
-        Cube {
-            y: 1.5
-            effect: Effect {
-                color: "yellow"
-            }
-        }
-
-        Cube {
-            z: 1.5
-            effect: Effect {
-                color: "yellow"
-            }
-        }
-
-        Cube {
-            x: -4
-            effect: Effect {
-                color: "yellow"
-            }
-        }
-
-        Cube {
-            x: -1.5
-            effect: Effect {
-                color: "yellow"
-            }
-        }
-
-        Cube {
-            y: -1.5
-            effect: Effect {
-                color: "yellow"
-            }
-        }
-
-        Cube {
-            z: -1.5
-            effect: Effect {
-                color: "yellow"
+                color: "blue"
             }
         }
     }

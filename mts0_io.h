@@ -34,6 +34,7 @@ public:
   vector<int> atom_types;
   vector<vector<vector<float> > > h_matrix;
   int get_number_of_atoms();
+  vector<float> get_lx_ly_lz();
 
   Timestep(string filename, int nx_, int ny_, int nz_);
   ~Timestep();

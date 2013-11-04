@@ -24,6 +24,15 @@ string get_file_basename(string& filename){
 
 char *type[] = {(char*)"Not in use", (char*)"Si",(char*)"A ",(char*)"H ",(char*)"O ",(char*)"Na",(char*)"Cl",(char*)"X "};
 
+vector<float> Timestep::get_lx_ly_lz() {
+    vector<float> system_size(3);
+    for(int i=0;i<3;i++) {
+        system_size[i] = h_matrix[0][i][i]*bohr;
+    }
+
+    return system_size;
+}
+
 void Timestep::load_atoms_xyz(string xyz_file) {
     map<string,int> atom_type_list;
     atom_type_list.insert(pair<string,int>("Si",1));

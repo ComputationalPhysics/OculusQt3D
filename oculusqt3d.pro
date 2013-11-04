@@ -29,7 +29,8 @@ SOURCES += main.cpp \
     qgldrawbuffersurface.cpp \
     fileio.cpp \
     oculusreader.cpp \
-    mts0_io.cpp
+    mts0_io.cpp \
+    multibillboard.cpp
 
 # Installation path
 # target.path =
@@ -46,4 +47,5 @@ HEADERS += \
     qgldrawbuffersurface_p.h \
     fileio.h \
     oculusreader.h \
-    mts0_io.h
+    mts0_io.h \
+    multibillboard.h
