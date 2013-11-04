@@ -4,6 +4,7 @@ QT += 3dquick
 folder_01.source = qml/oculus
 folder_01.target = qml
 DEPLOYMENTFOLDERS = folder_01
+CONFIG   -= app_bundle
 
 # Additional import path used to resolve QML modules in Creator's code model
 QML_IMPORT_PATH =
@@ -27,7 +28,8 @@ SOURCES += main.cpp \
     qglmaskedsurface.cpp \
     qgldrawbuffersurface.cpp \
     fileio.cpp \
-    oculusreader.cpp
+    oculusreader.cpp \
+    mts0_io.cpp
 
 # Installation path
 # target.path =
@@ -43,4 +45,5 @@ HEADERS += \
     qglmaskedsurface_p.h \
     qgldrawbuffersurface_p.h \
     fileio.h \
-    oculusreader.h
+    oculusreader.h \
+    mts0_io.h

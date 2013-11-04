@@ -4,7 +4,7 @@ import Qt3D.Shapes 2.0
 import StereoViewport 1.0
 import FileIO 1.0
 import OculusReader 1.0
-
+import Mts0_io 1.0
 Rectangle {
     id: rectRoot
     property point lensOffsetFromCenter: Qt.point(0,0)
@@ -13,6 +13,10 @@ Rectangle {
     property real fillScale: 1.8;
     width: 1280
     height: 800
+
+    Mts0_io {
+        id: mts0_io
+    }
 
     OculusReader {
         camera: viewportRoot.camera
