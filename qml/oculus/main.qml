@@ -47,13 +47,15 @@ Rectangle {
             id: multiSphere
             cullFaces: Item3D.CullBackFaces
             sortPoints: Item3D.BackToFront
-            effect: Effect {
-                texture: "particle.png"
-                blending: true
-                useLighting: true
-            }
 
             mts0_io: mts0_io
+
+            effect: ShaderProgram {
+                texture: "particlebw.png"
+
+                vertexShader: billboardsVertexShader.read()
+                fragmentShader: billboardsFragmentShader.read()
+            }
         }
 
         // TODO Fix bug in MolecularDynamics class and remove this Sphere
@@ -62,6 +64,15 @@ Rectangle {
             effect: Effect {
                 color: "blue"
             }
+        }
+    }
+
+    Timer {
+        id: timer
+        interval: 16
+        repeat: true
+        onTriggered: {
+            multiSphere.update();
         }
     }
 
@@ -74,6 +85,18 @@ Rectangle {
     FileIO {
         id: fragmentShaderFile
         source: "oculus.frag"
+        onError: console.log(msg)
+    }
+
+    FileIO {
+        id: billboardsVertexShader
+        source: "billboards.vert"
+        onError: console.log(msg)
+    }
+
+    FileIO {
+        id: billboardsFragmentShader
+        source: "billboards.frag"
         onError: console.log(msg)
     }
 

@@ -59,7 +59,6 @@ void Timestep::load_atoms_xyz(string xyz_file) {
     positions.resize(num_atoms);
     atom_ids.resize(num_atoms);
     atom_types.resize(num_atoms);
-
     for(int i=0; i<num_atoms; i++) {
         file >> atom_type >> x >> y >> z >> atom_id;
         int atom_type_int = atom_type_list.find(atom_type)->second;
@@ -115,7 +114,7 @@ Mts0_io::Mts0_io(QObject *parent) {
     ny = 2;
     nz = 2;
     preload = false;
-    foldername_base = "/projects/andershaf_nanoporous_sio2_compressed_pore/medium_silica_water/dump2/";
+    foldername_base = "/projects/andershaf_nanoporous_sio2_compressed_pore/small_silica_water/dump/";
     max_timestep = 500;
     current_timestep = -1; // Next will be 0
     current_timestep_object = NULL;
