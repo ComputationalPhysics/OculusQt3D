@@ -117,7 +117,7 @@ Mts0_io::Mts0_io(QObject *parent) {
     foldername_base = "/projects/andershaf_nanoporous_sio2_compressed_pore/small_silica_water/dump/";
     max_timestep = 500;
     current_timestep = -1; // Next will be 0
-    current_timestep_object = NULL;
+    currentTimestepObject = NULL;
     if(preload) load_timesteps();
 
     timer.setInterval(16);
@@ -288,7 +288,7 @@ void Mts0_io::update_next_timestep() {
 
     if(preload) {
         Timestep *timestep = timesteps[current_timestep];
-        current_timestep_object = timestep;
+        currentTimestepObject = timestep;
     } else {
         if(get_file_extension(foldername_base).compare("xyz") == 0) {
             sprintf(mts0_directory, "%s",foldername_base.c_str());
@@ -297,6 +297,8 @@ void Mts0_io::update_next_timestep() {
         }
 
         Timestep *timestep = new Timestep(string(mts0_directory),nx, ny, nz);
-        current_timestep_object = timestep;
+        currentTimestepObject = timestep;
     }
+
+    emit currentTimestepObjectChanged();
 }

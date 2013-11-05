@@ -54,7 +54,10 @@ public slots:
     void setMts0_io(Mts0_io* arg)
     {
         if (m_mts0_io != arg) {
+            if(m_mts0_io != NULL) disconnect(m_mts0_io, SIGNAL(currentTimestepObjectChanged()),this,SLOT(update()));
+
             m_mts0_io = arg;
+            connect(m_mts0_io, SIGNAL(currentTimestepObjectChanged()),this,SLOT(update()));
             emit mts0_ioChanged(arg);
         }
     }

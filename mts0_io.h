@@ -57,7 +57,7 @@ private:
 public:
   int step;
   int current_timestep;
-  Timestep *current_timestep_object;
+  Timestep *currentTimestepObject;
   int nx, ny, nz;
   int time_direction;
   Mts0_io(QObject *parent = NULL);
@@ -68,4 +68,7 @@ public:
   void load_timesteps();
 public slots:
   void update_next_timestep();
+
+signals:
+  void currentTimestepObjectChanged();
 };
