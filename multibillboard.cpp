@@ -59,8 +59,6 @@ void MultiBillboard::drawItem(QGLPainter *painter) {
     QVector3D v2;
     QVector3D v3;
     QVector3D v4;
-    QVector3D v5;
-    QVector3D v6;
     QVector2D t1(0,0);
     QVector2D t2(1,0);
     QVector2D t3(1,1);
@@ -78,7 +76,16 @@ void MultiBillboard::drawItem(QGLPainter *painter) {
     int count = 0;
 
     QVector3DArray vectorArray;
+    QVector3DArray normalArray;
+    QArray<QColor4ub> colorArray;
+    QGL::IndexArray indexArray;
+    QVector2DArray textureArray;
+
+    indexArray.reserve(6*numAtoms);
     vectorArray.reserve(4*numAtoms);
+    normalArray.reserve(4*numAtoms);
+    colorArray.reserve(4*numAtoms);
+    textureArray.reserve(4*numAtoms);
 
     for(int i = 0; i < timestep->positions.size(); i++) {
         center = QVector3D(timestep->positions[i][0],timestep->positions[i][1], timestep->positions[i][2]) - system_center;
@@ -105,16 +112,31 @@ void MultiBillboard::drawItem(QGLPainter *painter) {
         vectorArray.append(v3.x(),v3.y(),v3.z());
         vectorArray.append(v4.x(),v4.y(),v4.z());
 
-        triangles.appendColor(color, color, color, color);
-        triangles.appendNormal(normal,normal,normal, normal);
-        triangles.appendTexCoord(t1,t2,t3,t4);
+        normalArray.append(normal.x(), normal.y(), normal.z());
+        normalArray.append(normal.x(), normal.y(), normal.z());
+        normalArray.append(normal.x(), normal.y(), normal.z());
+        normalArray.append(normal.x(), normal.y(), normal.z());
 
-        triangles.appendIndices(4*count + 0, 4*count + 1, 4*count + 2);
-        triangles.appendIndices(4*count + 2, 4*count + 3, 4*count + 0);
+        colorArray.append(color);
+        colorArray.append(color);
+        colorArray.append(color);
+        colorArray.append(color);
+
+        indexArray.append(4*count + 0, 4*count + 1, 4*count + 2);
+        indexArray.append(4*count + 2, 4*count + 3, 4*count + 0);
+
+        textureArray.append(t1.x(), t1.y());
+        textureArray.append(t2.x(), t2.y());
+        textureArray.append(t3.x(), t3.y());
+        textureArray.append(t4.x(), t4.y());
         count++;
     }
 
+    triangles.appendTexCoordArray(textureArray);
+    triangles.appendNormalArray(normalArray);
+    triangles.appendColorArray(colorArray);
     triangles.appendVertexArray(vectorArray);
+    triangles.appendIndices(indexArray);
 
     system_size.clear();
     glEnable(GL_BLEND);
