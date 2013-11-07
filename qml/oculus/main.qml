@@ -38,7 +38,7 @@ Rectangle {
 
         camera: Camera {
             id: camera
-            nearPlane: 15.0
+            nearPlane: 5.0
             farPlane: 1500
             fieldOfView: 90
             center: Qt.vector3d(1,0,0)
