@@ -6,9 +6,10 @@
 #include <oculusreader.h>
 #include <mts0_io.h>
 #include <multibillboard.h>
-#include <mousemover.h>
+//#include <mousemover.h>
 #include <QQmlContext>
 #include <QQuickView>
+#include <QQmlEngine>
 
 int main(int argc, char *argv[])
 {
@@ -23,10 +24,11 @@ int main(int argc, char *argv[])
     QGuiApplication app(argc, argv);
 
     QQuickView view;
+    view.engine()->addImportPath("/home/svenni/Dropbox/projects/programming/qt3dadditions/build-flymodenavigator-Desktop_Qt_5_1_1_GCC_64bit-Debug/src/libs");
     view.setSource(QUrl::fromLocalFile("qml/oculus/main.qml"));
-    MouseMover mouseMover(&view);
+//    MouseMover mouseMover(&view);
 
-    view.rootContext()->setContextProperty("mouseMover", &mouseMover);
+//    view.rootContext()->setContextProperty("mouseMover", &mouseMover);
 
     view.show();
     return app.exec();

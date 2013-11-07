@@ -19,6 +19,14 @@ mac: LIBS += -framework IOKit
 mac: LIBS += -framework ApplicationServices
 mac: LIBS += -L/Users/anderhaf/Downloads/OculusSDK/LibOVR/Lib/MacOS/Release/ -lovr
 
+linux: INCLUDEPATH += /home/svenni/apps/oculus/Oculus/OculusSDK/LibOVR/Include
+linux: QML_IMPORT_PATH += /home/svenni/Dropbox/projects/programming/qt3dadditions/build-flymodenavigator-Desktop_Qt_5_1_1_GCC_64bit-Debug/src/libs
+linux: LIBS += -L/home/svenni/apps/oculus/Oculus/OculusSDK/LibOVR/Lib/Linux/Release/x86_64/ -lovr
+linux: LIBS += -lX11
+linux: LIBS += -lXinerama
+linux: LIBS += -ludev
+
+
 # If your application uses the Qt Mobility libraries, uncomment the following
 # lines and add the respective components to the MOBILITY variable.
 # CONFIG += mobility
@@ -33,8 +41,7 @@ SOURCES += main.cpp \
     fileio.cpp \
     oculusreader.cpp \
     mts0_io.cpp \
-    multibillboard.cpp \
-    /repos/flymodenavigator-qt3d/flymodenavigator-qt3d/mousemover.cpp
+    multibillboard.cpp
 
 # Installation path
 # target.path =
@@ -52,8 +59,8 @@ HEADERS += \
     fileio.h \
     oculusreader.h \
     mts0_io.h \
-    multibillboard.h \
-    /repos/flymodenavigator-qt3d/flymodenavigator-qt3d/mousemover.h
+    multibillboard.h
+#    /repos/flymodenavigator-qt3d/flymodenavigator-qt3d/mousemover.h
 
 copydata.commands = $(COPY_DIR) $$PWD/qml $$OUT_PWD
 first.depends = $(first) copydata

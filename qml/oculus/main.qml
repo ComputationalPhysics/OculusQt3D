@@ -6,7 +6,8 @@ import FileIO 1.0
 import OculusReader 1.0
 import Mts0_io 1.0
 import MultiBillboard 1.0
-import "../../../../flymodenavigator-qt3d/flymodenavigator-qt3d/qml/flymodenavigator"
+import FlyModeNavigator 1.0
+//import "../../../../flymodenavigator-qt3d/flymodenavigator-qt3d/qml/flymodenavigator"
 
 Rectangle {
     id: rectRoot
