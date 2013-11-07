@@ -5,13 +5,16 @@
 #include <QGLAbstractScene>
 #include <QElapsedTimer>
 #include <mts0_io.h>
+#include <QGLBuilder>
 
 class MultiBillboard : public QQuickItem3D
 {
     Q_OBJECT
     Q_PROPERTY(SortMode sortPoints READ sortPoints WRITE setSortPoints NOTIFY sortPointsChanged)
     Q_PROPERTY(Mts0_io* mts0_io READ mts0_io WRITE setMts0_io NOTIFY mts0_ioChanged)
-
+    Q_PROPERTY(double fps READ fps WRITE setFps NOTIFY fpsChanged)
+    QElapsedTimer elapsedTimer;
+    int drawCalls;
 public:
     explicit MultiBillboard(QQuickItem *parent = 0);
     ~MultiBillboard();
@@ -27,6 +30,11 @@ public:
         return m_mts0_io;
     }
 
+    double fps() const
+    {
+        return m_fps;
+    }
+
 protected:
     void drawItem(QGLPainter *painter);
 signals:
@@ -38,6 +46,8 @@ signals:
     void sortPointsChanged(SortMode arg);
 
     void mts0_ioChanged(Mts0_io* arg);
+
+    void fpsChanged(double arg);
 
 public slots:
 
@@ -62,7 +72,16 @@ public slots:
         }
     }
 
+    void setFps(double arg)
+    {
+        if (m_fps != arg) {
+            m_fps = 0.1*arg + 0.9*m_fps;
+            emit fpsChanged(arg);
+        }
+    }
+
 private:
+
     QGLSceneNode *m_topNode;
     bool m_sceneSet;
     QGLSceneNode* m_geometry;
@@ -71,6 +90,7 @@ private:
     QList<QVector3D> m_points;
     SortMode m_sortPoints;
     Mts0_io* m_mts0_io;
+    double m_fps;
 };
 
 #endif // MULTISPHERE2_H

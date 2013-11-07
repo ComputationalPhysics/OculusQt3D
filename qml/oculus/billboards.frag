@@ -4,5 +4,7 @@ varying highp float atomType;
 
 void main(void) {
     mediump vec4 textureColor = texture2D(qt_Texture0, texCoord.st);
-    gl_FragColor = textureColor*gl_Color;
+    vec4 color = textureColor*gl_Color;
+    if(color.a < 0.9) discard;
+    else gl_FragColor = color;
 }

@@ -8,7 +8,8 @@
 MultiBillboard::MultiBillboard(QQuickItem *parent) :
     QQuickItem3D(parent),
     m_sortPoints(DefaultSorting),
-    m_mts0_io(NULL)
+    m_mts0_io(NULL),
+    drawCalls(0)
 {
     updatePoints();
 }
@@ -31,14 +32,20 @@ void MultiBillboard::updatePoints() {
     }
 }
 
+// #define OLD
+
 void MultiBillboard::drawItem(QGLPainter *painter) {
     Timestep *timestep = m_mts0_io->currentTimestepObject;
     if(timestep == NULL) return;
+    QElapsedTimer t;
+    t.start();
     vector<float> system_size = timestep->get_lx_ly_lz();
 
-    // Build the mesh
-    QGLBuilder builder;
-    builder.newSection(QGL::NoSmoothing);
+    if(++drawCalls % 2) {
+        setFps(1000.0/elapsedTimer.elapsed());
+        elapsedTimer.restart();
+    }
+
     const QMatrix4x4 &modelViewMatrix = painter->modelViewMatrix();
     QVector3D right;
     right.setX(modelViewMatrix(0,0));
@@ -48,56 +55,62 @@ void MultiBillboard::drawItem(QGLPainter *painter) {
     up.setX(modelViewMatrix(1,0));
     up.setY(modelViewMatrix(1,1));
     up.setZ(modelViewMatrix(1,2));
-    QGeometryData quad;
 
-    QVector3D a;
-    QVector3D b;
-    QVector3D c;
-    QVector3D d;
-    QVector2D ta(0,0);
-    QVector2D tb(0,1);
-    QVector2D tc(1,1);
-    QVector2D td(1,0);
+    QVector3D v1;
+    QVector3D v2;
+    QVector3D v3;
+    QVector3D v4;
+    QVector3D v5;
+    QVector3D v6;
+    QVector2D t1(0,0);
+    QVector2D t2(1,0);
+    QVector2D t3(1,1);
+    QVector2D t4(0,1);
 
     int color_list[7][3] = {{1,1,1},{230,230,0},{0,0,255},{255,255,255},{255,0,0},{9,92.0,0},{95,216,250}};
     double atom_radii[7] = {0, 1.11, 0.66, 0.35, 0.66, 1.86, 1.02};
 
+    QGeometryData triangles;
+    triangles.reserve(4*timestep->positions.size());
+
     QVector3D system_center(system_size[0]/2.0, system_size[1]/2.0, system_size[2]/2.0);
+    QVector3D center;
+    QVector3D normal = QVector3D::crossProduct(right,up);
+    int count = 0;
     for(int i = 0; i < timestep->positions.size(); i++) {
-        QVector3D center = QVector3D(timestep->positions[i][0],timestep->positions[i][1], timestep->positions[i][2]) - system_center;
-        int atom_type = timestep->atom_types.at(i);
+        center = QVector3D(timestep->positions[i][0],timestep->positions[i][1], timestep->positions[i][2]) - system_center;
 
         if(painter->isCullable(center)) {
             continue;
         }
 
-        double size = atom_radii[atom_type];
-        a = center - right * (size * 0.5);
-        b = center + right * size * 0.5;
-        c = center + right * size * 0.5 + up * size;
-        d = center - right * size * 0.5 + up * size;
-        quad.appendVertex(a,b,c,d);
-        quad.appendTexCoord(ta, tb, tc, td);
-        quad.appendAttribute(atom_type,atom_type,atom_type,atom_type, QGL::CustomVertex0);
+        int atom_type = timestep->atom_types.at(i);
         int r = color_list[atom_type][0];
         int g = color_list[atom_type][1];
         int b = color_list[atom_type][2];
         QColor4ub color(r,g,b,255);
-        quad.appendColor(color, color, color, color);
+
+        double size = atom_radii[atom_type]*1.3;
+
+        v1 = center - right * (size * 0.5);
+        v2 = center + right * size * 0.5;
+        v3 = center + right * size * 0.5 + up * size;
+        v4 = center - right * size * 0.5 + up * size;
+
+        triangles.appendVertex(v1,v2,v3,v4);
+        triangles.appendColor(color, color, color, color);
+        triangles.appendNormal(normal,normal,normal, normal);
+        triangles.appendTexCoord(t1,t2,t3,t4);
+
+        triangles.appendIndices(4*count + 0, 4*count + 1, 4*count + 2);
+        triangles.appendIndices(4*count + 2, 4*count + 3, 4*count + 0);
+        count++;
     }
-    builder.addQuads(quad);
-    QGLSceneNode* geometry = builder.finalizedSceneNode();
-    if(m_geometry) {
-        delete m_geometry;
-    }
-    m_geometry = geometry;
+    system_size.clear();
     glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glEnable(GL_ALPHA_TEST);
-    glAlphaFunc(GL_GREATER,0.9);
-    m_geometry->draw(painter);
+    triangles.draw(painter,0,triangles.indexCount());
     glDisable(GL_BLEND);
-    glDisable(GL_ALPHA_TEST);
+    cout << "Drawed " << count << " atoms." << endl;
 }
 
 MultiBillboard::~MultiBillboard()

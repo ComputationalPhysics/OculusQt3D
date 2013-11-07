@@ -4,11 +4,14 @@ QT += 3dquick
 folder_01.source = qml/oculus
 folder_01.target = qml
 DEPLOYMENTFOLDERS = folder_01
-CONFIG   -= app_bundle
+mac: CONFIG -= app_bundle
+
+QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.9
 
 # Additional import path used to resolve QML modules in Creator's code model
 QML_IMPORT_PATH =
 INCLUDEPATH += /Users/anderhaf/Downloads/OculusSDK/LibOVR/Include
+INCLUDEPATH += /repos/flymodenavigator-qt3d/flymodenavigator-qt3d/
 DEPENDPATH += /Users/anderhaf/Downloads/OculusSDK/LibOVR/Include
 mac: LIBS += -framework CoreFoundation
 mac: LIBS += -framework CoreGraphics
@@ -30,7 +33,8 @@ SOURCES += main.cpp \
     fileio.cpp \
     oculusreader.cpp \
     mts0_io.cpp \
-    multibillboard.cpp
+    multibillboard.cpp \
+    /repos/flymodenavigator-qt3d/flymodenavigator-qt3d/mousemover.cpp
 
 # Installation path
 # target.path =
@@ -48,4 +52,11 @@ HEADERS += \
     fileio.h \
     oculusreader.h \
     mts0_io.h \
-    multibillboard.h
+    multibillboard.h \
+    /repos/flymodenavigator-qt3d/flymodenavigator-qt3d/mousemover.h
+
+copydata.commands = $(COPY_DIR) $$PWD/qml $$OUT_PWD
+first.depends = $(first) copydata
+export(first.depends)
+export(copydata.commands)
+QMAKE_EXTRA_TARGETS += first copydata

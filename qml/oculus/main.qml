@@ -6,6 +6,7 @@ import FileIO 1.0
 import OculusReader 1.0
 import Mts0_io 1.0
 import MultiBillboard 1.0
+import "../../../../flymodenavigator-qt3d/flymodenavigator-qt3d/qml/flymodenavigator"
 
 Rectangle {
     id: rectRoot
@@ -20,23 +21,24 @@ Rectangle {
         id: mts0_io
     }
 
-    OculusReader {
-        camera: viewportRoot.camera
-    }
+//    OculusReader {
+//        camera: viewportRoot.camera
+//    }
 
     StereoViewport {
         id: viewportRoot
         fillColor: "black"
         width: rectRoot.width * 1.8
         height: rectRoot.height * 1.8 // TODO: Check real ratio
-        stereoType: StereoViewport.RightLeft
+        stereoType: StereoViewport.LeftRight
+        fovzoom: false
         light: Light {
             position: Qt.vector3d(2.0, 1.0, 3.0)
         }
 
         camera: Camera {
-            nearPlane: 0.5
-            farPlane: 1000
+            nearPlane: 5.0
+            farPlane: 500
             fieldOfView: 90
             center: Qt.vector3d(1,0,0)
             eye: Qt.vector3d(5,0,0)
@@ -60,19 +62,10 @@ Rectangle {
 
         // TODO Fix bug in MolecularDynamics class and remove this Sphere
         Sphere {
-            x: -100
+            x: -1000
             effect: Effect {
                 color: "blue"
             }
-        }
-    }
-
-    Timer {
-        id: timer
-        interval: 16
-        repeat: true
-        onTriggered: {
-            multiSphere.update();
         }
     }
 
@@ -174,5 +167,15 @@ Rectangle {
             vertexShader: vertexShaderFile.read()
             fragmentShader: fragmentShaderFile.read()
         }
+    }
+
+    FlyModeNavigator {
+        focus: true
+        camera: viewportRoot.camera
+    }
+
+    Text {
+        text: "FPS: "+multiSphere.fps.toFixed(2)
+        color: "white"
     }
 }

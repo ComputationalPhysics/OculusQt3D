@@ -6,6 +6,9 @@
 #include <oculusreader.h>
 #include <mts0_io.h>
 #include <multibillboard.h>
+#include <mousemover.h>
+#include <QQmlContext>
+#include <QQuickView>
 
 int main(int argc, char *argv[])
 {
@@ -19,9 +22,12 @@ int main(int argc, char *argv[])
 
     QGuiApplication app(argc, argv);
 
-    QtQuick2ApplicationViewer viewer;
-    viewer.setMainQmlFile(QStringLiteral("qml/oculus/main.qml"));
-    viewer.showExpanded();
+    QQuickView view;
+    view.setSource(QUrl::fromLocalFile("qml/oculus/main.qml"));
+    MouseMover mouseMover(&view);
 
+    view.rootContext()->setContextProperty("mouseMover", &mouseMover);
+
+    view.show();
     return app.exec();
 }

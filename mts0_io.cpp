@@ -113,9 +113,14 @@ Mts0_io::Mts0_io(QObject *parent) {
     nx = 2;
     ny = 2;
     nz = 2;
-    preload = false;
+    preload = true;
+
     foldername_base = "/projects/andershaf_nanoporous_sio2_compressed_pore/small_silica_water/dump/";
-    max_timestep = 500;
+    foldername_base = "/projects/andershaf_nanoporous_sio2_compressed_pore/medium_silica_water/dump2";
+    foldername_base = "/projects/andershaf_nanoporous_sio2_compressed_pore/pure_silica/dump/";
+    // foldername_base = "/projects/balle/";
+
+    max_timestep = 0;
     current_timestep = -1; // Next will be 0
     currentTimestepObject = NULL;
     if(preload) load_timesteps();

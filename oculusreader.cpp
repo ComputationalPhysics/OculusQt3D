@@ -57,7 +57,6 @@ OculusReader::OculusReader():
 }
 
 void OculusReader::readSensors() {
-    return;
     if(m_camera == NULL) {
         qDebug() << "Camera pointer not set";
         return;
