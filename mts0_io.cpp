@@ -119,7 +119,7 @@ Mts0_io::Mts0_io(QObject *parent) {
     // foldername_base = "/projects/andershaf_nanoporous_sio2_compressed_pore/medium_silica_water/dump2";
 //    foldername_base = "/projects/andershaf_nanoporous_sio2_compressed_pore/pure_silica/dump/";
     //    foldername_base = "/projects/andershaf_nanoporous_sio2_compressed_pore/silica_nacl_1_permille/dump/";
-        foldername_base = "/home/svenni/scratch/mddata/dump/";
+    foldername_base = "/home/svenni/scratch/mddata/dump";
 
     max_timestep = 0;
     current_timestep = -1; // Next will be 0

@@ -79,7 +79,7 @@ void MultiBillboard::drawItem(QGLPainter *painter) {
     int count = 0;
 
     for(int i = 0; i < timestep->positions.size(); i++) {
-        center = QVector3D(timestep->positions[i][0],timestep->positions[i][1], timestep->positions[i][2]) - system_center;
+        center = QVector3D(timestep->positions[i][0],timestep->positions[i][1], timestep->positions[i][2]);
 
         if(painter->isCullable(center)) {
             continue;
