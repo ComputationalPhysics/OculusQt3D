@@ -65,6 +65,7 @@ Rectangle {
         // TODO Fix bug in MolecularDynamics class and remove this Sphere
         Sphere {
             x: -1000
+            radius: 2.0
             effect: Effect {
                 color: "blue"
             }

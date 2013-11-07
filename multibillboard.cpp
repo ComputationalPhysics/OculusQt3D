@@ -35,6 +35,10 @@ void MultiBillboard::updatePoints() {
 // #define OLD
 
 void MultiBillboard::drawItem(QGLPainter *painter) {
+    if(drawCalls < 10) { // TODO Fix this hack!
+        drawCalls++;
+        return;
+    }
     Timestep *timestep = m_mts0_io->currentTimestepObject;
     if(timestep == NULL) return;
     vector<float> system_size = timestep->get_lx_ly_lz();
@@ -104,6 +108,7 @@ void MultiBillboard::drawItem(QGLPainter *painter) {
         vectorArray.append(v2.x(),v2.y(),v2.z());
         vectorArray.append(v3.x(),v3.y(),v3.z());
         vectorArray.append(v4.x(),v4.y(),v4.z());
+//        triangles.appendVertex(v1,v2,v3,v4);
 
         triangles.appendColor(color, color, color, color);
         triangles.appendNormal(normal,normal,normal, normal);
