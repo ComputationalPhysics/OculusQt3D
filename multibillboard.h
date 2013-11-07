@@ -98,6 +98,12 @@ public slots:
 
 private:
 
+    QVector3DArray vectorArray;
+    QVector3DArray normalArray;
+    QArray<QColor4ub> colorArray;
+    QGL::IndexArray indexArray;
+    QVector2DArray textureArray;
+
     QGLSceneNode *m_topNode;
     bool m_sceneSet;
     QGLSceneNode* m_geometry;

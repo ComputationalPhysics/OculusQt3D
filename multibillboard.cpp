@@ -74,18 +74,27 @@ void MultiBillboard::drawItem(QGLPainter *painter) {
     QVector3D center;
     QVector3D normal = QVector3D::crossProduct(right,up);
     int count = 0;
-
-    QVector3DArray vectorArray;
-    QVector3DArray normalArray;
-    QArray<QColor4ub> colorArray;
-    QGL::IndexArray indexArray;
-    QVector2DArray textureArray;
+    indexArray.clear();
+    vectorArray.clear();
+    normalArray.clear();
+    colorArray.clear();
+    textureArray.clear();
 
     indexArray.reserve(6*numAtoms);
     vectorArray.reserve(4*numAtoms);
     normalArray.reserve(4*numAtoms);
     colorArray.reserve(4*numAtoms);
     textureArray.reserve(4*numAtoms);
+
+    QVector<QColor4ub> atom_colors;
+    for(int atom_type=0; atom_type<7; atom_type++) {
+        int r = color_list[atom_type][0];
+        int g = color_list[atom_type][1];
+        int b = color_list[atom_type][2];
+        QColor4ub color(r,g,b,255);
+        atom_colors.push_back(color);
+    }
+
 
     for(int i = 0; i < timestep->positions.size(); i++) {
         center = QVector3D(timestep->positions[i][0],timestep->positions[i][1], timestep->positions[i][2]) - system_center;
@@ -95,10 +104,6 @@ void MultiBillboard::drawItem(QGLPainter *painter) {
         }
 
         int atom_type = timestep->atom_types.at(i);
-        int r = color_list[atom_type][0];
-        int g = color_list[atom_type][1];
-        int b = color_list[atom_type][2];
-        QColor4ub color(r,g,b,255);
 
         double size = atom_radii[atom_type]*2.0;
 
@@ -117,10 +122,10 @@ void MultiBillboard::drawItem(QGLPainter *painter) {
         normalArray.append(normal.x(), normal.y(), normal.z());
         normalArray.append(normal.x(), normal.y(), normal.z());
 
-        colorArray.append(color);
-        colorArray.append(color);
-        colorArray.append(color);
-        colorArray.append(color);
+        colorArray.append(atom_colors[atom_type]);
+        colorArray.append(atom_colors[atom_type]);
+        colorArray.append(atom_colors[atom_type]);
+        colorArray.append(atom_colors[atom_type]);
 
         indexArray.append(4*count + 0, 4*count + 1, 4*count + 2);
         indexArray.append(4*count + 2, 4*count + 3, 4*count + 0);
