@@ -37,9 +37,8 @@ void MultiBillboard::updatePoints() {
 void MultiBillboard::drawItem(QGLPainter *painter) {
     Timestep *timestep = m_mts0_io->currentTimestepObject;
     if(timestep == NULL) return;
-    QElapsedTimer t;
-    t.start();
     vector<float> system_size = timestep->get_lx_ly_lz();
+    int numAtoms = timestep->positions.size();
 
     if(++drawCalls % 2) {
         setFps(1000.0/elapsedTimer.elapsed());
@@ -78,8 +77,11 @@ void MultiBillboard::drawItem(QGLPainter *painter) {
     QVector3D normal = QVector3D::crossProduct(right,up);
     int count = 0;
 
+    QVector3DArray vectorArray;
+    vectorArray.reserve(4*numAtoms);
+
     for(int i = 0; i < timestep->positions.size(); i++) {
-        center = QVector3D(timestep->positions[i][0],timestep->positions[i][1], timestep->positions[i][2]);
+        center = QVector3D(timestep->positions[i][0],timestep->positions[i][1], timestep->positions[i][2]) - system_center;
 
         if(painter->isCullable(center)) {
             continue;
@@ -98,7 +100,11 @@ void MultiBillboard::drawItem(QGLPainter *painter) {
         v3 = center + right * size * 0.5 + up * size;
         v4 = center - right * size * 0.5 + up * size;
 
-        triangles.appendVertex(v1,v2,v3,v4);
+        vectorArray.append(v1.x(),v1.y(),v1.z());
+        vectorArray.append(v2.x(),v2.y(),v2.z());
+        vectorArray.append(v3.x(),v3.y(),v3.z());
+        vectorArray.append(v4.x(),v4.y(),v4.z());
+
         triangles.appendColor(color, color, color, color);
         triangles.appendNormal(normal,normal,normal, normal);
         triangles.appendTexCoord(t1,t2,t3,t4);
@@ -107,6 +113,9 @@ void MultiBillboard::drawItem(QGLPainter *painter) {
         triangles.appendIndices(4*count + 2, 4*count + 3, 4*count + 0);
         count++;
     }
+
+    triangles.appendVertexArray(vectorArray);
+
     system_size.clear();
     glEnable(GL_BLEND);
     triangles.draw(painter,0,triangles.indexCount());
