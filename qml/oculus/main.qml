@@ -37,8 +37,9 @@ Rectangle {
         }
 
         camera: Camera {
-            nearPlane: 5.0
-            farPlane: 500
+            id: camera
+            nearPlane: 15.0
+            farPlane: 1500
             fieldOfView: 90
             center: Qt.vector3d(1,0,0)
             eye: Qt.vector3d(5,0,0)
@@ -53,7 +54,7 @@ Rectangle {
             mts0_io: mts0_io
 
             effect: ShaderProgram {
-                texture: "particlebw.png"
+                texture: "particlebw2.png"
 
                 vertexShader: billboardsVertexShader.read()
                 fragmentShader: billboardsFragmentShader.read()
@@ -101,7 +102,7 @@ Rectangle {
             top: rectRoot.top
             bottom: rectRoot.bottom
         }
-        visible: false
+        visible: true
 
         hideSource: true
         sourceItem: viewportRoot
@@ -116,58 +117,58 @@ Rectangle {
             top: rectRoot.top
             bottom: rectRoot.bottom
         }
-        visible: false
+        visible: true
 
         hideSource: true
         sourceItem: viewportRoot
         sourceRect: Qt.rect(viewportRoot.width / 2, 0, viewportRoot.width / 2, viewportRoot.height)
     }
 
-    Item {
-        width: rectRoot.width / 2
-        anchors {
-            left: rectRoot.left
-            top: rectRoot.top
-            bottom: rectRoot.bottom
-        }
-        clip: true
-        ShaderEffect {
-            width: parent.width + 100
-            height: parent.height
-            x: 0
+//    Item {
+//        width: rectRoot.width / 2
+//        anchors {
+//            left: rectRoot.left
+//            top: rectRoot.top
+//            bottom: rectRoot.bottom
+//        }
+//        clip: true
+//        ShaderEffect {
+//            width: parent.width + 100
+//            height: parent.height
+//            x: 0
 
-            property variant qt_Texture0: shaderEffectSourceLeft
-            property point lensOffsetFromCenter: rectRoot.lensOffsetFromCenter
-            property rect distortion: rectRoot.distortion
-            property real aspectRatio: rectRoot.aspectRatio
-            property real fillScale: rectRoot.fillScale
-            vertexShader: vertexShaderFile.read()
-            fragmentShader: fragmentShaderFile.read()
-        }
-    }
+//            property variant qt_Texture0: shaderEffectSourceLeft
+//            property point lensOffsetFromCenter: rectRoot.lensOffsetFromCenter
+//            property rect distortion: rectRoot.distortion
+//            property real aspectRatio: rectRoot.aspectRatio
+//            property real fillScale: rectRoot.fillScale
+//            vertexShader: vertexShaderFile.read()
+//            fragmentShader: fragmentShaderFile.read()
+//        }
+//    }
 
-    Item {
-        width: rectRoot.width / 2
-        anchors {
-            right: rectRoot.right
-            top: rectRoot.top
-            bottom: rectRoot.bottom
-        }
-        clip: true
-        ShaderEffect {
-            width: parent.width + 100
-            height: parent.height
-            x: -100
+//    Item {
+//        width: rectRoot.width / 2
+//        anchors {
+//            right: rectRoot.right
+//            top: rectRoot.top
+//            bottom: rectRoot.bottom
+//        }
+//        clip: true
+//        ShaderEffect {
+//            width: parent.width + 100
+//            height: parent.height
+//            x: -100
 
-            property variant qt_Texture0: shaderEffectSourceRight
-            property point lensOffsetFromCenter: Qt.point(-rectRoot.lensOffsetFromCenter.x, rectRoot.lensOffsetFromCenter.y)
-            property rect distortion: rectRoot.distortion
-            property real aspectRatio: rectRoot.aspectRatio
-            property real fillScale: rectRoot.fillScale
-            vertexShader: vertexShaderFile.read()
-            fragmentShader: fragmentShaderFile.read()
-        }
-    }
+//            property variant qt_Texture0: shaderEffectSourceRight
+//            property point lensOffsetFromCenter: Qt.point(-rectRoot.lensOffsetFromCenter.x, rectRoot.lensOffsetFromCenter.y)
+//            property rect distortion: rectRoot.distortion
+//            property real aspectRatio: rectRoot.aspectRatio
+//            property real fillScale: rectRoot.fillScale
+//            vertexShader: vertexShaderFile.read()
+//            fragmentShader: fragmentShaderFile.read()
+//        }
+//    }
 
     FlyModeNavigator {
         focus: true
@@ -176,6 +177,12 @@ Rectangle {
 
     Text {
         text: "FPS: "+multiSphere.fps.toFixed(2)
+        color: "white"
+    }
+
+    Text {
+        y: 20
+        text: "Visible atoms: "+multiSphere.visibleAtoms
         color: "white"
     }
 }

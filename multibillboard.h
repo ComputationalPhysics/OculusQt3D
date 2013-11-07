@@ -13,6 +13,7 @@ class MultiBillboard : public QQuickItem3D
     Q_PROPERTY(SortMode sortPoints READ sortPoints WRITE setSortPoints NOTIFY sortPointsChanged)
     Q_PROPERTY(Mts0_io* mts0_io READ mts0_io WRITE setMts0_io NOTIFY mts0_ioChanged)
     Q_PROPERTY(double fps READ fps WRITE setFps NOTIFY fpsChanged)
+    Q_PROPERTY(int visibleAtoms READ visibleAtoms WRITE setVisibleAtoms NOTIFY visibleAtomsChanged)
     QElapsedTimer elapsedTimer;
     int drawCalls;
 public:
@@ -35,6 +36,11 @@ public:
         return m_fps;
     }
 
+    int visibleAtoms() const
+    {
+        return m_visibleAtoms;
+    }
+
 protected:
     void drawItem(QGLPainter *painter);
 signals:
@@ -48,6 +54,8 @@ signals:
     void mts0_ioChanged(Mts0_io* arg);
 
     void fpsChanged(double arg);
+
+    void visibleAtomsChanged(int arg);
 
 public slots:
 
@@ -80,6 +88,14 @@ public slots:
         }
     }
 
+    void setVisibleAtoms(int arg)
+    {
+        if (m_visibleAtoms != arg) {
+            m_visibleAtoms = arg;
+            emit visibleAtomsChanged(arg);
+        }
+    }
+
 private:
 
     QGLSceneNode *m_topNode;
@@ -91,6 +107,7 @@ private:
     SortMode m_sortPoints;
     Mts0_io* m_mts0_io;
     double m_fps;
+    int m_visibleAtoms;
 };
 
 #endif // MULTISPHERE2_H

@@ -77,6 +77,7 @@ void MultiBillboard::drawItem(QGLPainter *painter) {
     QVector3D center;
     QVector3D normal = QVector3D::crossProduct(right,up);
     int count = 0;
+
     for(int i = 0; i < timestep->positions.size(); i++) {
         center = QVector3D(timestep->positions[i][0],timestep->positions[i][1], timestep->positions[i][2]) - system_center;
 
@@ -90,7 +91,7 @@ void MultiBillboard::drawItem(QGLPainter *painter) {
         int b = color_list[atom_type][2];
         QColor4ub color(r,g,b,255);
 
-        double size = atom_radii[atom_type]*1.3;
+        double size = atom_radii[atom_type]*2.0;
 
         v1 = center - right * (size * 0.5);
         v2 = center + right * size * 0.5;
@@ -110,9 +111,10 @@ void MultiBillboard::drawItem(QGLPainter *painter) {
     glEnable(GL_BLEND);
     triangles.draw(painter,0,triangles.indexCount());
     glDisable(GL_BLEND);
-    cout << "Drawed " << count << " atoms." << endl;
+    setVisibleAtoms(count);
 }
 
 MultiBillboard::~MultiBillboard()
 {
+
 }
