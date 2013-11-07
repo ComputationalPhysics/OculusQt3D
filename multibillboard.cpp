@@ -4,12 +4,13 @@
 #include <QQuickEffect>
 #include <qmath.h>
 #include <mts0_io.h>
-
 MultiBillboard::MultiBillboard(QQuickItem *parent) :
     QQuickItem3D(parent),
     m_sortPoints(DefaultSorting),
     m_mts0_io(NULL),
-    drawCalls(0)
+    drawCalls(0),
+    count(0),
+    m_showWater(true)
 {
     updatePoints();
 }
@@ -32,13 +33,21 @@ void MultiBillboard::updatePoints() {
     }
 }
 
-// #define OLD
+#define SI_TYPE 1
+#define A_TYPE 2
+#define H_TYPE 3
+#define O_TYPE 4
+#define NA_TYPE 5
+#define CL_TYPE 6
+#define X_TYPE 7
 
 void MultiBillboard::drawItem(QGLPainter *painter) {
     Timestep *timestep = m_mts0_io->currentTimestepObject;
     if(timestep == NULL) return;
+
     vector<float> system_size = timestep->get_lx_ly_lz();
     int numAtoms = timestep->positions.size();
+    if(visibleAtomIndices.size() < numAtoms) visibleAtomIndices.resize(numAtoms);
 
     if(++drawCalls % 2) {
         setFps(1000.0/elapsedTimer.elapsed());
@@ -73,18 +82,6 @@ void MultiBillboard::drawItem(QGLPainter *painter) {
     QVector3D system_center(system_size[0]/2.0, system_size[1]/2.0, system_size[2]/2.0);
     QVector3D center;
     QVector3D normal = QVector3D::crossProduct(right,up);
-    int count = 0;
-    indexArray.clear();
-    vectorArray.clear();
-    normalArray.clear();
-    colorArray.clear();
-    textureArray.clear();
-
-    indexArray.reserve(6*numAtoms);
-    vectorArray.reserve(4*numAtoms);
-    normalArray.reserve(4*numAtoms);
-    colorArray.reserve(4*numAtoms);
-    textureArray.reserve(4*numAtoms);
 
     QVector<QColor4ub> atom_colors;
     for(int atom_type=0; atom_type<7; atom_type++) {
@@ -95,16 +92,50 @@ void MultiBillboard::drawItem(QGLPainter *painter) {
         atom_colors.push_back(color);
     }
 
+    QVector3D cameraPosition = m_camera->eye();
+    double dr2_max = 100000;
+    double water_dr2_max = 2000;
 
-    for(int i = 0; i < timestep->positions.size(); i++) {
-        center = QVector3D(timestep->positions[i][0],timestep->positions[i][1], timestep->positions[i][2]) - system_center;
+    if(!(drawCalls % 5)) {
+        count = 0;
 
-        if(painter->isCullable(center)) {
-            continue;
+        for(int i = 0; i < timestep->positions.size(); i++) {
+            center = QVector3D(timestep->positions[i][0],timestep->positions[i][1], timestep->positions[i][2]) - system_center;
+            int atom_type = timestep->atom_types.at(i);
+            bool is_water = (atom_type == H_TYPE || atom_type == O_TYPE);
+            if(is_water && !m_showWater) continue;
+
+            QVector3D relativeDistance = center - cameraPosition;
+            double dr2 = relativeDistance.lengthSquared();
+            if(dr2 < 50) continue;
+            if(dr2 > dr2_max) continue;
+            if(is_water && dr2 > water_dr2_max) continue;
+
+            if(painter->isCullable(center)) {
+                continue;
+            }
+
+            visibleAtomIndices[count++] = i;
         }
+    }
 
-        int atom_type = timestep->atom_types.at(i);
+    indexArray.clear();
+    vertexArray.clear();
+    normalArray.clear();
+    colorArray.clear();
+    textureArray.clear();
 
+    vertexArray.reserve(4*count);
+    indexArray.reserve(6*count);
+    normalArray.reserve(4*count);
+    colorArray.reserve(4*count);
+    textureArray.reserve(4*count);
+
+    for(int i = 0; i < count; i++) {
+        int index = visibleAtomIndices[i];
+        center = QVector3D(timestep->positions[index][0],timestep->positions[index][1], timestep->positions[index][2]) - system_center;
+
+        int atom_type = timestep->atom_types.at(index);
         double size = atom_radii[atom_type]*2.0;
 
         v1 = center - right * (size * 0.5);
@@ -112,10 +143,10 @@ void MultiBillboard::drawItem(QGLPainter *painter) {
         v3 = center + right * size * 0.5 + up * size;
         v4 = center - right * size * 0.5 + up * size;
 
-        vectorArray.append(v1.x(),v1.y(),v1.z());
-        vectorArray.append(v2.x(),v2.y(),v2.z());
-        vectorArray.append(v3.x(),v3.y(),v3.z());
-        vectorArray.append(v4.x(),v4.y(),v4.z());
+        vertexArray.append(v1.x(),v1.y(),v1.z());
+        vertexArray.append(v2.x(),v2.y(),v2.z());
+        vertexArray.append(v3.x(),v3.y(),v3.z());
+        vertexArray.append(v4.x(),v4.y(),v4.z());
 
         normalArray.append(normal.x(), normal.y(), normal.z());
         normalArray.append(normal.x(), normal.y(), normal.z());
@@ -127,20 +158,19 @@ void MultiBillboard::drawItem(QGLPainter *painter) {
         colorArray.append(atom_colors[atom_type]);
         colorArray.append(atom_colors[atom_type]);
 
-        indexArray.append(4*count + 0, 4*count + 1, 4*count + 2);
-        indexArray.append(4*count + 2, 4*count + 3, 4*count + 0);
+        indexArray.append(4*i + 0, 4*i + 1, 4*i + 2);
+        indexArray.append(4*i + 2, 4*i + 3, 4*i + 0);
 
         textureArray.append(t1.x(), t1.y());
         textureArray.append(t2.x(), t2.y());
         textureArray.append(t3.x(), t3.y());
         textureArray.append(t4.x(), t4.y());
-        count++;
     }
 
     triangles.appendTexCoordArray(textureArray);
     triangles.appendNormalArray(normalArray);
     triangles.appendColorArray(colorArray);
-    triangles.appendVertexArray(vectorArray);
+    triangles.appendVertexArray(vertexArray);
     triangles.appendIndices(indexArray);
 
     system_size.clear();
