@@ -4,12 +4,13 @@
 #include <QQuickEffect>
 #include <qmath.h>
 #include <mts0_io.h>
-
 MultiBillboard::MultiBillboard(QQuickItem *parent) :
     QQuickItem3D(parent),
     m_sortPoints(DefaultSorting),
     m_mts0_io(NULL),
-    drawCalls(0)
+    drawCalls(0),
+    count(0),
+    m_showWater(true)
 {
     updatePoints();
 }
@@ -32,7 +33,13 @@ void MultiBillboard::updatePoints() {
     }
 }
 
-// #define OLD
+#define SI_TYPE 1
+#define A_TYPE 2
+#define H_TYPE 3
+#define O_TYPE 4
+#define NA_TYPE 5
+#define CL_TYPE 6
+#define X_TYPE 7
 
 void MultiBillboard::drawItem(QGLPainter *painter) {
     if(drawCalls < 10) { // TODO Fix this hack!
@@ -41,8 +48,12 @@ void MultiBillboard::drawItem(QGLPainter *painter) {
     }
     Timestep *timestep = m_mts0_io->currentTimestepObject;
     if(timestep == NULL) return;
+
     vector<float> system_size = timestep->get_lx_ly_lz();
     int numAtoms = timestep->positions.size();
+    if(visibleAtomIndices.size() < numAtoms) {
+        visibleAtomIndices.resize(numAtoms);
+    }
 
     if(++drawCalls % 2) {
         setFps(1000.0/elapsedTimer.elapsed());
@@ -103,22 +114,44 @@ void MultiBillboard::drawItem(QGLPainter *painter) {
         QColor4ub color(r,g,b,255);
         atom_colors.push_back(color);
     }
+    QVector3D cameraPosition = m_camera->eye();
+    double dr2_max = 100000;
+    double water_dr2_max = 2000;
 
-    for(int i = 0; i < timestep->positions.size(); i++) {
-        center = QVector3D(timestep->positions[i][0],timestep->positions[i][1], timestep->positions[i][2]) - system_center;
+//    if(!(drawCalls % 5)) {
+        count = 0;
 
-//        if(painter->isCullable(center)) {
-//            continue;
-//        }
+        for(int i = 0; i < timestep->positions.size(); i++) {
+            center = QVector3D(timestep->positions[i][0],timestep->positions[i][1], timestep->positions[i][2]) - system_center;
+            int atom_type = timestep->atom_types.at(i);
+            bool is_water = (atom_type == H_TYPE || atom_type == O_TYPE);
+            if(is_water && !m_showWater) continue;
 
-        int atom_type = timestep->atom_types.at(i);
+            QVector3D relativeDistance = center - cameraPosition;
+            double dr2 = relativeDistance.lengthSquared();
+            if(dr2 < 50) continue;
+            if(dr2 > dr2_max) continue;
+            if(is_water && dr2 > water_dr2_max) continue;
 
+            if(painter->isCullable(center)) {
+                continue;
+            }
+
+            visibleAtomIndices[count++] = i;
+        }
+//    }
+
+    for(int i = 0; i < count; i++) {
+        int index = visibleAtomIndices[i];
+        center = QVector3D(timestep->positions[index][0],timestep->positions[index][1], timestep->positions[index][2]) - system_center;
+
+        int atom_type = timestep->atom_types.at(index);
         double size = atom_radii[atom_type]*2.0;
 
-        v1 = center + aOffset;
-        v2 = center + bOffset;
-        v3 = center + cOffset;
-        v4 = center + dOffset;
+        v1 = center + size * aOffset;
+        v2 = center + size * bOffset;
+        v3 = center + size * cOffset;
+        v4 = center + size * dOffset;
 
         vectorArray.append(v1, v2, v3, v4);
 
@@ -126,10 +159,10 @@ void MultiBillboard::drawItem(QGLPainter *painter) {
 
         textureArray.append(t1, t2, t3, t4);
 
-        indexArray.append(4*count + 0, 4*count + 1, 4*count + 2);
-        indexArray.append(4*count + 2, 4*count + 3, 4*count + 0);
-        count++;
+        indexArray.append(4*i + 0, 4*i + 1, 4*i + 2);
+        indexArray.append(4*i + 2, 4*i + 3, 4*i + 0);
     }
+    system_size.clear();
     QGLVertexBundle vertexBundle;
     QGLIndexBuffer indexBuffer;
     vertexBundle.addAttribute(QGL::Position, vectorArray);

@@ -6,6 +6,7 @@
 #include <QElapsedTimer>
 #include <mts0_io.h>
 #include <QGLBuilder>
+#include <QGLCamera>
 
 class MultiBillboard : public QQuickItem3D
 {
@@ -14,6 +15,9 @@ class MultiBillboard : public QQuickItem3D
     Q_PROPERTY(Mts0_io* mts0_io READ mts0_io WRITE setMts0_io NOTIFY mts0_ioChanged)
     Q_PROPERTY(double fps READ fps WRITE setFps NOTIFY fpsChanged)
     Q_PROPERTY(int visibleAtoms READ visibleAtoms WRITE setVisibleAtoms NOTIFY visibleAtomsChanged)
+    Q_PROPERTY(QGLCamera *camera READ camera WRITE setCamera)
+    Q_PROPERTY(bool showWater READ showWater WRITE setShowWater NOTIFY showWaterChanged)
+
     QElapsedTimer elapsedTimer;
     int drawCalls;
 public:
@@ -41,6 +45,16 @@ public:
         return m_visibleAtoms;
     }
 
+    QGLCamera * camera() const
+    {
+        return m_camera;
+    }
+
+    bool showWater() const
+    {
+        return m_showWater;
+    }
+
 protected:
     void drawItem(QGLPainter *painter);
 signals:
@@ -56,6 +70,8 @@ signals:
     void fpsChanged(double arg);
 
     void visibleAtomsChanged(int arg);
+
+    void showWaterChanged(bool arg);
 
 public slots:
 
@@ -96,6 +112,19 @@ public slots:
         }
     }
 
+    void setCamera(QGLCamera * arg)
+    {
+        m_camera = arg;
+    }
+
+    void setShowWater(bool arg)
+    {
+        if (m_showWater != arg) {
+            m_showWater = arg;
+            emit showWaterChanged(arg);
+        }
+    }
+
 private:
 
     QArray<QVector3D> vectorArray;
@@ -103,6 +132,8 @@ private:
     QArray<QColor4ub> colorArray;
     QArray<uint> indexArray;
     QArray<QVector2D> textureArray;
+    QArray<int> visibleAtomIndices;
+    int count;
 
     QGLSceneNode *m_topNode;
     bool m_sceneSet;
@@ -114,6 +145,8 @@ private:
     Mts0_io* m_mts0_io;
     double m_fps;
     int m_visibleAtoms;
+    QGLCamera * m_camera;
+    bool m_showWater;
 };
 
 #endif // MULTISPHERE2_H

@@ -39,16 +39,17 @@ Rectangle {
 
         camera: Camera {
             id: camera
-            nearPlane: 5.0
-            farPlane: 1500
-            fieldOfView: 90
+            nearPlane: 2.0
+            farPlane: 500
+            fieldOfView: 60
             center: Qt.vector3d(1,0,0)
             eye: Qt.vector3d(5,0,0)
-            eyeSeparation: 0.1
+            eyeSeparation: 0.03
         }
 
         MultiBillboard {
             id: multiSphere
+            camera: camera
             cullFaces: Item3D.CullBackFaces
             sortPoints: Item3D.BackToFront
 
@@ -126,55 +127,61 @@ Rectangle {
         sourceRect: Qt.rect(viewportRoot.width / 2, 0, viewportRoot.width / 2, viewportRoot.height)
     }
 
-//    Item {
-//        width: rectRoot.width / 2
-//        anchors {
-//            left: rectRoot.left
-//            top: rectRoot.top
-//            bottom: rectRoot.bottom
-//        }
-//        clip: true
-//        ShaderEffect {
-//            width: parent.width + 100
-//            height: parent.height
-//            x: 0
+    Item {
+        width: rectRoot.width / 2
+        anchors {
+            left: rectRoot.left
+            top: rectRoot.top
+            bottom: rectRoot.bottom
+        }
+        clip: true
+        ShaderEffect {
+            width: parent.width + 100
+            height: parent.height
+            x: 0
 
-//            property variant qt_Texture0: shaderEffectSourceLeft
-//            property point lensOffsetFromCenter: rectRoot.lensOffsetFromCenter
-//            property rect distortion: rectRoot.distortion
-//            property real aspectRatio: rectRoot.aspectRatio
-//            property real fillScale: rectRoot.fillScale
-//            vertexShader: vertexShaderFile.read()
-//            fragmentShader: fragmentShaderFile.read()
-//        }
-//    }
+            property variant qt_Texture0: shaderEffectSourceLeft
+            property point lensOffsetFromCenter: rectRoot.lensOffsetFromCenter
+            property rect distortion: rectRoot.distortion
+            property real aspectRatio: rectRoot.aspectRatio
+            property real fillScale: rectRoot.fillScale
+            vertexShader: vertexShaderFile.read()
+            fragmentShader: fragmentShaderFile.read()
+        }
+    }
 
-//    Item {
-//        width: rectRoot.width / 2
-//        anchors {
-//            right: rectRoot.right
-//            top: rectRoot.top
-//            bottom: rectRoot.bottom
-//        }
-//        clip: true
-//        ShaderEffect {
-//            width: parent.width + 100
-//            height: parent.height
-//            x: -100
+    Item {
+        width: rectRoot.width / 2
+        anchors {
+            right: rectRoot.right
+            top: rectRoot.top
+            bottom: rectRoot.bottom
+        }
+        clip: true
+        ShaderEffect {
+            width: parent.width + 100
+            height: parent.height
+            x: -100
 
-//            property variant qt_Texture0: shaderEffectSourceRight
-//            property point lensOffsetFromCenter: Qt.point(-rectRoot.lensOffsetFromCenter.x, rectRoot.lensOffsetFromCenter.y)
-//            property rect distortion: rectRoot.distortion
-//            property real aspectRatio: rectRoot.aspectRatio
-//            property real fillScale: rectRoot.fillScale
-//            vertexShader: vertexShaderFile.read()
-//            fragmentShader: fragmentShaderFile.read()
-//        }
-//    }
+            property variant qt_Texture0: shaderEffectSourceRight
+            property point lensOffsetFromCenter: Qt.point(-rectRoot.lensOffsetFromCenter.x, rectRoot.lensOffsetFromCenter.y)
+            property rect distortion: rectRoot.distortion
+            property real aspectRatio: rectRoot.aspectRatio
+            property real fillScale: rectRoot.fillScale
+            vertexShader: vertexShaderFile.read()
+            fragmentShader: fragmentShaderFile.read()
+        }
+    }
 
     FlyModeNavigator {
         focus: true
         camera: viewportRoot.camera
+    }
+
+    Keys.onPressed:  {
+        if(event.key === Qt.Key_R) {
+            multiSphere.showWater = !multiSphere.showWater
+        }
     }
 
     Text {
