@@ -121,7 +121,6 @@ void MultiBillboard::drawItem(QGLPainter *painter) {
         v4 = center + dOffset;
 
         vectorArray.append(v1, v2, v3, v4);
-//        triangles.appendVertex(v1,v2,v3,v4);
 
         colorArray.append(atom_colors[atom_type], atom_colors[atom_type], atom_colors[atom_type], atom_colors[atom_type]);
 
@@ -136,7 +135,6 @@ void MultiBillboard::drawItem(QGLPainter *painter) {
     vertexBundle.addAttribute(QGL::Position, vectorArray);
     vertexBundle.addAttribute(QGL::TextureCoord0, textureArray);
     vertexBundle.addAttribute(QGL::Color, colorArray);
-// vertexBundle.addAttribute(QGL::Normal, normals);
     indexBuffer.setIndexes(indexArray);
 
     painter->clearAttributes();
@@ -147,16 +145,6 @@ void MultiBillboard::drawItem(QGLPainter *painter) {
     // Set the rest of the vertex bundle (basically only positions)
     painter->setVertexBundle(vertexBundle);
     painter->draw(QGL::DrawingMode(QGL::Triangles), indexBuffer, 0, indexBuffer.indexCount());
-//    triangles.appendTexCoordArray(textureArray);
-////    triangles.appendNormalArray(normalArray);
-//    triangles.appendColorArray(colorArray);
-//    triangles.appendVertexArray(vectorArray);
-//    triangles.appendIndices(indexArray);
-
-//    system_size.clear();
-//    glEnable(GL_BLEND);
-//    triangles.draw(painter,0,triangles.indexCount());
-//    glDisable(GL_BLEND);
     setVisibleAtoms(count);
 }
 
