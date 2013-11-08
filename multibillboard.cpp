@@ -59,6 +59,10 @@ void MultiBillboard::drawItem(QGLPainter *painter) {
     up.setY(modelViewMatrix(1,1));
     up.setZ(modelViewMatrix(1,2));
 
+    QVector3D aOffset = - right * 0.5 - up * 0.5;
+    QVector3D bOffset = right * 0.5 - up * 0.5;
+    QVector3D cOffset = right * 0.5 + up * 0.5;
+    QVector3D dOffset = - right * 0.5 + up * 0.5;
     QVector3D v1;
     QVector3D v2;
     QVector3D v3;
@@ -80,13 +84,14 @@ void MultiBillboard::drawItem(QGLPainter *painter) {
     int count = 0;
     indexArray.clear();
     vectorArray.clear();
-    normalArray.clear();
+//    normalArray.clear();
     colorArray.clear();
     textureArray.clear();
 
+//    indexArray.setSize(6*numAtoms);
     indexArray.reserve(6*numAtoms);
     vectorArray.reserve(4*numAtoms);
-    normalArray.reserve(4*numAtoms);
+//    normalArray.reserve(4*numAtoms);
     colorArray.reserve(4*numAtoms);
     textureArray.reserve(4*numAtoms);
 
@@ -99,59 +104,59 @@ void MultiBillboard::drawItem(QGLPainter *painter) {
         atom_colors.push_back(color);
     }
 
-
     for(int i = 0; i < timestep->positions.size(); i++) {
         center = QVector3D(timestep->positions[i][0],timestep->positions[i][1], timestep->positions[i][2]) - system_center;
 
-        if(painter->isCullable(center)) {
-            continue;
-        }
+//        if(painter->isCullable(center)) {
+//            continue;
+//        }
 
         int atom_type = timestep->atom_types.at(i);
 
         double size = atom_radii[atom_type]*2.0;
 
-        v1 = center - right * (size * 0.5);
-        v2 = center + right * size * 0.5;
-        v3 = center + right * size * 0.5 + up * size;
-        v4 = center - right * size * 0.5 + up * size;
+        v1 = center + aOffset;
+        v2 = center + bOffset;
+        v3 = center + cOffset;
+        v4 = center + dOffset;
 
-        vectorArray.append(v1.x(),v1.y(),v1.z());
-        vectorArray.append(v2.x(),v2.y(),v2.z());
-        vectorArray.append(v3.x(),v3.y(),v3.z());
-        vectorArray.append(v4.x(),v4.y(),v4.z());
+        vectorArray.append(v1, v2, v3, v4);
 //        triangles.appendVertex(v1,v2,v3,v4);
 
-        normalArray.append(normal.x(), normal.y(), normal.z());
-        normalArray.append(normal.x(), normal.y(), normal.z());
-        normalArray.append(normal.x(), normal.y(), normal.z());
-        normalArray.append(normal.x(), normal.y(), normal.z());
+        colorArray.append(atom_colors[atom_type], atom_colors[atom_type], atom_colors[atom_type], atom_colors[atom_type]);
 
-        colorArray.append(atom_colors[atom_type]);
-        colorArray.append(atom_colors[atom_type]);
-        colorArray.append(atom_colors[atom_type]);
-        colorArray.append(atom_colors[atom_type]);
+        textureArray.append(t1, t2, t3, t4);
 
         indexArray.append(4*count + 0, 4*count + 1, 4*count + 2);
         indexArray.append(4*count + 2, 4*count + 3, 4*count + 0);
-
-        textureArray.append(t1.x(), t1.y());
-        textureArray.append(t2.x(), t2.y());
-        textureArray.append(t3.x(), t3.y());
-        textureArray.append(t4.x(), t4.y());
         count++;
     }
+    QGLVertexBundle vertexBundle;
+    QGLIndexBuffer indexBuffer;
+    vertexBundle.addAttribute(QGL::Position, vectorArray);
+    vertexBundle.addAttribute(QGL::TextureCoord0, textureArray);
+    vertexBundle.addAttribute(QGL::Color, colorArray);
+// vertexBundle.addAttribute(QGL::Normal, normals);
+    indexBuffer.setIndexes(indexArray);
 
-    triangles.appendTexCoordArray(textureArray);
-    triangles.appendNormalArray(normalArray);
-    triangles.appendColorArray(colorArray);
-    triangles.appendVertexArray(vectorArray);
-    triangles.appendIndices(indexArray);
+    painter->clearAttributes();
+    // Set up normal attributes to use only one element
+    painter->glDisableVertexAttribArray(GLuint(QGL::Normal));
+    painter->glVertexAttrib3f(GLuint(QGL::Normal), normal.x(), normal.y(), normal.z());
 
-    system_size.clear();
-    glEnable(GL_BLEND);
-    triangles.draw(painter,0,triangles.indexCount());
-    glDisable(GL_BLEND);
+    // Set the rest of the vertex bundle (basically only positions)
+    painter->setVertexBundle(vertexBundle);
+    painter->draw(QGL::DrawingMode(QGL::Triangles), indexBuffer, 0, indexBuffer.indexCount());
+//    triangles.appendTexCoordArray(textureArray);
+////    triangles.appendNormalArray(normalArray);
+//    triangles.appendColorArray(colorArray);
+//    triangles.appendVertexArray(vectorArray);
+//    triangles.appendIndices(indexArray);
+
+//    system_size.clear();
+//    glEnable(GL_BLEND);
+//    triangles.draw(painter,0,triangles.indexCount());
+//    glDisable(GL_BLEND);
     setVisibleAtoms(count);
 }
 
