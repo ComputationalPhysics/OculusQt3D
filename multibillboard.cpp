@@ -92,7 +92,7 @@ void MultiBillboard::drawItem(QGLPainter *painter) {
     QVector3D system_center(system_size[0]/2.0, system_size[1]/2.0, system_size[2]/2.0);
     QVector3D center;
     QVector3D normal = QVector3D::crossProduct(right,up);
-    int count = 0;
+//    int count;
     indexArray.clear();
     vectorArray.clear();
 //    normalArray.clear();
@@ -118,10 +118,10 @@ void MultiBillboard::drawItem(QGLPainter *painter) {
     double dr2_max = 100000;
     double water_dr2_max = 2000;
 
-//    if(!(drawCalls % 5)) {
+    if(!(drawCalls % 6)) {
         count = 0;
 
-        for(int i = 0; i < timestep->positions.size(); i++) {
+        for(uint i = 0; i < timestep->positions.size(); i++) {
             center = QVector3D(timestep->positions[i][0],timestep->positions[i][1], timestep->positions[i][2]) - system_center;
             int atom_type = timestep->atom_types.at(i);
             bool is_water = (atom_type == H_TYPE || atom_type == O_TYPE);
@@ -139,7 +139,7 @@ void MultiBillboard::drawItem(QGLPainter *painter) {
 
             visibleAtomIndices[count++] = i;
         }
-//    }
+    }
 
     for(int i = 0; i < count; i++) {
         int index = visibleAtomIndices[i];
