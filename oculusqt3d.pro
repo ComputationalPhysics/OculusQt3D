@@ -11,7 +11,7 @@ QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.9
 # Additional import path used to resolve QML modules in Creator's code model
 QML_IMPORT_PATH =
 INCLUDEPATH += /Users/anderhaf/Downloads/OculusSDK/LibOVR/Include
-INCLUDEPATH += /repos/flymodenavigator-qt3d/flymodenavigator-qt3d/
+#INCLUDEPATH += /repos/flymodenavigator-qt3d/flymodenavigator-qt3d/
 DEPENDPATH += /Users/anderhaf/Downloads/OculusSDK/LibOVR/Include
 mac: LIBS += -framework CoreFoundation
 mac: LIBS += -framework CoreGraphics

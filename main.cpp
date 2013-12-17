@@ -24,7 +24,12 @@ int main(int argc, char *argv[])
     QGuiApplication app(argc, argv);
 
     QQuickView view;
+#ifdef Q_OS_LINUX
     view.engine()->addImportPath("/home/svenni/Dropbox/projects/programming/qt3dadditions/build-flymodenavigator-Desktop_Qt_5_1_1_GCC_64bit-Debug/src/libs");
+#else
+    view.engine()->addImportPath("/repos/flymodenavigator-qt3d/build-flymodenavigator-Desktop_Qt_5_2_0_clang_64bit-Release/src/libs");
+#endif
+
     view.setSource(QUrl::fromLocalFile("qml/oculus/main.qml"));
 //    MouseMover mouseMover(&view);
 
