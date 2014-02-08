@@ -42,10 +42,6 @@ void MultiBillboard::updatePoints() {
 #define X_TYPE 7
 
 void MultiBillboard::drawItem(QGLPainter *painter) {
-    if(drawCalls < 10) { // TODO Fix this hack!
-        drawCalls++;
-        return;
-    }
     Timestep *timestep = m_mts0_io->currentTimestepObject;
     if(timestep == NULL) return;
 
@@ -53,11 +49,6 @@ void MultiBillboard::drawItem(QGLPainter *painter) {
     int numAtoms = timestep->positions.size();
     if(visibleAtomIndices.size() < numAtoms) {
         visibleAtomIndices.resize(numAtoms);
-    }
-
-    if(++drawCalls % 2) {
-        setFps(1000.0/elapsedTimer.elapsed());
-        elapsedTimer.restart();
     }
 
     const QMatrix4x4 &modelViewMatrix = painter->modelViewMatrix();
@@ -146,7 +137,7 @@ void MultiBillboard::drawItem(QGLPainter *painter) {
         center = QVector3D(timestep->positions[index][0],timestep->positions[index][1], timestep->positions[index][2]) - system_center;
 
         int atom_type = timestep->atom_types.at(index);
-        double size = atom_radii[atom_type]*2.0;
+        double size = atom_radii[atom_type]*1.3;
 
         v1 = center + size * aOffset;
         v2 = center + size * bOffset;

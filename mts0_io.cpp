@@ -105,8 +105,6 @@ Timestep::~Timestep() {
     h_matrix.clear();
 }
 
-// /projects/andershaf_nanoporous_sio2_compressed_pore/medium_silica_water/dump2
-
 Mts0_io::Mts0_io(QObject *parent) {
     step = 1;
     time_direction = 1;
@@ -117,11 +115,16 @@ Mts0_io::Mts0_io(QObject *parent) {
 
     // foldername_base = "/projects/andershaf_nanoporous_sio2_compressed_pore/small_silica_water/dump/";
     // foldername_base = "/projects/andershaf_nanoporous_sio2_compressed_pore/medium_silica_water/dump2";
-//    foldername_base = "/projects/andershaf_nanoporous_sio2_compressed_pore/pure_silica/dump/";
-    foldername_base = "/projects/andershaf_nanoporous_sio2_compressed_pore/silica_nacl_1_permille/dump/";
+
+    foldername_base = "/projects/andershaf_nanoporous_sio2_compressed_pore/visualization/states/";
+    foldername_base = "/projects/andershaf_nanoporous_sio2_compressed_pore/demo/states/02_cooled/dump";
+    // foldername_base = "/projects/andershaf_nanoporous_sio2_compressed_pore/pure_silica/dump/";
+
+
+    // foldername_base = "/projects/andershaf_nanoporous_sio2_compressed_pore/silica_nacl_1_permille/dump/";
     // foldername_base = "/home/svenni/scratch/mddata/dump";
 
-    max_timestep = 0;
+    max_timestep = 299;
     current_timestep = -1; // Next will be 0
     currentTimestepObject = NULL;
     if(preload) load_timesteps();
