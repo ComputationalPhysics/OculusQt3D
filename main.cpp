@@ -10,8 +10,10 @@
 #include <QQmlContext>
 #include <QQuickView>
 #include <QQmlEngine>
+#ifdef Q_OS_LINUX
 #include <X11/Xlib.h>
 #include <X11/X.h>
+#endif
 #include <QScreen>
 
 int main(int argc, char *argv[])
@@ -26,7 +28,7 @@ int main(int argc, char *argv[])
 
 
     QGuiApplication app(argc, argv);
-
+#ifdef Q_OS_LINUX
     Display* display = XOpenDisplay(NULL);
     XSynchronize(display, True);
     Window x11root = XDefaultRootWindow(display);
@@ -70,7 +72,7 @@ int main(int argc, char *argv[])
     }
 
     QRect virtualGeometry = app.screens().at(0)->virtualGeometry();
-
+#endif
     QQuickView view;
 #ifdef Q_OS_LINUX
     view.engine()->addImportPath("/home/compphys/sandbox/flymodenavigator-qt3d/build-flymodenavigator-Desktop_Qt_5_2_0_GCC_64bit-Release/src/libs");
@@ -79,14 +81,18 @@ int main(int argc, char *argv[])
 #endif
 
     view.setSource(QUrl::fromLocalFile("qml/oculus/main.qml"));
+
+#ifdef Q_OS_LINUX
     XReparentWindow(display, view.winId(), x11w, 0, 0);
 
     XMapWindow(display, x11w); // must be performed after XReparentWindow,
     // otherwise the window is not visible.
 
     view.setGeometry(virtualGeometry);
+#endif
     view.show();
 
+#ifdef Q_OS_LINUX
     XEvent xev;
     Atom wm_state = XInternAtom(display, "_NET_WM_STATE", False);
     Atom fullscreen = XInternAtom(display, "_NET_WM_STATE_FULLSCREEN", False);
@@ -116,5 +122,6 @@ int main(int argc, char *argv[])
 
     XSendEvent (display, DefaultRootWindow(display), False,
                 SubstructureRedirectMask | SubstructureNotifyMask, &xev2);
+#endif
     return app.exec();
 }

@@ -22,9 +22,9 @@ Rectangle {
         id: mts0_io
     }
 
-//    OculusReader {
-//        camera: viewportRoot.camera
-//    }
+    OculusReader {
+        camera: viewportRoot.camera
+    }
 
     Viewport {
         id: viewportRoot
