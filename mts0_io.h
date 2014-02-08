@@ -28,7 +28,7 @@ using namespace std;
 class Timestep {
 public:
   int nx, ny, nz;
-  static const double bohr = 0.5291772;
+  double bohr = 0.5291772;
   vector<vector<float> > positions;
   vector<int> atom_ids;
   vector<int> atom_types;
