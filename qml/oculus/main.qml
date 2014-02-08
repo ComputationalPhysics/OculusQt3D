@@ -23,6 +23,8 @@ Rectangle {
     }
 
     OculusReader {
+        id: oculusReader
+        enabled: true
         camera: viewportRoot.camera
     }
 
@@ -181,8 +183,13 @@ Rectangle {
     }
 
     Keys.onPressed:  {
-        if(event.key === Qt.Key_R) {
+        switch(event.key) {
+        case Qt.Key_R:
             multiSphere.showWater = !multiSphere.showWater
+            break
+        case Qt.Key_O:
+            oculusReader.enabled = !oculusReader.enabled
+            break
         }
     }
 
