@@ -15,8 +15,8 @@ Rectangle {
     property rect distortion: Qt.rect(1, 0.22, 0.24, 0.0)
     property real aspectRatio: width / height;
     property real fillScale: 1.8;
-    width: 3840
-    height: 2160
+    width: 1280
+    height: 720
 
     Mts0_io {
         id: mts0_io
@@ -24,7 +24,7 @@ Rectangle {
 
     OculusReader {
         id: oculusReader
-        enabled: true
+        enabled: false
         camera: viewportRoot.camera
     }
 
