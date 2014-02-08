@@ -12,13 +12,10 @@
 #include <QQuickView>
 #include <QQmlEngine>
 #include <QScreen>
-#include <X11/Xlib.h>
-#include <X11/X.h>
 
 int main(int argc, char *argv[])
 {
     OVR::System::Init();
-Window x11root;
     qmlRegisterType<FileIO>("FileIO", 1, 0, "FileIO");
     qmlRegisterType<StereoViewport>("StereoViewport", 1, 0, "StereoViewport");
     qmlRegisterType<OculusReader>("OculusReader", 1, 0, "OculusReader");
