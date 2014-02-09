@@ -41,7 +41,8 @@ SOURCES += main.cpp \
     fileio.cpp \
     oculusreader.cpp \
     mts0_io.cpp \
-    multibillboard.cpp
+    multibillboard.cpp \
+    oculusview.cpp
 
 # Installation path
 # target.path =
@@ -59,7 +60,8 @@ HEADERS += \
     fileio.h \
     oculusreader.h \
     mts0_io.h \
-    multibillboard.h
+    multibillboard.h \
+    oculusview.h
 #    /repos/flymodenavigator-qt3d/flymodenavigator-qt3d/mousemover.h
 
 copydata.commands = $(COPY_DIR) $$PWD/qml $$OUT_PWD

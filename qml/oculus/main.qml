@@ -15,16 +15,18 @@ Rectangle {
     property rect distortion: Qt.rect(1, 0.22, 0.24, 0.0)
     property real aspectRatio: width / height;
     property real fillScale: 1.8;
-    width: 1680
-    height: 1050
+    width: 1280
+    height: 720
 
     Mts0_io {
         id: mts0_io
     }
 
-//    OculusReader {
-//        camera: viewportRoot.camera
-//    }
+    OculusReader {
+        id: oculusReader
+        enabled: false
+        camera: viewportRoot.camera
+    }
 
     Viewport {
         id: viewportRoot
@@ -181,8 +183,13 @@ Rectangle {
     }
 
     Keys.onPressed:  {
-        if(event.key === Qt.Key_R) {
+        switch(event.key) {
+        case Qt.Key_R:
             multiSphere.showWater = !multiSphere.showWater
+            break
+        case Qt.Key_O:
+            oculusReader.enabled = !oculusReader.enabled
+            break
         }
     }
 
