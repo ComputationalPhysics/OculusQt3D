@@ -42,7 +42,7 @@ void main(void)
     vec3 toEye = vec3(0, 0, 1);
     vec3 delta = toEye - vertex.xyz;
 
-    float one_over_color_cutoff = 1.0/10000.0;
+    float one_over_color_cutoff = 0.0001;
     float dr2 = dot(delta,delta);
     float color_factor = max( (1.0-dr2*one_over_color_cutoff),0.3);
     // distance = min(distance, 20.0);

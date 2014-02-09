@@ -74,7 +74,7 @@ void MultiBillboard::drawItem(QGLPainter *painter) {
     QVector2D t3(1,1);
     QVector2D t4(0,1);
 
-    int color_list[7][3] = {{1,1,1},{230,230,0},{0,0,255},{255,255,255},{255,0,0},{9,92.0,0},{95,216,250}};
+    int color_list[7][3] = {{1,1,1},{230,230,0},{0,0,255},{255,255,255},{255,0,0},{9,92,0},{95,216,250}};
     double atom_radii[7] = {0, 1.11, 0.66, 0.35, 0.66, 1.86, 1.02};
 
     QGeometryData triangles;
