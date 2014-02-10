@@ -56,11 +56,14 @@ Rectangle {
             eyeSeparation: 0.03
         }
 
+        MDStateManager {
+            id: stateManager
+            onCurrentTimestepChanged: viewportRoot.update()
+        }
+
         MultiBillboard {
             id: multiSphere
-            dataSource: MDStateManager {
-                id: stateManager
-            }
+            dataSource: stateManager
 
             effect: Effect {
                 texture: "sphere2.png"
