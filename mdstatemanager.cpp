@@ -2,31 +2,30 @@
 #include "mdstate.h"
 #include <qvector3d.h>
 #include <fstream>
-
+using std::cout;
 #define BOHR 0.5291772
 
 MDStateManager::MDStateManager():
     m_currentTimestep(0),
     m_currentState(NULL),
-    m_numberOfProcessors(QVector3D(1,1,1)),
     m_systemSize(QVector3D(1,1,1))
 {
-
+    loadMts0("/projects/data/md/2014-02-10_philip/everytimestep/",10,QVector3D(5,5,5));
 }
 
 const QArray<QVector3D> &MDStateManager::getPositions() {
     if(m_currentState!=NULL) return m_currentState->getPositions();
-    else return QArray<QVector3D>();
+    else return tmpQVector3DArray;
 }
 
 const QArray<QColor4ub> &MDStateManager::getColors() {
     if(m_currentState!=NULL) return m_currentState->getColors();
-    else return QArray<QColor4ub>();
+    else return tmpQColor4ubArray;
 }
 
 const QArray<QSizeF> &MDStateManager::getSizes() {
     if(m_currentState!=NULL) return m_currentState->getSizes();
-    else return QArray<QSizeF>();
+    else return tmpQSizeFArray;
 }
 
 void MDStateManager::readData(ifstream *file, void *value) {
@@ -97,16 +96,16 @@ void MDStateManager::readMts(char *filename, QArray<char*> &atomTypesThisCPU, QA
     delete file;
 }
 
-MDState *MDStateManager::loadAtoms(string mts0_directory) {
+MDState *MDStateManager::loadTimestepMts0(string mts0_directory, QVector3D numberOfCPUs) {
     MDState *state = new MDState();
 
     QArray<QVector3D> positionsThisCPU;
     QArray<char*> atomTypesThisCPU;
     QArray<int> atomIdsThisCPU;
 
-    int nx = m_numberOfProcessors.x();
-    int ny = m_numberOfProcessors.y();
-    int nz = m_numberOfProcessors.z();
+    int nx = numberOfCPUs.x();
+    int ny = numberOfCPUs.y();
+    int nz = numberOfCPUs.z();
 
     int numCPUs = nx*ny*nz;
     QVector3D nodeVectorIndex;
@@ -150,12 +149,27 @@ MDState *MDStateManager::loadAtoms(string mts0_directory) {
     return state;
 }
 
-void MDStateManager::loadMts0(string foldername) {
-
+void MDStateManager::loadMts0(string foldername, int numberOfTimesteps, QVector3D numberOfCPUs) {
+    reset();
+    cout << "Will read " << numberOfTimesteps << " timesteps mts0 from " << foldername.c_str() << endl;
+    char mts0Directory[1024];
+    for(int timestep=0; timestep<numberOfTimesteps; timestep++) {
+        sprintf(mts0Directory,"%s/%06d/mts0/",foldername.c_str(),timestep);
+        MDState *state = this->loadTimestepMts0(mts0Directory, numberOfCPUs);
+        cout << "Loaded " << state->getNumberOfAtoms() << " in timestep " << timestep+1 << " / " << numberOfTimesteps << endl;
+        m_states.push_back(state);
+    }
 }
 
+void MDStateManager::reset() {
+    m_states.clear();
+    m_currentState = NULL;
+    m_currentTimestep = 0;
+}
 
 bool MDStateManager::loadXyz(string filename) {
+    reset();
+
     FILE *filePointer;
     filePointer = fopen(filename.c_str(), "rb");
     if (!filePointer) {

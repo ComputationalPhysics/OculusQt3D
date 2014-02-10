@@ -16,6 +16,8 @@
 
 int main(int argc, char *argv[])
 {
+    MDStateManager manager;
+
     OVR::System::Init();
     qmlRegisterType<FileIO>("FileIO", 1, 0, "FileIO");
     qmlRegisterType<StereoViewport>("StereoViewport", 1, 0, "StereoViewport");
