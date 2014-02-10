@@ -16,6 +16,7 @@ private:
     QMap<std::string,QSizeF> sizeMap;
 public:
     MDState();
+    ~MDState();
     const QArray<QVector3D> &getPositions();
     const QArray<QColor4ub> &getColors();
     const QArray<QSizeF> &getSizes();

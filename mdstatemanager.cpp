@@ -10,7 +10,8 @@ MDStateManager::MDStateManager():
     m_timeDirection(1),
     m_systemSize(QVector3D(1,1,1))
 {
-    loadMts0("/home/compphys/Downloads/dump",10,QVector3D(2,2,2));
+    loadMts0("/projects/data/md/2014-02-10_philip/every10th",10,QVector3D(5,5,5));
+
     timer.setInterval(16);
     connect(&timer, SIGNAL(timeout()),this,SLOT(updateNextTimestep()));
     timer.start();
@@ -184,6 +185,11 @@ void MDStateManager::loadMts0(string foldername, int numberOfTimesteps, QVector3
 }
 
 void MDStateManager::reset() {
+    for(int i=0; i<m_states.size(); i++) {
+        // Free memory
+        delete m_states[i];
+    }
+
     m_states.clear();
     m_currentTimestep = 0;
 }
