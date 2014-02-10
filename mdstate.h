@@ -3,7 +3,7 @@
 #include <QVector3D>
 #include <QArray>
 #include <QColor4ub>
-#include <QSizeF>
+#include <QVector2D>
 #include <QMap>
 
 class MDState
@@ -11,14 +11,14 @@ class MDState
 private:
     QArray<QVector3D> m_positions;
     QArray<QColor4ub> m_colors;
-    QArray<QSizeF > m_sizes;
+    QArray<QVector2D > m_sizes;
     QMap<std::string,QColor4ub> colorMap;
-    QMap<std::string,QSizeF> sizeMap;
+    QMap<std::string,QVector2D> sizeMap;
 public:
     MDState();
     const QArray<QVector3D> &getPositions();
     const QArray<QColor4ub> &getColors();
-    const QArray<QSizeF> &getSizes();
+    const QArray<QVector2D> &getSizes();
     void addAtom(QVector3D positions, char *atomType);
     void addAtoms(QArray<QVector3D> positions, QArray<char *>atomTypes);
     int getNumberOfAtoms();

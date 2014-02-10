@@ -26,8 +26,8 @@ const QArray<QColor4ub> &MDStateManager::getColors() {
     return m_states.at(m_currentTimestep)->getColors();
 }
 
-const QArray<QSizeF> &MDStateManager::getSizes() {
-    if(m_states.size() == 0) return tmpQSizeFArray;
+const QArray<QVector2D> &MDStateManager::getSizes() {
+    if(m_states.size() == 0) return tmpQVector2DArray;
     return m_states.at(m_currentTimestep)->getSizes();
 }
 

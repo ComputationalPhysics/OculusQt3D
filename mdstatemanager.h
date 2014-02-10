@@ -30,7 +30,7 @@ protected:
     QVector3D m_systemSize;
     QArray<QColor4ub> tmpQColor4ubArray;
     QArray<QVector3D> tmpQVector3DArray;
-    QArray<QSizeF> tmpQSizeFArray;
+    QArray<QVector2D> tmpQVector2DArray;
     QTimer timer;
 
 public:
@@ -41,7 +41,7 @@ public:
 
     virtual const QArray<QVector3D> &getPositions();
     virtual const QArray<QColor4ub> &getColors();
-    virtual const QArray<QSizeF > &getSizes();
+    virtual const QArray<QVector2D > &getSizes();
 
     int playBackSpeed() const
     {
