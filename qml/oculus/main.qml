@@ -5,8 +5,8 @@ import StereoViewport 1.0
 import FileIO 1.0
 import OculusReader 1.0
 import Mts0_io 1.0
-import MultiBillboard 1.0
-import FlyModeNavigator 1.0
+import CompPhys.MultiBillboard 1.0
+import CompPhys.FlyModeNavigator 1.0
 //import "../../../../flymodenavigator-qt3d/flymodenavigator-qt3d/qml/flymodenavigator"
 
 Rectangle {
@@ -53,11 +53,9 @@ Rectangle {
 
         MultiBillboard {
             id: multiSphere
-            camera: camera
             cullFaces: Item3D.CullBackFaces
-            sortPoints: Item3D.BackToFront
 
-            mts0_io: mts0_io
+            dataSource: mts0_io
 
             effect: ShaderProgram {
                 texture: "sphere2.png"

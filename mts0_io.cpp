@@ -114,11 +114,11 @@ Mts0_io::Mts0_io(QObject *parent) {
     preload = true;
 
     // foldername_base = "/projects/andershaf_nanoporous_sio2_compressed_pore/small_silica_water/dump/";
-    foldername_base = "/projects/andershaf_nanoporous_sio2_compressed_pore/silica_nacl_1_permille/dump/";
+//    foldername_base = "/projects/andershaf_nanoporous_sio2_compressed_pore/silica_nacl_1_permille/dump/";
 //    foldername_base = "/projects/andershaf_nanoporous_sio2_compressed_pore/pure_silica/dump/";
     // foldername_base = "/home/compphys/Downloads/dump/";
 
-    // foldername_base = "/home/svenni/scratch/mddata/dump";
+     foldername_base = "/home/svenni/scratch/mddata/dump";
 
     max_timestep = 99;
     current_timestep = -1; // Next will be 0
