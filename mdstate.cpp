@@ -28,6 +28,7 @@ MDState::MDState():
 
 MDState::~MDState() {
     m_positions.clear();
+    m_atomTypes.clear();
     m_colors.clear();
     m_sizes.clear();
     colorMap.clear();
@@ -42,11 +43,12 @@ void MDState::reserveMemory(int numberOfAtoms) {
     m_positions.reserve(numberOfAtoms);
     m_colors.reserve(numberOfAtoms);
     m_sizes.reserve(numberOfAtoms);
+    m_atomTypes.reserve(numberOfAtoms);
 }
 
 void MDState::addAtom(QVector3D positions, char *atomType) {
     m_positions.push_back(positions);
-
+    m_atomTypes.push_back(atomType);
     QMap<std::string, QColor4ub>::const_iterator colorIterator = colorMap.find(atomType);
     if(colorIterator != colorMap.end()) m_colors.push_back(colorIterator.value());
     else m_colors.push_back(QColor4ub(255,0,0));
