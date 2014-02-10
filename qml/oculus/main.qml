@@ -230,7 +230,7 @@ Rectangle {
         } else {
             switch(event.key) {
             case Qt.Key_R:
-                multiSphere.showWater = !multiSphere.showWater
+                stateManager.showWater = !stateManager.showWater
                 break
             case Qt.Key_O:
                 oculusReader.enabled = !oculusReader.enabled

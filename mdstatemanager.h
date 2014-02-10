@@ -4,6 +4,8 @@
 #include <string>
 #include <compphys/multibillboard/datasource.h>
 #include <Qt3DQuick>
+#include "mdstate.h"
+
 using std::ifstream;
 using std::string;
 using std::cerr;
@@ -15,10 +17,13 @@ class MDStateManager : public DataSource
     Q_OBJECT
     Q_PROPERTY(int playBackSpeed READ playBackSpeed WRITE setPlayBackSpeed NOTIFY playBackSpeedChanged)
     Q_PROPERTY(int currentTimestep READ currentTimestep WRITE setCurrentTimestep NOTIFY currentTimestepChanged)
+    Q_PROPERTY(bool showWater READ showWater WRITE setShowWater NOTIFY showWaterChanged)
 
     int m_playBackSpeed;
     int m_currentTimestep;
     int m_timeDirection;
+
+    bool m_showWater;
 
 protected:
     void readData(ifstream *file, void *value);
@@ -53,6 +58,11 @@ public:
         return m_currentTimestep;
     }
 
+    bool showWater() const
+    {
+        return m_showWater;
+    }
+
 public slots:
     void updateNextTimestep();
     void setPlayBackSpeed(int arg)
@@ -70,9 +80,21 @@ public slots:
         }
     }
 
+    void setShowWater(bool arg)
+    {
+        if (m_showWater != arg) {
+            m_showWater = arg;
+            // emit showWaterChanged(arg);
+            for(int i=0; i<getNumberOfTimesteps(); i++) {
+                m_states.at(i)->setShowWater(m_showWater);
+            }
+        }
+    }
+
 signals:
     void playBackSpeedChanged(int arg);
     void currentTimestepChanged(int arg);
+    void showWaterChanged(bool arg);
 };
 
 #endif // MDSTATEMANAGER_H

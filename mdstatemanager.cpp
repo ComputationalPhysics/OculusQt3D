@@ -1,5 +1,4 @@
 #include "mdstatemanager.h"
-#include "mdstate.h"
 #include <qvector3d.h>
 #include <fstream>
 using std::cout;
@@ -9,6 +8,7 @@ MDStateManager::MDStateManager():
     m_currentTimestep(0),
     m_timeDirection(1),
     m_playBackSpeed(1),
+    m_showWater(1),
     m_systemSize(QVector3D(1,1,1))
 {
     timer.setInterval(16);
@@ -193,6 +193,7 @@ void MDStateManager::reset() {
 
     m_states.clear();
     m_currentTimestep = 0;
+    m_showWater = true;
 }
 
 bool MDStateManager::loadXyz(QString filename) {
