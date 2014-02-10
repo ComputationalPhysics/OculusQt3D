@@ -16,16 +16,20 @@
 
 int main(int argc, char *argv[])
 {
-    MDStateManager manager;
 
     OVR::System::Init();
     qmlRegisterType<FileIO>("FileIO", 1, 0, "FileIO");
     qmlRegisterType<StereoViewport>("StereoViewport", 1, 0, "StereoViewport");
     qmlRegisterType<OculusReader>("OculusReader", 1, 0, "OculusReader");
+    qmlRegisterType<MDStateManager>("MDStateManager", 1, 0, "MDStateManager");
 
     QGuiApplication app(argc, argv);
 
+    QSurfaceFormat format;
+    format.setMajorVersion(3);
+    format.setMinorVersion(3);
     OculusView view;
+    view.setFormat(format);
 #ifdef Q_OS_MACX
     view.addImportPath(".");
 #else

@@ -3,8 +3,9 @@ import Qt3D 2.0
 import Qt3D.Shapes 2.0
 import StereoViewport 1.0
 import OculusReader 1.0
+import MDStateManager 1.0
 
-// import CompPhys.MultiBillboard 1.0
+import CompPhys.MultiBillboard 1.0
 import CompPhys.FlyModeNavigator 1.0
 
 Rectangle {
@@ -21,8 +22,8 @@ Rectangle {
     StereoViewport {
         id: viewportRoot
         fillColor: "black"
-//        width: rectRoot.width * 1.8
-//        height: rectRoot.height * 1.8 // TODO: Check real ratio
+        //        width: rectRoot.width * 1.8
+        //        height: rectRoot.height * 1.8 // TODO: Check real ratio
         width: 1280
         height: 720
         stereoType: StereoViewport.LeftRight
@@ -43,9 +44,11 @@ Rectangle {
 
         MultiBillboard {
             id: multiSphere
-            // dataSource: exampleDataSource
+            dataSource: MDStateManager {
+            }
+
             effect: Effect {
-                texture: "sphere2-green.png"
+                texture: "sphere2.png"
                 blending: true
                 useLighting: true
             }

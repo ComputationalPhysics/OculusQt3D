@@ -10,7 +10,7 @@ MDStateManager::MDStateManager():
     m_currentState(NULL),
     m_systemSize(QVector3D(1,1,1))
 {
-    loadMts0("/projects/data/md/2014-02-10_philip/everytimestep/",10,QVector3D(5,5,5));
+    loadMts0("/home/compphys/Downloads/dump",10,QVector3D(2,2,2));
 }
 
 const QArray<QVector3D> &MDStateManager::getPositions() {
@@ -159,6 +159,7 @@ void MDStateManager::loadMts0(string foldername, int numberOfTimesteps, QVector3
         cout << "Loaded " << state->getNumberOfAtoms() << " in timestep " << timestep+1 << " / " << numberOfTimesteps << endl;
         m_states.push_back(state);
     }
+    m_currentState = m_states.at(0);
 }
 
 void MDStateManager::reset() {
