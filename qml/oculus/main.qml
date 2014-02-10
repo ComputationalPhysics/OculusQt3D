@@ -14,6 +14,7 @@ import CompPhys.FlyModeNavigator 1.0
 
 Rectangle {
     id: rectRoot
+    property real pixelScale: 1.8
     width: 1920
     height: 1080
 
@@ -36,9 +37,9 @@ Rectangle {
         fillColor: "black"
         //        width: rectRoot.width * 1.8
         //        height: rectRoot.height * 1.8 // TODO: Check real ratio
-        width: 1920 / (1920 + 1280) * parent.width
-        height: parent.height
-        stereoType: StereoViewport.LeftRight
+        width: 1920 / (1920 + 1280) * parent.width * pixelScale
+        height: parent.height * pixelScale
+        stereoType: StereoViewport.StretchedLeftRight
         fovzoom: false
         light: Light {
             ambientColor: Qt.rgba(1,1,1,1)
@@ -71,6 +72,12 @@ Rectangle {
                 useLighting: true
             }
         }
+    }
+
+    ShaderEffectSource {
+        sourceItem: viewportRoot
+        width: viewportRoot.width / pixelScale
+        height: viewportRoot.height / pixelScale
     }
 
     OculusView {

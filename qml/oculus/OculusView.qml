@@ -26,7 +26,7 @@ Rectangle {
 
         hideSource: hideViewport
         sourceItem: viewport
-        sourceRect: Qt.rect(0, 0, viewport.width / 2, viewport.height)
+        sourceRect: Qt.rect(0, 0, viewport.width / 4, viewport.height)
     }
 
     ShaderEffectSource {
@@ -41,7 +41,7 @@ Rectangle {
 
         hideSource: hideViewport
         sourceItem: viewport
-        sourceRect: Qt.rect(viewport.width / 2, 0, viewport.width / 2, viewport.height)
+        sourceRect: Qt.rect(viewport.width / 2, 0, viewport.width / 4, viewport.height)
     }
 
     Item {
