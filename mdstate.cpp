@@ -4,25 +4,25 @@
 MDState::MDState()
 {
     colorMap.insert("Si", QColor4ub(230,230,0));
-    sizeMap.insert("Si",QSizeF(1.11, 1.11));
+    sizeMap.insert("Si",QVector2D(1.11, 1.11));
 
     colorMap.insert("A", QColor4ub(0,0,255));
-    sizeMap.insert("A",QSizeF(0.66, 0.66));
+    sizeMap.insert("A",QVector2D(0.66, 0.66));
 
     colorMap.insert("H", QColor4ub(255,255,255));
-    sizeMap.insert("H",QSizeF(0.35, 0.35));
+    sizeMap.insert("H",QVector2D(0.35, 0.35));
 
     colorMap.insert("O", QColor4ub(255,0,0));
-    sizeMap.insert("O",QSizeF(0.66, 0.66));
+    sizeMap.insert("O",QVector2D(0.66, 0.66));
 
     colorMap.insert("Na", QColor4ub(9,92,0));
-    sizeMap.insert("Na",QSizeF(1.86, 1.86));
+    sizeMap.insert("Na",QVector2D(1.86, 1.86));
 
     colorMap.insert("Cl", QColor4ub(95,216,250));
-    sizeMap.insert("Cl",QSizeF(1.02, 1.02));
+    sizeMap.insert("Cl",QVector2D(1.02, 1.02));
 
     colorMap.insert("N", QColor4ub(255,0,0));
-    sizeMap.insert("N",QSizeF(0.66, 0.66));
+    sizeMap.insert("N",QVector2D(0.66, 0.66));
 }
 
 MDState::~MDState() {
@@ -50,9 +50,9 @@ void MDState::addAtom(QVector3D positions, char *atomType) {
     if(colorIterator != colorMap.end()) m_colors.push_back(colorIterator.value());
     else m_colors.push_back(QColor4ub(255,0,0));
 
-    QMap<std::string, QSizeF>::const_iterator sizeIterator = sizeMap.find(atomType);
+    QMap<std::string, QVector2D>::const_iterator sizeIterator = sizeMap.find(atomType);
     if(sizeIterator != sizeMap.end()) m_sizes.push_back(sizeIterator.value());
-    else m_sizes.push_back(QSizeF(1.0,1.0));
+    else m_sizes.push_back(QVector2D(1.0,1.0));
 }
 
 void MDState::addAtoms(QArray<QVector3D> positions, QArray<char *>atomTypes) {
@@ -72,6 +72,6 @@ const QArray<QColor4ub> &MDState::getColors() {
     return m_colors;
 }
 
-const QArray<QSizeF> &MDState::getSizes() {
+const QArray<QVector2D> &MDState::getSizes() {
     return m_sizes;
 }

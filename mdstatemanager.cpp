@@ -10,8 +10,6 @@ MDStateManager::MDStateManager():
     m_timeDirection(1),
     m_systemSize(QVector3D(1,1,1))
 {
-    loadMts0("/projects/data/md/2014-02-10_philip/every10th",10,QVector3D(5,5,5));
-
     timer.setInterval(16);
     connect(&timer, SIGNAL(timeout()),this,SLOT(updateNextTimestep()));
     timer.start();
@@ -27,8 +25,8 @@ const QArray<QColor4ub> &MDStateManager::getColors() {
     return m_states.at(m_currentTimestep)->getColors();
 }
 
-const QArray<QSizeF> &MDStateManager::getSizes() {
-    if(m_states.size() == 0) return tmpQSizeFArray;
+const QArray<QVector2D> &MDStateManager::getSizes() {
+    if(m_states.size() == 0) return tmpQVector2DArray;
     return m_states.at(m_currentTimestep)->getSizes();
 }
 
@@ -172,12 +170,12 @@ MDState *MDStateManager::loadTimestepMts0(string mts0_directory, QVector3D numbe
     return state;
 }
 
-void MDStateManager::loadMts0(string foldername, int numberOfTimesteps, QVector3D numberOfCPUs) {
+void MDStateManager::loadMts0(QString foldername, int numberOfTimesteps, QVector3D numberOfCPUs) {
     reset();
-    cout << "Will read " << numberOfTimesteps << " timesteps mts0 from " << foldername.c_str() << endl;
+    cout << "Will read " << numberOfTimesteps << " timesteps mts0 from " << foldername.toStdString().c_str() << endl;
     char mts0Directory[1024];
     for(int timestep=0; timestep<numberOfTimesteps; timestep++) {
-        sprintf(mts0Directory,"%s/%06d/mts0/",foldername.c_str(),timestep);
+        sprintf(mts0Directory,"%s/%06d/mts0/",foldername.toStdString().c_str(),timestep);
         MDState *state = this->loadTimestepMts0(mts0Directory, numberOfCPUs);
         cout << "Loaded " << state->getNumberOfAtoms() << " in timestep " << timestep+1 << " / " << numberOfTimesteps << endl;
         m_states.push_back(state);
@@ -194,13 +192,13 @@ void MDStateManager::reset() {
     m_currentTimestep = 0;
 }
 
-bool MDStateManager::loadXyz(string filename) {
+bool MDStateManager::loadXyz(QString filename) {
     reset();
 
     FILE *filePointer;
-    filePointer = fopen(filename.c_str(), "rb");
+    filePointer = fopen(filename.toStdString().c_str(), "rb");
     if (!filePointer) {
-        cerr << "Could not open file " << filename << endl;
+        cerr << "Could not open file " << filename.toStdString() << endl;
         return true;
     }
 
@@ -229,10 +227,10 @@ bool MDStateManager::loadXyz(string filename) {
             j = sscanf(fileBuffer, "%s %f %f %f", atomName, &x, &y, &z);
 
             if (k == NULL) {
-                cerr << "Error reading file " << filename << endl;
+                cerr << "Error reading file " << filename.toStdString() << endl;
                 return false;
             } else if (j < 4) {
-                fprintf(stderr, "xyz timestep) missing type or coordinate(s) in file '%s' for atom '%d'\n",filename.c_str(),i+1);
+                fprintf(stderr, "xyz timestep) missing type or coordinate(s) in file '%s' for atom '%d'\n",filename.toStdString().c_str(),i+1);
                 return false;
             } else if (j >= 4) {
                 state->addAtom(QVector3D(x,y,z), atomName);
