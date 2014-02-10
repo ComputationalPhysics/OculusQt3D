@@ -56,11 +56,14 @@ Rectangle {
             eyeSeparation: 0.03
         }
 
+        MDStateManager {
+            id: stateManager
+            onCurrentTimestepChanged: viewportRoot.update()
+        }
+
         MultiBillboard {
             id: multiSphere
-            dataSource: MDStateManager {
-                id: stateManager
-            }
+            dataSource: stateManager
 
             effect: Effect {
                 texture: "sphere2.png"
@@ -230,7 +233,7 @@ Rectangle {
         } else {
             switch(event.key) {
             case Qt.Key_R:
-                multiSphere.showWater = !multiSphere.showWater
+                stateManager.showWater = !stateManager.showWater
                 break
             case Qt.Key_O:
                 oculusReader.enabled = !oculusReader.enabled

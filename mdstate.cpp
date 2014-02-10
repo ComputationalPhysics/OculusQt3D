@@ -1,7 +1,8 @@
 #include "mdstate.h"
 #include <iostream>
-
-MDState::MDState()
+// double color_list[7][3] = {{1,1,1},{230.0/255,230.0/255,0},{0,0,1},{1.0,1.0,1.0},{1,0,0},{9.0/255,92.0/255,0},{95.0/255,216.0/255,250.0/255}};
+MDState::MDState():
+    m_showWater(1)
 {
     colorMap.insert("Si", QColor4ub(230,230,0));
     sizeMap.insert("Si",QVector2D(1.11, 1.11));
