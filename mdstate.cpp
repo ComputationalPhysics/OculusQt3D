@@ -25,6 +25,14 @@ MDState::MDState()
     sizeMap.insert("N",QVector2D(0.66, 0.66));
 }
 
+MDState::~MDState() {
+    m_positions.clear();
+    m_colors.clear();
+    m_sizes.clear();
+    colorMap.clear();
+    sizeMap.clear();
+}
+
 int MDState::getNumberOfAtoms() {
     return m_positions.size();
 }

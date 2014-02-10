@@ -183,6 +183,11 @@ void MDStateManager::loadMts0(QString foldername, int numberOfTimesteps, QVector
 }
 
 void MDStateManager::reset() {
+    for(int i=0; i<m_states.size(); i++) {
+        // Free memory
+        delete m_states[i];
+    }
+
     m_states.clear();
     m_currentTimestep = 0;
 }
