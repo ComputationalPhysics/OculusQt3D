@@ -29,7 +29,9 @@ Rectangle {
         stereoType: StereoViewport.LeftRight
         fovzoom: false
         light: Light {
-            position: Qt.vector3d(2.0, 1.0, 3.0)
+            ambientColor: Qt.rgba(1,1,1,1)
+            position: camera.eye
+            quadraticAttenuation: 0.0001
         }
 
         camera: Camera {
