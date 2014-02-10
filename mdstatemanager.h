@@ -35,8 +35,8 @@ protected:
 
 public:
     MDStateManager();
-    void loadMts0(string foldername, int numberOfTimesteps, QVector3D numberOfCPUs);
-    bool loadXyz(string filename);
+    Q_INVOKABLE void loadMts0(QString foldername, int numberOfTimesteps, QVector3D numberOfCPUs);
+    Q_INVOKABLE bool loadXyz(QString filename);
     int getNumberOfTimesteps();
 
     virtual const QArray<QVector3D> &getPositions();
