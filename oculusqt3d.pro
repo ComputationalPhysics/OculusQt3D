@@ -3,14 +3,20 @@ QT += 3dquick
 # Add more folders to ship with the application, here
 folder_01.source = qml/oculus
 folder_01.target = qml
-DEPLOYMENTFOLDERS = folder_01
-mac: CONFIG -= app_bundle
+folder_02.source = qml/multibillboard
+folder_02.target = qml
+
+DEPLOYMENTFOLDERS = folder_01 folder_02
+#mac: CONFIG -= app_bundle
 
 QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.9
 
 # Additional import path used to resolve QML modules in Creator's code model
-QML_IMPORT_PATH =
-INCLUDEPATH += /Users/anderhaf/Downloads/OculusSDK/LibOVR/Include
+# QML_IMPORT_PATH = /repos/multibillboard/build-multibillboard-Desktop_Qt_5_2_0_clang_64bit-Release/src/libs
+mac: INCLUDEPATH += /Users/anderhaf/Downloads/OculusSDK/LibOVR/Include
+mac: INCLUDEPATH += /repos/multibillboard/multibillboard/src/libs
+mac: INCLUDEPATH += /repos/multibillboard/build-multibillboard-Desktop_Qt_5_2_0_clang_64bit-Release/src/libs/MultiBillboard/include
+
 #INCLUDEPATH += /repos/flymodenavigator-qt3d/flymodenavigator-qt3d/
 DEPENDPATH += /Users/anderhaf/Downloads/OculusSDK/LibOVR/Include
 mac: LIBS += -framework CoreFoundation
@@ -40,9 +46,10 @@ SOURCES += main.cpp \
     qgldrawbuffersurface.cpp \
     fileio.cpp \
     oculusreader.cpp \
-    mts0_io.cpp \
-    multibillboard.cpp \
-    oculusview.cpp
+    oculusview.cpp \
+    mdstatemanager.cpp \
+    mdstate.cpp \
+    exampledatasource.cpp
 
 # Installation path
 # target.path =
@@ -59,15 +66,28 @@ HEADERS += \
     qgldrawbuffersurface_p.h \
     fileio.h \
     oculusreader.h \
-    mts0_io.h \
-    multibillboard.h \
-    oculusview.h
+    oculusview.h \
+    exampledatasource.h \
+    mdstatemanager.h \
+    mdstate.h
 #    /repos/flymodenavigator-qt3d/flymodenavigator-qt3d/mousemover.h
+LIBS += -L/repos/multibillboard/build-multibillboard-Desktop_Qt_5_2_0_clang_64bit-Release/src/libs/MultiBillboard/ -lMultiBillboard
 
-copydata.commands = $(COPY_DIR) $$PWD/qml $$OUT_PWD
-first.depends = $(first) copydata
-export(first.depends)
-export(copydata.commands)
-QMAKE_EXTRA_TARGETS += first copydata
+macx {
+    LIBS_TARGET_DIR = $$OUT_PWD/$${TARGET}.app/Contents/Resources/
+    LIBS_APP_DIR = $$OUT_PWD/$${TARGET}.app/Contents/MacOS/
+
+    copydata.commands = $(COPY_DIR) $$PWD/qml /repos/multibillboard/build-multibillboard-Desktop_Qt_5_2_0_clang_64bit-Release/src/libs/MultiBillboard/ $$LIBS_TARGET_DIR && $(COPY_DIR) /repos/multibillboard/build-multibillboard-Desktop_Qt_5_2_0_clang_64bit-Release/src/libs/MultiBillboard/libMultiBillboard.dylib $$LIBS_APP_DIR
+    first.depends = $(first) copydeploymentfolders copydata
+    export(first.depends)
+    export(copydata.commands)
+    QMAKE_EXTRA_TARGETS += first copydata
+}
+
+#copydata.commands = $(COPY_DIR) $$PWD/qml $$OUT_PWD
+#first.depends = $(first) copydata
+#export(first.depends)
+#export(copydata.commands)
+#QMAKE_EXTRA_TARGETS += first copydata
 
 QMAKE_CXXFLAGS += -std=c++0x

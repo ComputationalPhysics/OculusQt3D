@@ -4,10 +4,10 @@ import Qt3D.Shapes 2.0
 import StereoViewport 1.0
 import FileIO 1.0
 import OculusReader 1.0
-import Mts0_io 1.0
 import MultiBillboard 1.0
 import FlyModeNavigator 1.0
-//import "../../../../flymodenavigator-qt3d/flymodenavigator-qt3d/qml/flymodenavigator"
+import ExampleDataSource 1.0
+// import MDStateManager 1.0
 
 Rectangle {
     id: rectRoot
@@ -17,10 +17,6 @@ Rectangle {
     property real fillScale: 1.8;
     width: 1280
     height: 720
-
-    Mts0_io {
-        id: mts0_io
-    }
 
     OculusReader {
         id: oculusReader
@@ -51,30 +47,32 @@ Rectangle {
 //            eyeSeparation: 0.03
         }
 
+        ExampleDataSource {
+            id: exampleDataSource
+            numPointsPerDimension: 70
+        }
+
         MultiBillboard {
             id: multiSphere
-            camera: camera
-            cullFaces: Item3D.CullBackFaces
-            sortPoints: Item3D.BackToFront
+            // dataSource: exampleDataSource
+    //        cullFaces: Item3D.CullBackFaces
+    //        sortPoints: Item3D.BackToFront
 
-            mts0_io: mts0_io
-
-            effect: ShaderProgram {
-                texture: "sphere2.png"
-
-                vertexShader: billboardsVertexShader.read()
-                fragmentShader: billboardsFragmentShader.read()
-            }
-        }
-
-        // TODO Fix bug in MolecularDynamics class and remove this Sphere
-        Sphere {
-            x: -1000
-            radius: 2.0
             effect: Effect {
-                color: "blue"
+                texture: "sphere2-green.png"
+                blending: true
+                useLighting: true
             }
         }
+
+//        // TODO Fix bug in MolecularDynamics class and remove this Sphere
+//        Sphere {
+//            x: -1000
+//            radius: 2.0
+//            effect: Effect {
+//                color: "blue"
+//            }
+//        }
     }
 
     FileIO {
