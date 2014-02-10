@@ -3,10 +3,8 @@ QT += 3dquick
 # Add more folders to ship with the application, here
 folder_01.source = qml/oculus
 folder_01.target = qml
-folder_02.source = qml/multibillboard
-folder_02.target = qml
 
-DEPLOYMENTFOLDERS = folder_01 folder_02
+DEPLOYMENTFOLDERS = folder_01
 #mac: CONFIG -= app_bundle
 
 QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.9
