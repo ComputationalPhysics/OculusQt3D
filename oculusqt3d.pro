@@ -28,6 +28,8 @@ linux: LIBS += -lX11
 linux: LIBS += -lXinerama
 linux: LIBS += -ludev
 
+LIBS += -lMultiBillboard
+
 
 # If your application uses the Qt Mobility libraries, uncomment the following
 # lines and add the respective components to the MOBILITY variable.
