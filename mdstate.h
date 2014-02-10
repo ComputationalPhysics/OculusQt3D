@@ -15,7 +15,8 @@ class MDState : public QObject
 private:
     QArray<QVector3D> m_positions;
     QArray<QColor4ub> m_colors;
-    QArray<QVector2D > m_sizes;
+    QArray<QVector2D> m_sizes;
+    QArray<char*> m_atomTypes;
     QMap<std::string,QColor4ub> colorMap;
     QMap<std::string,QVector2D> sizeMap;
     bool m_showWater;
@@ -41,7 +42,9 @@ public slots:
             m_showWater = arg;
             // emit showWaterChanged(arg);
             for(int i=0; i<getNumberOfAtoms(); i++) {
-                m_colors[i].setAlphaF(m_showWater);
+                if(strcmp(m_atomTypes[i],"H") || strcmp(m_atomTypes[i],"O")) {
+                    m_colors[i].setAlphaF(m_showWater);
+                }
             }
         }
     }
