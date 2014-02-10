@@ -48,7 +48,7 @@ Rectangle {
 
         camera: Camera {
             id: camera
-            nearPlane: 2.0
+            nearPlane: 5.0
             farPlane: 500
             fieldOfView: 60
             center: Qt.vector3d(1,0,0)
@@ -243,13 +243,13 @@ Rectangle {
     }
 
     Text {
-        text: "FPS: "+multiSphere.fps.toFixed(2)
+        text: "FPS: "+multiSphere.fps
         color: "white"
     }
 
     Text {
         y: 20
-        text: "Visible atoms: "+multiSphere.visibleAtoms
+        text: "Visible atoms: "+stateManager.numberOfAtoms
         color: "white"
     }
 }

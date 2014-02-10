@@ -18,12 +18,15 @@ class MDStateManager : public DataSource
     Q_PROPERTY(int playBackSpeed READ playBackSpeed WRITE setPlayBackSpeed NOTIFY playBackSpeedChanged)
     Q_PROPERTY(int currentTimestep READ currentTimestep WRITE setCurrentTimestep NOTIFY currentTimestepChanged)
     Q_PROPERTY(bool showWater READ showWater WRITE setShowWater NOTIFY showWaterChanged)
+    Q_PROPERTY(int numberOfAtoms READ numberOfAtoms WRITE setNumberOfAtoms NOTIFY numberOfAtomsChanged)
 
     int m_playBackSpeed;
     int m_currentTimestep;
     int m_timeDirection;
 
     bool m_showWater;
+
+    int m_numberOfAtoms;
 
 protected:
     void readData(ifstream *file, void *value);
@@ -63,6 +66,11 @@ public:
         return m_showWater;
     }
 
+    int numberOfAtoms() const
+    {
+        return m_numberOfAtoms;
+    }
+
 public slots:
     void updateNextTimestep();
     void setPlayBackSpeed(int arg)
@@ -91,10 +99,19 @@ public slots:
         }
     }
 
+    void setNumberOfAtoms(int arg)
+    {
+        if (m_numberOfAtoms != arg) {
+            m_numberOfAtoms = arg;
+            emit numberOfAtomsChanged(arg);
+        }
+    }
+
 signals:
     void playBackSpeedChanged(int arg);
     void currentTimestepChanged(int arg);
     void showWaterChanged(bool arg);
+    void numberOfAtomsChanged(int arg);
 };
 
 #endif // MDSTATEMANAGER_H

@@ -9,6 +9,7 @@ MDStateManager::MDStateManager():
     m_timeDirection(1),
     m_playBackSpeed(1),
     m_showWater(1),
+    m_numberOfAtoms(0),
     m_systemSize(QVector3D(1,1,1))
 {
     timer.setInterval(16);
@@ -49,6 +50,11 @@ void MDStateManager::updateNextTimestep() {
         m_timeDirection = -1;
     }
 
+    if(m_currentTimestep >= 0 && getNumberOfTimesteps()-1) {
+        setNumberOfAtoms(m_states.at(m_currentTimestep)->getNumberOfAtoms());
+    } else {
+        setNumberOfAtoms(0);
+    }
     emit currentTimestepChanged(m_currentTimestep);
 }
 
@@ -190,6 +196,7 @@ void MDStateManager::reset() {
         // Free memory
         delete m_states[i];
     }
+    setNumberOfAtoms(0);
 
     m_states.clear();
     m_currentTimestep = 0;
