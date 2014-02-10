@@ -1,6 +1,9 @@
 #include "mdstatemanager.h"
 #include "mdstate.h"
 #include <qvector3d.h>
+#include <fstream>
+
+#define BOHR 0.5291772
 
 MDStateManager::MDStateManager():
     m_currentTimestep(0),
@@ -26,132 +29,126 @@ const QArray<QSizeF> &MDStateManager::getSizes() {
     else return QArray<QSizeF>();
 }
 
-//void MDStateManager::read_data(ifstream *file, void *value) {
-//    int N;
-//    file->read (reinterpret_cast<char*>(&N), sizeof(int));
-//    file->read (reinterpret_cast<char*>(value), N);
-//    file->read (reinterpret_cast<char*>(&N), sizeof(int));
-//}
+void MDStateManager::readData(ifstream *file, void *value) {
+    int N;
+    file->read (reinterpret_cast<char*>(&N), sizeof(int));
+    file->read (reinterpret_cast<char*>(value), N);
+    file->read (reinterpret_cast<char*>(&N), sizeof(int));
+}
 
-//void MDStateManager::read_mts(char *filename, QArray<int> &atomTypesThisCPU, QArray<int> &atomIdsThisCPU, QArray<QVector3D > &positionsThisCPU, QVector3D &systemSize) {
-//    ifstream *file = new ifstream();
-//    file->open(filename, ios::in | ios::binary);
-//    if (!*file) {
-//        cout << "Error in Mts0_io::read_mts(): Failed to open file " << filename << endl;
-//        exit(1);
-//    }
-//    int numAtomsThisCPU;
-//    read_data(file, &numAtomsThisCPU);
+char *type[] = {(char*)"Not in use", (char*)"Si",(char*)"A ",(char*)"H ",(char*)"O ",(char*)"Na",(char*)"Cl",(char*)"X "};
 
-//    double *phase_space = new double[6*numAtomsThisCPU];
-//    double *tmp_atom_data = new double[numAtomsThisCPU];
+void MDStateManager::readMts(char *filename, QArray<char*> &atomTypesThisCPU, QArray<int> &atomIdsThisCPU, QArray<QVector3D > &positionsThisCPU, QVector3D &systemSize) {
+    ifstream *file = new ifstream();
+    file->open(filename, std::ios::in | std::ios::binary);
+    if (!*file) {
+        cerr << "Error in MDStateManager::read_mts(): Failed to open file " << filename << endl;
+        exit(1);
+    }
+    int numAtomsThisCPU;
+    readData(file, &numAtomsThisCPU);
 
-//    atomTypesThisCPU.resize(numAtomsThisCPU);
-//    atomIdsThisCPU.resize(numAtomsThisCPU);
-//    positionsThisCPU.resize(numAtomsThisCPU);
+    double *phase_space = new double[6*numAtomsThisCPU];
+    double *tmp_atom_data = new double[numAtomsThisCPU];
 
-//    read_data(file, tmp_atom_data);
-//    read_data(file, phase_space);
+    atomTypesThisCPU.resize(numAtomsThisCPU);
+    atomIdsThisCPU.resize(numAtomsThisCPU);
+    positionsThisCPU.resize(numAtomsThisCPU);
 
-//    for(int i=0;i<num_atoms_local;i++) {
-//        atomTypesThisCPU[i] = int(tmp_atom_data[i]);
-//        // Handle roundoff errors from 2 -> 1.99999999 -> 1
-//        atomIdsThisCPU[i] = (tmp_atom_data[i]-atomTypesThisCPU[i])*1e11 + 1e-5;
-//        positionsThisCPU [i] = QVector3D(phase_space[3*i+0], phase_space[3*i+1], phase_space[3*i+2])
-//    }
+    readData(file, tmp_atom_data);
+    readData(file, phase_space);
 
-//    QArray<QArray<QVector3D> > h_matrix;
+    for(int i=0;i<numAtomsThisCPU;i++) {
+        int atom_type = int(tmp_atom_data[i]);
+        atomTypesThisCPU[i] = type[atom_type];
+        // Handle roundoff errors from 2 -> 1.99999999 -> 1
+        atomIdsThisCPU[i] = (tmp_atom_data[i]-atom_type)*1e11 + 1e-5;
+        positionsThisCPU [i] = QVector3D(phase_space[3*i+0], phase_space[3*i+1], phase_space[3*i+2]);
+    }
 
-//    h_matrix.resize(2);
-//    for(int i=0;i<2;i++) {
-//        h_matrix.at(i).resize(3);
-//        for(int j=0;j<3;j++) {
-//            h_matrix(i)(j).resize(3);
-//        }
-//    }
+    QArray<QArray<QVector3D> > h_matrix;
 
-//    double *tmp_h_matrix = new double[18];
-//    read_data(file,tmp_h_matrix);
-//    int count = 0;
-//    for(int k=0;k<2;k++) {
-//        for(int j=0;j<3;j++) {
-//            for(int i=0;i<3;i++) {
-//                h_matrix[k][i][j] = float(tmp_h_matrix[count++]);
-//            }
-//        }
-//    }
+    h_matrix.resize(2);
+    for(int i=0;i<2;i++) {
+        h_matrix[i].resize(3);
+    }
 
-//    systemSize.setX(h_matrix[0][0][0]);
-//    systemSize.setY(h_matrix[0][1][1]);
-//    systemSize.setZ(h_matrix[0][2][2]);
+    double *tmp_h_matrix = new double[18];
+    readData(file,tmp_h_matrix);
+    int count = 0;
+    for(int k=0;k<2;k++) {
+        for(int j=0;j<3;j++) {
+            for(int i=0;i<3;i++) {
+                h_matrix[k][i][j] = float(tmp_h_matrix[count++]);
+            }
+        }
+    }
 
-//    file->close();
+    systemSize.setX(h_matrix[0][0][0]);
+    systemSize.setY(h_matrix[0][1][1]);
+    systemSize.setZ(h_matrix[0][2][2]);
 
-//    h_matrix.clear();
-//    delete tmp_h_matrix;
-//    delete phase_space;
-//    delete tmp_atom_data;
-//    delete file;
-//}
+    file->close();
 
-//    MDState *MDStateManager::load_atoms(string mts0_directory) {
-//    MDState *state = new MDState();
+    h_matrix.clear();
+    delete tmp_h_matrix;
+    delete phase_space;
+    delete tmp_atom_data;
+    delete file;
+}
 
-//    QArray<QVector3D> positionsThisCPU;
-//    QArray<int> atomTypesThisCPU;
-//    QArray<int> atomIdsThisCPU;
+MDState *MDStateManager::loadAtoms(string mts0_directory) {
+    MDState *state = new MDState();
 
-//    int nx = m_numberOfProcessors.x();
-//    int ny = m_numberOfProcessors.y();
-//    int nz = m_numberOfProcessors.z();
+    QArray<QVector3D> positionsThisCPU;
+    QArray<char*> atomTypesThisCPU;
+    QArray<int> atomIdsThisCPU;
 
-//    int numCPUs = nx*ny*nz;
-//    QVector3D nodeVectorIndex;
-//    QVector3D nodeOrigin;
-//    QVector3D nodeOffset;
+    int nx = m_numberOfProcessors.x();
+    int ny = m_numberOfProcessors.y();
+    int nz = m_numberOfProcessors.z();
 
-//    char filename[1000];
+    int numCPUs = nx*ny*nz;
+    QVector3D nodeVectorIndex;
+    QVector3D nodeOrigin;
+    QVector3D nodeOffset;
 
-//    node_offset[0] = 1.0/nx;
-//    node_offset[1] = 1.0/ny;
-//    node_offset[2] = 1.0/nz;
+    char filename[1000];
 
-//    for(int cpuID=0; cpuID<numCPUs; cpuID++) {
-//        nodeVectorIndex[0] = cpuID/(ny*nz);   // Node id in x-direction
-//        nodeVectorIndex[1] = (cpuID/nz) % ny; // Node id in y-direction
-//        nodeVectorIndex[2] = cpuID % nz; 	  // Node id in z-direction
+    nodeOffset[0] = 1.0/nx;
+    nodeOffset[1] = 1.0/ny;
+    nodeOffset[2] = 1.0/nz;
 
-//        nodeOrigin.x() = nodeOffset.x()*nodeVectorIndex.x(); // Displacement in x-direction
-//        nodeOrigin.y() = nodeOffset.y()*nodeVectorIndex.y(); // Displacement in y-direction
-//        nodeOrigin.z() = nodeOffset.z()*nodeVectorIndex.z(); // Displacement in z-direction
+    for(int cpuID=0; cpuID<numCPUs; cpuID++) {
+        nodeVectorIndex[0] = cpuID/(ny*nz);   // Node id in x-direction
+        nodeVectorIndex[1] = (cpuID/nz) % ny; // Node id in y-direction
+        nodeVectorIndex[2] = cpuID % nz; 	  // Node id in z-direction
 
-//        sprintf(filename,"%s/mt%04d",mts0_directory.c_str(), cpuID);
+        nodeOrigin[0] = nodeOffset.x()*nodeVectorIndex.x(); // Displacement in x-direction
+        nodeOrigin[1] = nodeOffset.y()*nodeVectorIndex.y(); // Displacement in y-direction
+        nodeOrigin[2] = nodeOffset.z()*nodeVectorIndex.z(); // Displacement in z-direction
 
-//        read_mts(filename, atomTypesThisCPU, atomIdsThisCPU, positionsThisCPU, m_systemSize);
-//        int numAtomsThisCPU = positionsThisCPU.size();
+        sprintf(filename,"%s/mt%04d",mts0_directory.c_str(), cpuID);
 
-//        for(int j=0;j<numAtomsThisCPU;j++) {
-//            for(int a=0; a<3; a++) {
-//                positionsThisCPU[j][a] += nodeOrigin[a];
-//                positionsThisCPU[j][a] *= m_systemSize[a]*bohr;
+        readMts(filename, atomTypesThisCPU, atomIdsThisCPU, positionsThisCPU, m_systemSize);
+        int numAtomsThisCPU = positionsThisCPU.size();
 
-//            }
-//        }
+        for(int j=0;j<numAtomsThisCPU;j++) {
+            for(int a=0; a<3; a++) {
+                positionsThisCPU[j][a] += nodeOrigin[a];
+                positionsThisCPU[j][a] *= m_systemSize[a]*BOHR;
+            }
+        }
 
-//        positions.insert ( positions.end() , positions_local.begin() , positions_local.end()  );
-//        atom_types.insert ( atom_types.end() , atom_types_local.begin() , atom_types_local.end()  );
-//        atom_ids.insert ( atom_ids.end() , atom_ids_local.begin() , atom_ids_local.end()  );
-//    }
+        state->addAtoms(positionsThisCPU,atomTypesThisCPU);
+    }
 
-//    delete filename;
-//    atom_types_local.clear();
-//    atom_ids_local.clear();
-//    positions_local.clear();
+    positionsThisCPU.clear();
+    atomTypesThisCPU.clear();
+    atomIdsThisCPU.clear();
 
-//    node_vector_index.clear();
-//    node_origin.clear();
-//    node_offset.clear();
-//    }
+    return state;
+}
 
 void MDStateManager::loadMts0(string foldername) {
 

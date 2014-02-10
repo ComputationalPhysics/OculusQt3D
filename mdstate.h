@@ -19,7 +19,9 @@ public:
     const QArray<QVector3D> &getPositions();
     const QArray<QColor4ub> &getColors();
     const QArray<QSizeF> &getSizes();
-    void addAtom(QVector3D positions, char *atomName);
+    void addAtom(QVector3D positions, char *atomType);
+    void addAtoms(QArray<QVector3D> positions, QArray<char *>atomTypes);
+    int getNumberOfAtoms();
     void reserveMemory(int numberOfAtoms);
 };
 

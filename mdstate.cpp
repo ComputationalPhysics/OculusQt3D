@@ -24,22 +24,35 @@ MDState::MDState()
     sizeMap.insert("N",QSizeF(0.66, 0.66));
 }
 
+int MDState::getNumberOfAtoms() {
+    return m_positions.size();
+}
+
 void MDState::reserveMemory(int numberOfAtoms) {
     m_positions.reserve(numberOfAtoms);
     m_colors.reserve(numberOfAtoms);
     m_sizes.reserve(numberOfAtoms);
 }
 
-void MDState::addAtom(QVector3D positions, char *atomName) {
+void MDState::addAtom(QVector3D positions, char *atomType) {
     m_positions.push_back(positions);
 
-    QMap<std::string, QColor4ub>::const_iterator colorIterator = colorMap.find(atomName);
+    QMap<std::string, QColor4ub>::const_iterator colorIterator = colorMap.find(atomType);
     if(colorIterator != colorMap.end()) m_colors.push_back(colorIterator.value());
     else m_colors.push_back(QColor4ub(255,0,0));
 
-    QMap<std::string, QSizeF>::const_iterator sizeIterator = sizeMap.find(atomName);
+    QMap<std::string, QSizeF>::const_iterator sizeIterator = sizeMap.find(atomType);
     if(sizeIterator != sizeMap.end()) m_sizes.push_back(sizeIterator.value());
     else m_sizes.push_back(QSizeF(1.0,1.0));
+}
+
+void MDState::addAtoms(QArray<QVector3D> positions, QArray<char *>atomTypes) {
+    // Increase length of all arrays
+    reserveMemory(getNumberOfAtoms() + positions.size());
+
+    for(int i=0; i<positions.size(); i++) {
+        addAtom(positions.at(i), atomTypes.at(i));
+    }
 }
 
 const QArray<QVector3D> &MDState::getPositions() {

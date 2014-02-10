@@ -4,8 +4,10 @@
 #include <string>
 #include <compphys/multibillboard/datasource.h>
 #include <Qt3DQuick>
-
+using std::ifstream;
 using std::string;
+using std::cerr;
+using std::endl;
 class MDState;
 
 class MDStateManager : public DataSource
@@ -15,7 +17,9 @@ class MDStateManager : public DataSource
     QVector3D m_numberOfProcessors;
 
 protected:
-
+    void readData(ifstream *file, void *value);
+    void readMts(char *filename, QArray<char*> &atomTypesThisCPU, QArray<int> &atomIdsThisCPU, QArray<QVector3D > &positionsThisCPU, QVector3D &systemSize);
+    MDState *loadAtoms(string mts0_directory);
     int m_currentTimestep;
     MDState *m_currentState;
     QArray<MDState*> m_states;
