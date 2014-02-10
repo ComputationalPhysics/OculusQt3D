@@ -4,7 +4,7 @@ import Qt3D.Shapes 2.0
 import StereoViewport 1.0
 import OculusReader 1.0
 
-import CompPhys.MultiBillboard 1.0
+// import CompPhys.MultiBillboard 1.0
 import CompPhys.FlyModeNavigator 1.0
 
 Rectangle {
