@@ -56,7 +56,7 @@ void MDStateManager::readData(ifstream *file, void *value) {
     file->read (reinterpret_cast<char*>(&N), sizeof(int));
 }
 
-char *type[] = {(char*)"Not in use", (char*)"Si",(char*)"A ",(char*)"H ",(char*)"O ",(char*)"Na",(char*)"Cl",(char*)"X "};
+char *type[] = {(char*)"Not in use", (char*)"Si",(char*)"A",(char*)"H",(char*)"O",(char*)"Na",(char*)"Cl",(char*)"X"};
 
 void MDStateManager::readMts(char *filename, QArray<char*> &atomTypesThisCPU, QArray<int> &atomIdsThisCPU, QArray<QVector3D > &positionsThisCPU, QVector3D &systemSize) {
     ifstream *file = new ifstream();

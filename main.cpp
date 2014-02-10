@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
 //    view.engine()->addImportPath("/repos/flymodenavigator-qt3d/build-flymodenavigator-Desktop_Qt_5_2_0_clang_64bit-Release/src/libs");
 #endif
     view.setMainQmlFile("qml/oculus/main.qml");
-//    view.fullScreenAllMonitors();
+    view.fullScreenAllMonitors();
     view.show();
 
     return app.exec();

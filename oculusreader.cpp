@@ -5,6 +5,8 @@ OculusReader::OculusReader():
     m_camera(NULL),
     m_enabled(true)
 {
+    m_upVectorStart = QVector3D(0,1,0);
+    m_viewVectorStart = QVector3D(-4,0,0);
     pManager = *DeviceManager::Create();
     DeviceEnumerator<SensorDevice> isensor = pManager->EnumerateDevices<SensorDevice>();
     DeviceEnumerator<SensorDevice> oculusSensor;
@@ -69,20 +71,14 @@ void OculusReader::readSensors() {
     }
 
     Quatf orient = SFusion.GetOrientation();
-    if(m_isFirst) {
-        m_upVectorStart = m_camera->upVector();
-        m_viewVectorStart = m_camera->center() - m_camera->eye();
-    }
 
-    if(!m_isFirst) {
-        QQuaternion qorient(orient.w, orient.z, orient.y, -orient.x); // høyre venstre riktig
+    QQuaternion qorient(orient.w, orient.z, orient.y, -orient.x); // høyre venstre riktig
 
-        QVector3D upVector = qorient.rotatedVector(m_upVectorStart);
-        QVector3D viewVector = qorient.rotatedVector(m_viewVectorStart);
+    QVector3D upVector = qorient.rotatedVector(m_upVectorStart);
+    QVector3D viewVector = qorient.rotatedVector(m_viewVectorStart);
 
-        m_camera->setUpVector(upVector);
-        m_camera->setCenter(m_camera->eye() + viewVector);
-    }
+    m_camera->setUpVector(upVector);
+    m_camera->setCenter(m_camera->eye() + viewVector);
 
     m_isFirst = false;
 }

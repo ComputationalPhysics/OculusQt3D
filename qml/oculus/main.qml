@@ -75,8 +75,8 @@ Rectangle {
             right: parent.right
         }
 
-        width: 640
-        height: 360
+        width: 1280 / (1920 + 1280) * parent.width
+        height: 800 / 1080 * parent.height
         viewport: viewportRoot
     }
 
@@ -222,6 +222,9 @@ Rectangle {
             case Qt.Key_O:
                 fileDataDialog.visible = true
                 flyModeNavigator.deactivate()
+                break;
+            case Qt.Key_Q:
+                Qt.quit();
                 break;
             }
         } else {

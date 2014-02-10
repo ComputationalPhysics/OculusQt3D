@@ -21,7 +21,7 @@ MDState::MDState()
     colorMap.insert("Cl", QColor4ub(95,216,250));
     sizeMap.insert("Cl",QVector2D(1.02, 1.02));
 
-    colorMap.insert("N", QColor4ub(255,0,0));
+    colorMap.insert("N", QColor4ub(95,216,250));
     sizeMap.insert("N",QVector2D(0.66, 0.66));
 }
 
