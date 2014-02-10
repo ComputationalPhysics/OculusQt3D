@@ -19,6 +19,7 @@ class MDStateManager : public DataSource
     Q_PROPERTY(int currentTimestep READ currentTimestep WRITE setCurrentTimestep NOTIFY currentTimestepChanged)
     Q_PROPERTY(bool showWater READ showWater WRITE setShowWater NOTIFY showWaterChanged)
     Q_PROPERTY(int numberOfAtoms READ numberOfAtoms WRITE setNumberOfAtoms NOTIFY numberOfAtomsChanged)
+    Q_PROPERTY(QVector3D systemSize READ systemSize NOTIFY systemSizeChanged)
 
     int m_playBackSpeed;
     int m_currentTimestep;
@@ -71,6 +72,11 @@ public:
         return m_numberOfAtoms;
     }
 
+    QVector3D systemSize() const
+    {
+        return m_systemSize;
+    }
+
 public slots:
     void updateNextTimestep();
     void setPlayBackSpeed(int arg)
@@ -112,6 +118,7 @@ signals:
     void currentTimestepChanged(int arg);
     void showWaterChanged(bool arg);
     void numberOfAtomsChanged(int arg);
+    void systemSizeChanged(QVector3D arg);
 };
 
 #endif // MDSTATEMANAGER_H

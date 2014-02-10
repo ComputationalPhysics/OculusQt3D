@@ -175,7 +175,7 @@ MDState *MDStateManager::loadTimestepMts0(string mts0_directory, QVector3D numbe
     positionsThisCPU.clear();
     atomTypesThisCPU.clear();
     atomIdsThisCPU.clear();
-
+    emit systemSizeChanged(m_systemSize);
     return state;
 }
 

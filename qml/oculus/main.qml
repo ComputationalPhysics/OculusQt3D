@@ -54,7 +54,7 @@ Rectangle {
             fieldOfView: 60
             center: Qt.vector3d(1,0,0)
             eye: Qt.vector3d(5,0,0)
-            eyeSeparation: 0.03
+            eyeSeparation: 0.06
         }
 
         MDStateManager {
@@ -75,6 +75,7 @@ Rectangle {
     }
 
     ShaderEffectSource {
+        id: viewportClone
         sourceItem: viewportRoot
         width: viewportRoot.width / pixelScale
         height: viewportRoot.height / pixelScale
@@ -97,7 +98,7 @@ Rectangle {
 
     Rectangle {
         id: fileDataDialog
-        anchors.fill: viewportRoot
+        anchors.fill: viewportClone
         opacity: 0.95
         visible: false
         enabled: true
@@ -250,7 +251,7 @@ Rectangle {
     }
 
     Text {
-        text: "FPS: "+multiSphere.fps
+        text: "FPS: "+ multiSphere.fps.toFixed(0)
         color: "white"
     }
 
