@@ -7,6 +7,7 @@ import QtQuick.Dialogs 1.1
 import StereoViewport 1.0
 import OculusReader 1.0
 import MDStateManager 1.0
+import Settings 1.0
 
 import CompPhys.MultiBillboard 1.0
 import CompPhys.FlyModeNavigator 1.0
@@ -20,6 +21,10 @@ Rectangle {
         rectRoot.forceActiveFocus()
     }
 
+    Settings {
+        id: settings
+    }
+
     OculusReader {
         id: oculusReader
         enabled: false
@@ -31,8 +36,8 @@ Rectangle {
         fillColor: "black"
         //        width: rectRoot.width * 1.8
         //        height: rectRoot.height * 1.8 // TODO: Check real ratio
-        width: 1280
-        height: 720
+        width: 1920 / (1920 + 1280) * parent.width
+        height: parent.height
         stereoType: StereoViewport.LeftRight
         fovzoom: false
         light: Light {
@@ -125,6 +130,7 @@ Rectangle {
             TextField {
                 id: fileTextField
                 Layout.fillWidth: true
+                text: settings.value("previousFileDialogPath")
             }
             Button {
                 text: "Browse..."
@@ -142,7 +148,7 @@ Rectangle {
             }
             TextField {
                 id: nTimeStepsField
-                text: "99"
+                text:  settings.value("previousNTimeSteps", "1")
                 visible: mts0Radio.checked
             }
             Label {
@@ -153,17 +159,17 @@ Rectangle {
                 TextField {
                     width: 20
                     id: nCPUsx
-                    text: "2"
+                    text:  settings.value("previousNCPUsx", "2")
                 }
                 TextField {
                     width: 20
                     id: nCPUsy
-                    text: "2"
+                    text:  settings.value("previousNCPUsy", "2")
                 }
                 TextField {
                     width: 20
                     id: nCPUsz
-                    text: "2"
+                    text:  settings.value("previousNCPUsz", "2")
                 }
                 visible: mts0Radio.checked
             }
@@ -177,6 +183,12 @@ Rectangle {
                     }
                     fileDataDialog.visible = false
                     rectRoot.focus = true
+                    viewportRoot.update()
+                    settings.setValue("previousFileDialogPath", fileTextField.text)
+                    settings.setValue("previousNTimeSteps", nTimeStepsField.text)
+                    settings.setValue("previousNCPUsx", nCPUsx.text)
+                    settings.setValue("previousNCPUsy", nCPUsy.text)
+                    settings.setValue("previousNCPUsz", nCPUsz.text)
                 }
             }
             Button {

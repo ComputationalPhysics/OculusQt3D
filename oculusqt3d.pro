@@ -50,7 +50,8 @@ SOURCES += main.cpp \
     oculusreader.cpp \
     oculusview.cpp \
     mdstatemanager.cpp \
-    mdstate.cpp
+    mdstate.cpp \
+    settings.cpp
 
 # Installation path
 # target.path =
@@ -67,7 +68,8 @@ HEADERS += \
     oculusreader.h \
     oculusview.h \
     mdstatemanager.h \
-    mdstate.h
+    mdstate.h \
+    settings.h
 #    /repos/flymodenavigator-qt3d/flymodenavigator-qt3d/mousemover.h
 
 #copydata.commands = $(COPY_DIR) $$PWD/qml $$OUT_PWD

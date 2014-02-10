@@ -6,6 +6,7 @@
 #include <oculusreader.h>
 #include <oculusview.h>
 #include <mdstatemanager.h>
+#include <settings.h>
 //#include <exampledatasource.h>
 
 //#include <mousemover.h>
@@ -16,12 +17,12 @@
 
 int main(int argc, char *argv[])
 {
-
     OVR::System::Init();
     qmlRegisterType<FileIO>("FileIO", 1, 0, "FileIO");
     qmlRegisterType<StereoViewport>("StereoViewport", 1, 0, "StereoViewport");
     qmlRegisterType<OculusReader>("OculusReader", 1, 0, "OculusReader");
     qmlRegisterType<MDStateManager>("MDStateManager", 1, 0, "MDStateManager");
+    qmlRegisterType<Settings>("Settings", 1, 0, "Settings");
 
     QGuiApplication app(argc, argv);
 
