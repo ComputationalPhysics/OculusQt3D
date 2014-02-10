@@ -42,7 +42,7 @@ public slots:
             m_showWater = arg;
             // emit showWaterChanged(arg);
             for(int i=0; i<getNumberOfAtoms(); i++) {
-                if(strcmp(m_atomTypes[i],"H") || strcmp(m_atomTypes[i],"O")) {
+                if(strcmp(m_atomTypes[i],"H") == 0 || strcmp(m_atomTypes[i],"O") == 0) {
                     m_colors[i].setAlphaF(m_showWater);
                 }
             }
