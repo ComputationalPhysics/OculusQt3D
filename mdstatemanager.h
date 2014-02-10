@@ -2,7 +2,8 @@
 #define MDSTATEMANAGER_H
 #include <QArray>
 #include <string>
-#include <datasource.h>
+#include <compphys/multibillboard/datasource.h>
+#include <Qt3DQuick>
 
 using std::string;
 class MDState;

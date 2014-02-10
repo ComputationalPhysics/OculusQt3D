@@ -42,8 +42,6 @@ void MDState::addAtom(QVector3D positions, char *atomName) {
     else m_sizes.push_back(QSizeF(1.0,1.0));
 }
 
-c
-
 const QArray<QVector3D> &MDState::getPositions() {
     return m_positions;
 }

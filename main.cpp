@@ -6,8 +6,7 @@
 #include <oculusreader.h>
 #include <oculusview.h>
 #include <mdstatemanager.h>
-#include <multibillboard.h>
-#include <exampledatasource.h>
+//#include <exampledatasource.h>
 
 //#include <mousemover.h>
 #include <QQmlContext>
@@ -21,9 +20,6 @@ int main(int argc, char *argv[])
     qmlRegisterType<FileIO>("FileIO", 1, 0, "FileIO");
     qmlRegisterType<StereoViewport>("StereoViewport", 1, 0, "StereoViewport");
     qmlRegisterType<OculusReader>("OculusReader", 1, 0, "OculusReader");
-    // qmlRegisterType<MDStateManager>("MDStateManager", 1, 0, "MDStateManager");
-    qmlRegisterType<ExampleDataSource>("ExampleDataSource", 1, 0, "ExampleDataSource");
-    qmlRegisterType<MultiBillboard>("MultiBillboard", 1, 0, "MultiBillboard");
 
     QGuiApplication app(argc, argv);
 
@@ -35,9 +31,9 @@ int main(int argc, char *argv[])
 #endif
 
 #ifdef Q_OS_LINUX
-    view.engine()->addImportPath("/home/compphys/sandbox/flymodenavigator-qt3d/build-flymodenavigator-Desktop_Qt_5_2_0_GCC_64bit-Release/src/libs");
+//    view.engine()->addImportPath("/home/compphys/sandbox/flymodenavigator-qt3d/build-flymodenavigator-Desktop_Qt_5_2_0_GCC_64bit-Release/src/libs");
 #else
-    view.engine()->addImportPath("/repos/flymodenavigator-qt3d/build-flymodenavigator-Desktop_Qt_5_2_0_clang_64bit-Release/src/libs");
+//    view.engine()->addImportPath("/repos/flymodenavigator-qt3d/build-flymodenavigator-Desktop_Qt_5_2_0_clang_64bit-Release/src/libs");
 #endif
     view.setMainQmlFile("qml/oculus/main.qml");
 //    view.fullScreenAllMonitors();

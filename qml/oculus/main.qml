@@ -4,10 +4,9 @@ import Qt3D.Shapes 2.0
 import StereoViewport 1.0
 import FileIO 1.0
 import OculusReader 1.0
-import MultiBillboard 1.0
-import FlyModeNavigator 1.0
-import ExampleDataSource 1.0
-// import MDStateManager 1.0
+
+import CompPhys.MultiBillboard 1.0
+import CompPhys.FlyModeNavigator 1.0
 
 Rectangle {
     id: rectRoot
@@ -47,17 +46,16 @@ Rectangle {
 //            eyeSeparation: 0.03
         }
 
-        ExampleDataSource {
-            id: exampleDataSource
-            numPointsPerDimension: 70
-        }
+//        ExampleDataSource {
+//            id: exampleDataSource
+//            numPointsPerDimension: 70
+//        }
 
         MultiBillboard {
             id: multiSphere
             // dataSource: exampleDataSource
     //        cullFaces: Item3D.CullBackFaces
     //        sortPoints: Item3D.BackToFront
-
             effect: Effect {
                 texture: "sphere2-green.png"
                 blending: true

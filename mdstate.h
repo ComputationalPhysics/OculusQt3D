@@ -1,6 +1,5 @@
-#ifndef EXAMPLEDATASOURCE_H
-#define EXAMPLEDATASOURCE_H
-#include <datasource.h>
+#ifndef MDSTATE_H
+#define MDSTATE_H
 #include <QVector3D>
 #include <QArray>
 #include <QColor4ub>
