@@ -14,17 +14,18 @@ class MDStateManager : public DataSource
 {
     Q_OBJECT
     Q_PROPERTY(int playBackSpeed READ playBackSpeed WRITE setPlayBackSpeed NOTIFY playBackSpeedChanged)
+    Q_PROPERTY(int currentTimestep READ currentTimestep WRITE setCurrentTimestep NOTIFY currentTimestepChanged)
 
     int m_playBackSpeed;
+    int m_currentTimestep;
+    int m_timeDirection;
 
 protected:
     void readData(ifstream *file, void *value);
     void readMts(char *filename, QArray<char*> &atomTypesThisCPU, QArray<int> &atomIdsThisCPU, QArray<QVector3D > &positionsThisCPU, QVector3D &systemSize);
     void reset();
     MDState *loadTimestepMts0(string mts0_directory, QVector3D numberOfCPUs);
-    int m_currentTimestep;
-    int m_timeDirection;
-    MDState *m_currentState;
+
     QArray<MDState*> m_states;
     QVector3D m_systemSize;
     QArray<QColor4ub> tmpQColor4ubArray;
@@ -47,6 +48,11 @@ public:
         return m_playBackSpeed;
     }
 
+    int currentTimestep() const
+    {
+        return m_currentTimestep;
+    }
+
 public slots:
     void updateNextTimestep();
     void setPlayBackSpeed(int arg)
@@ -56,8 +62,17 @@ public slots:
             emit playBackSpeedChanged(arg);
         }
     }
+    void setCurrentTimestep(int arg)
+    {
+        if (m_currentTimestep != arg) {
+            m_currentTimestep = arg;
+            emit currentTimestepChanged(arg);
+        }
+    }
+
 signals:
     void playBackSpeedChanged(int arg);
+    void currentTimestepChanged(int arg);
 };
 
 #endif // MDSTATEMANAGER_H

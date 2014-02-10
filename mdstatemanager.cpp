@@ -8,7 +8,6 @@ using std::cout;
 MDStateManager::MDStateManager():
     m_currentTimestep(0),
     m_timeDirection(1),
-    m_currentState(NULL),
     m_systemSize(QVector3D(1,1,1))
 {
     timer.setInterval(16);
@@ -19,18 +18,18 @@ MDStateManager::MDStateManager():
 }
 
 const QArray<QVector3D> &MDStateManager::getPositions() {
-    if(m_currentState!=NULL) return m_currentState->getPositions();
-    else return tmpQVector3DArray;
+    if(m_states.size() == 0) return tmpQVector3DArray;
+    return m_states.at(m_currentTimestep)->getPositions();
 }
 
 const QArray<QColor4ub> &MDStateManager::getColors() {
-    if(m_currentState!=NULL) return m_currentState->getColors();
-    else return tmpQColor4ubArray;
+    if(m_states.size() == 0) return tmpQColor4ubArray;
+    return m_states.at(m_currentTimestep)->getColors();
 }
 
 const QArray<QSizeF> &MDStateManager::getSizes() {
-    if(m_currentState!=NULL) return m_currentState->getSizes();
-    else return tmpQSizeFArray;
+    if(m_states.size() == 0) return tmpQSizeFArray;
+    return m_states.at(m_currentTimestep)->getSizes();
 }
 
 int MDStateManager::getNumberOfTimesteps() {
@@ -50,8 +49,6 @@ void MDStateManager::updateNextTimestep() {
         m_currentTimestep = getNumberOfTimesteps()-1;
         m_timeDirection = -1;
     }
-
-    m_currentState = m_states.at(0);
 }
 
 void MDStateManager::readData(ifstream *file, void *value) {
@@ -185,12 +182,10 @@ void MDStateManager::loadMts0(string foldername, int numberOfTimesteps, QVector3
         cout << "Loaded " << state->getNumberOfAtoms() << " in timestep " << timestep+1 << " / " << numberOfTimesteps << endl;
         m_states.push_back(state);
     }
-
 }
 
 void MDStateManager::reset() {
     m_states.clear();
-    m_currentState = NULL;
     m_currentTimestep = 0;
 }
 
