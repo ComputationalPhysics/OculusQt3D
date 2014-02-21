@@ -27,8 +27,8 @@ public:
     const QArray<QVector3D> &getPositions();
     const QArray<QColor4ub> &getColors();
     const QArray<QVector2D> &getSizes();
-    void addAtom(QVector3D positions, char *atomType);
-    void addAtoms(QArray<QVector3D> positions, QArray<char *>atomTypes);
+    void addAtom(QVector3D positions, char *atomType, bool addPeriodicCopy = false, QVector3D systemSize = QVector3D(0,0,0));
+    void addAtoms(QArray<QVector3D> positions, QArray<char *>atomTypes, bool addPeriodicCopy = false, QVector3D systemSize = QVector3D(0,0,0));
     int getNumberOfAtoms();
     void reserveMemory(int numberOfAtoms);
     bool showWater() const

@@ -161,15 +161,16 @@ MDState *MDStateManager::loadTimestepMts0(string mts0_directory, QVector3D numbe
 
         readMts(filename, atomTypesThisCPU, atomIdsThisCPU, positionsThisCPU, m_systemSize);
         int numAtomsThisCPU = positionsThisCPU.size();
-
+        m_systemSize *= BOHR;
         for(int j=0;j<numAtomsThisCPU;j++) {
             for(int a=0; a<3; a++) {
                 positionsThisCPU[j][a] += nodeOrigin[a];
-                positionsThisCPU[j][a] *= m_systemSize[a]*BOHR;
+                positionsThisCPU[j][a] *= m_systemSize[a];
             }
         }
 
-        state->addAtoms(positionsThisCPU,atomTypesThisCPU);
+        state->addAtoms(positionsThisCPU,atomTypesThisCPU, true, m_systemSize); // Switch these two to have cpu based periodic boundary conditions
+        //state->addAtoms(positionsThisCPU,atomTypesThisCPU);
     }
 
     positionsThisCPU.clear();

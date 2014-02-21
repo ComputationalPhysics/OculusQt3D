@@ -37,8 +37,8 @@ Rectangle {
         fillColor: "black"
         //        width: rectRoot.width * 1.8
         //        height: rectRoot.height * 1.8 // TODO: Check real ratio
-        width: 1920 / (1920 + 1280) * parent.width * pixelScale
-        height: parent.height * pixelScale
+        width: parent.width
+        height: parent.height
         stereoType: StereoViewport.StretchedLeftRight
         fovzoom: false
         light: Light {
@@ -54,7 +54,8 @@ Rectangle {
             fieldOfView: 60
             center: Qt.vector3d(1,0,0)
             eye: Qt.vector3d(5,0,0)
-            eyeSeparation: 0.06
+//            eyeSeparation: 0.06
+            eyeSeparation: 0.0
         }
 
         MDStateManager {
@@ -74,22 +75,22 @@ Rectangle {
         }
     }
 
-    ShaderEffectSource {
-        id: viewportClone
-        sourceItem: viewportRoot
-        width: viewportRoot.width / pixelScale
-        height: viewportRoot.height / pixelScale
-    }
+//    ShaderEffectSource {
+//        id: viewportClone
+//        sourceItem: viewportRoot
+//        width: viewportRoot.width / pixelScale
+//        height: viewportRoot.height / pixelScale
+//    }
 
-    OculusView {
-        anchors {
-            right: parent.right
-        }
+//    OculusView {
+//        anchors {
+//            right: parent.right
+//        }
 
-        width: 1280 / (1920 + 1280) * parent.width
-        height: 800 / 1080 * parent.height
-        viewport: viewportRoot
-    }
+//        width: 1280 / (1920 + 1280) * parent.width
+//        height: 800 / 1080 * parent.height
+//        viewport: viewportRoot
+//    }
 
     FlyModeNavigator {
         id: flyModeNavigator
