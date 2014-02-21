@@ -8,18 +8,38 @@ import StereoViewport 1.0
 import OculusReader 1.0
 import MDStateManager 1.0
 import Settings 1.0
+import QtQuick.Window 2.0
 
 import CompPhys.MultiBillboard 1.0
 import CompPhys.FlyModeNavigator 1.0
 
+import ScreenInfo 1.0
+
 Rectangle {
     id: rectRoot
-    property real pixelScale: 1.8
-    width: 1920
-    height: 1080
+    property real pixelScale: 1.0
+    property int mainScreenWidth: 640
+    property int mainScreenHeight: 480
+    property int oculusScreenWidth: 320
+    property int oculusScreenHeight: 240
+    property int totalScreenWidth: 760
+    width: mainScreenWidth
+    height: mainScreenHeight
 
     Component.onCompleted: {
         rectRoot.forceActiveFocus()
+        console.log("width, height:")
+    }
+
+    ScreenInfo {
+        id: screenInfo
+        Component.onCompleted: {
+            mainScreenWidth = screens[0].geometry.width
+            mainScreenHeight = screens[0].geometry.height
+            oculusScreenWidth = screens[1].geometry.width
+            oculusScreenHeight = screens[1].geometry.height
+            totalScreenWidth = mainScreenWidth + oculusScreenWidth
+        }
     }
 
     Settings {
@@ -37,8 +57,8 @@ Rectangle {
         fillColor: "black"
         //        width: rectRoot.width * 1.8
         //        height: rectRoot.height * 1.8 // TODO: Check real ratio
-        width: parent.width
-        height: parent.height
+        width: mainScreenWidth / totalScreenWidth * parent.width * pixelScale
+        height: parent.height * pixelScale
         stereoType: StereoViewport.StretchedLeftRight
         fovzoom: false
         light: Light {
@@ -75,20 +95,22 @@ Rectangle {
         }
     }
 
-//    ShaderEffectSource {
-//        id: viewportClone
-//        sourceItem: viewportRoot
-//        width: viewportRoot.width / pixelScale
-//        height: viewportRoot.height / pixelScale
-//    }
+    ShaderEffectSource {
+        id: viewportClone
+        property bool show3d: true
+        sourceItem: viewportRoot
+        width: viewportRoot.width / pixelScale
+        height: viewportRoot.height / pixelScale
+        sourceRect: show3d ? Qt.rect(0,0,viewportRoot.width, viewportRoot.height)
+                           : Qt.rect(0,0,viewportRoot.width / 2, viewportRoot.height)
+    }
 
 //    OculusView {
 //        anchors {
 //            right: parent.right
 //        }
-
-//        width: 1280 / (1920 + 1280) * parent.width
-//        height: 800 / 1080 * parent.height
+//        width: oculusScreenWidth / totalScreenWidth * parent.width
+//        height: oculusScreenHeight / mainScreenHeight * parent.height
 //        viewport: viewportRoot
 //    }
 
@@ -142,7 +164,7 @@ Rectangle {
             TextField {
                 id: fileTextField
                 Layout.fillWidth: true
-                text: settings.value("previousFileDialogPath")
+                text: settings.value("previousFileDialogPath", "")
             }
             Button {
                 text: "Browse..."
@@ -246,6 +268,10 @@ Rectangle {
                 break
             case Qt.Key_O:
                 oculusReader.enabled = !oculusReader.enabled
+                break
+            case Qt.Key_3:
+                console.log("3 clicked")
+                viewportClone.show3d = !viewportClone.show3d
                 break
             }
         }

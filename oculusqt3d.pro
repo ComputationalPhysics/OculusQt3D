@@ -24,9 +24,12 @@ mac: INCLUDEPATH += /Users/anderhaf/Qt/5.2.0/clang_64/include
 mac: LIBS += -L/Users/anderhaf/Qt/5.2.0/clang_64/lib
 
 linux: INCLUDEPATH += /home/compphys/Downloads/OculusSDK/LibOVR/Include
+linux: INCLUDEPATH += /home/kjetil/sandbox/OculusSDK/LibOVR/Include
 linux: INCLUDEPATH += /home/svenni/apps/oculus/Oculus/OculusSDK/LibOVR/Include
 #linux: QML_IMPORT_PATH += /home/compphys/sandbox/flymodenavigator-qt3d/build-flymodenavigator-Desktop_Qt_5_2_0_GCC_64bit-Release/src/libs
 linux: LIBS += -L/home/compphys/Downloads/OculusSDK/LibOVR/Lib/Linux/Release/x86_64/ -lovr
+linux: LIBS += -L/home/kjetil/sandbox/OculusSDK/LibOVR/Lib/Linux/Release/x86_64/ -lovr
+#linux: LIBS += -L/home/svenni/apps/oculus/Oculus/OculusSDK/LibOVR/Lib/Linux/Release/x86_64/ -lovr
 linux: LIBS += -L/home/svenni/apps/oculus/Oculus/OculusSDK/LibOVR/Lib/Linux/Release/x86_64/ -lovr
 linux: LIBS += -lX11
 linux: LIBS += -lXinerama
@@ -51,7 +54,9 @@ SOURCES += main.cpp \
     oculusview.cpp \
     mdstatemanager.cpp \
     mdstate.cpp \
-    settings.cpp
+    settings.cpp \
+    screeninfo.cpp \
+    screeninfoscreen.cpp
 
 # Installation path
 # target.path =
@@ -69,7 +74,9 @@ HEADERS += \
     oculusview.h \
     mdstatemanager.h \
     mdstate.h \
-    settings.h
+    settings.h \
+    screeninfo.h \
+    screeninfoscreen.h
 #    /repos/flymodenavigator-qt3d/flymodenavigator-qt3d/mousemover.h
 
 #copydata.commands = $(COPY_DIR) $$PWD/qml $$OUT_PWD

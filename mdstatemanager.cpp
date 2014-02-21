@@ -32,6 +32,12 @@ const QArray<QVector2D> &MDStateManager::getSizes() {
     return m_states.at(m_currentTimestep)->getSizes();
 }
 
+QGLVertexBundle *MDStateManager::vertexBundle()
+{
+    if(m_states.size() == 0) return 0;
+    return m_states.at(m_currentTimestep)->vertexBundle();
+}
+
 int MDStateManager::getNumberOfTimesteps() {
     return m_states.size();
 }
@@ -187,6 +193,7 @@ void MDStateManager::loadMts0(QString foldername, int numberOfTimesteps, QVector
     for(int timestep=0; timestep<numberOfTimesteps; timestep++) {
         sprintf(mts0Directory,"%s/%06d/mts0/",foldername.toStdString().c_str(),timestep);
         MDState *state = this->loadTimestepMts0(mts0Directory, numberOfCPUs);
+        state->buildVertexBundle();
         cout << "Loaded " << state->getNumberOfAtoms() << " in timestep " << timestep+1 << " / " << numberOfTimesteps << endl;
         m_states.push_back(state);
     }
@@ -250,6 +257,8 @@ bool MDStateManager::loadXyz(QString filename) {
               break;
             }
         }
+
+        state->buildVertexBundle();
     }
 
     return true;
