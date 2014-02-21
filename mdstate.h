@@ -4,6 +4,7 @@
 #include <QArray>
 #include <QColor4ub>
 #include <QVector2D>
+#include <QGLVertexBundle>
 #include <QMap>
 #include <iostream>
 
@@ -17,6 +18,7 @@ private:
     QArray<QColor4ub> m_colors;
     QArray<QVector2D> m_sizes;
     QArray<char*> m_atomTypes;
+    QGLVertexBundle m_vertexBundle;
     QMap<std::string,QColor4ub> colorMap;
     QMap<std::string,QVector2D> sizeMap;
     bool m_showWater;
@@ -35,6 +37,8 @@ public:
     {
         return m_showWater;
     }
+    void buildVertexBundle();
+    QGLVertexBundle* vertexBundle();
 public slots:
     void setShowWater(bool arg)
     {
@@ -46,6 +50,7 @@ public slots:
                     m_colors[i].setAlphaF(m_showWater);
                 }
             }
+            buildVertexBundle();
         }
     }
 signals:

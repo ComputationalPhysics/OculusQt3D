@@ -7,6 +7,8 @@
 #include <oculusview.h>
 #include <mdstatemanager.h>
 #include <settings.h>
+#include <screeninfo.h>
+#include <screeninfoscreen.h>
 //#include <exampledatasource.h>
 
 //#include <mousemover.h>
@@ -23,6 +25,8 @@ int main(int argc, char *argv[])
     qmlRegisterType<OculusReader>("OculusReader", 1, 0, "OculusReader");
     qmlRegisterType<MDStateManager>("MDStateManager", 1, 0, "MDStateManager");
     qmlRegisterType<Settings>("Settings", 1, 0, "Settings");
+    qmlRegisterType<ScreenInfo>("ScreenInfo", 1, 0, "ScreenInfo");
+    qmlRegisterType<ScreenInfoScreen>("ScreenInfoScreen", 1, 0, "ScreenInfoScreen");
 
     QGuiApplication app(argc, argv);
 

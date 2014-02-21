@@ -65,6 +65,19 @@ void MDState::addAtoms(QArray<QVector3D> positions, QArray<char *>atomTypes) {
     for(int i=0; i<positions.size(); i++) {
         addAtom(positions.at(i), atomTypes.at(i));
     }
+
+}
+
+void MDState::buildVertexBundle() {
+    m_vertexBundle = QGLVertexBundle();
+    m_vertexBundle.addAttribute(QGL::Position, m_positions);
+    m_vertexBundle.addAttribute(QGL::Color, m_colors);
+    m_vertexBundle.addAttribute(QGL::CustomVertex0, m_sizes);
+}
+
+QGLVertexBundle *MDState::vertexBundle()
+{
+    return &m_vertexBundle;
 }
 
 const QArray<QVector3D> &MDState::getPositions() {

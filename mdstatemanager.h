@@ -77,6 +77,8 @@ public:
         return m_systemSize;
     }
 
+    QGLVertexBundle* vertexBundle();
+
 public slots:
     void updateNextTimestep();
     void setPlayBackSpeed(int arg)
