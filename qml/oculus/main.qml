@@ -131,11 +131,6 @@ Rectangle {
             console.log("Main:")
             console.log(x + " " + y + " " + width + " " + height)
         }
-
-        FlyModeNavigator {
-            id: flyModeNavigator
-            camera: viewportRoot.camera
-        }
     }
 
     OculusView {
@@ -145,11 +140,11 @@ Rectangle {
         width: displaySettings.oculusGeometry.width * 1.01 // TODO figure out why we need a factor here to avoid errors without oculus
         height: displaySettings.oculusGeometry.height
         viewport: viewportRoot
+    }
 
-        FlyModeNavigator {
-            id: flyModeNavigator2
-            camera: viewportRoot.camera
-        }
+    FlyModeNavigator {
+        id: flyModeNavigator
+        camera: viewportRoot.camera
     }
 
     Rectangle {
