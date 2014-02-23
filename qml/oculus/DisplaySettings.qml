@@ -207,26 +207,29 @@ Rectangle {
             opacity: 0.8
             z: 99
         }
+    }
 
-        Text {
-            anchors {
-                horizontalCenter: parent.horizontalCenter
-                bottom: parent.bottom
-                margins: parent.width * 0.05
-            }
-            width: parent.width * 0.9
-            text: "Select the displays you want to use. " +
-                  "Click the circle to set it as the Oculus Rift display."
-            wrapMode: Text.WrapAtWordBoundaryOrAnywhere
+    Text {
+        id: infoText
+        anchors {
+            horizontalCenter: parent.horizontalCenter
+            top: screenArea.bottom
+            margins: parent.width * 0.02
         }
+        color: screenArea.enabled ? "black" : "grey"
+        width: parent.width * 0.9
+        text: "Select the displays you want to use. " +
+              "Click the circle to set it as the Oculus Rift display."
+        wrapMode: Text.WrapAtWordBoundaryOrAnywhere
+        horizontalAlignment: Text.AlignHCenter
     }
 
     Row {
         id: sizeRow
         anchors {
             horizontalCenter: parent.horizontalCenter
-            top: screenArea.bottom
-            margins: parent.width * 0.05
+            top: infoText.bottom
+            margins: parent.width * 0.02
         }
         Label {
             text: "Source size: "
@@ -245,7 +248,7 @@ Rectangle {
         anchors {
             horizontalCenter: parent.horizontalCenter
             top: sizeRow.bottom
-            margins: parent.width * 0.05
+            margins: parent.width * 0.02
         }
         Button {
             text: "Apply"

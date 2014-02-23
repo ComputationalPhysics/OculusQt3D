@@ -137,7 +137,7 @@ Rectangle {
         visible: displaySettings.oculusVisible
         x: displaySettings.oculusGeometry.x
         y: displaySettings.oculusGeometry.y
-        width: displaySettings.oculusGeometry.width * 1.01 // TODO figure out why we need a factor here to avoid errors without oculus
+        width: displaySettings.oculusGeometry.width // TODO figure out why we need a factor here to avoid errors without oculus
         height: displaySettings.oculusGeometry.height
         viewport: viewportRoot
     }
@@ -284,17 +284,14 @@ Rectangle {
             case Qt.Key_O:
                 fileDataDialog.visible = true
                 flyModeNavigator.deactivate()
-                flyModeNavigator2.deactivate()
                 break;
             case Qt.Key_Q:
                 flyModeNavigator.deactivate()
-                flyModeNavigator2.deactivate()
                 Qt.quit();
                 break;
             case Qt.Key_F:
                 displaySettings.visible = true
                 flyModeNavigator.deactivate()
-                flyModeNavigator2.deactivate()
                 break;
             }
         } else {
