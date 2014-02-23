@@ -31,6 +31,12 @@ linux: LIBS += -ludev
 
 LIBS += -lMultiBillboard
 
+linux: INCLUDEPATH += /home/svenni/apps/oculus/Oculus/OculusSDK/LibOVR/Include
+linux: LIBS += -L/home/svenni/apps/oculus/Oculus/OculusSDK/LibOVR/Lib/Linux/Release/x86_64/ -lovr
+linux: LIBS += -lX11
+linux: LIBS += -lXinerama
+linux: LIBS += -ludev
+
 # If your application uses the Qt Mobility libraries, uncomment the following
 # lines and add the respective components to the MOBILITY variable.
 # CONFIG += mobility
