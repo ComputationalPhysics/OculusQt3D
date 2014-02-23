@@ -18,13 +18,13 @@ import ScreenInfo 1.0
 Rectangle {
     id: rectRoot
     property real pixelScale: 1.0
-    property int mainScreenWidth: 640
-    property int mainScreenHeight: 480
-    property int oculusScreenWidth: 320
-    property int oculusScreenHeight: 240
-    property int totalScreenWidth: 760
-    width: mainScreenWidth
-    height: mainScreenHeight
+    property int mainScreenWidth: displaySettings.mainGeometry.width
+    property int mainScreenHeight: displaySettings.mainGeometry.height
+    property int oculusScreenWidth: displaySettings.oculusGeometry.width
+    property int oculusScreenHeight: displaySettings.oculusGeometry.height
+    property int totalScreenWidth: mainScreenWidth + mainScreenHeight
+    width: 1280
+    height: 720
 
     Component.onCompleted: {
         rectRoot.forceActiveFocus()
@@ -34,16 +34,13 @@ Rectangle {
     ScreenInfo {
         id: screenInfo
         Component.onCompleted: {
-            mainScreenWidth = screens[0].geometry.width
-            mainScreenHeight = screens[0].geometry.height
-            oculusScreenWidth = screens[1].geometry.width
-            oculusScreenHeight = screens[1].geometry.height
-            totalScreenWidth = mainScreenWidth + oculusScreenWidth
-            screensChanged()
+            displaySettings.layoutScreens()
         }
-        onScreensChanged: {
-            displaySettings.refresh()
-        }
+        fullScreen: displaySettings.fullScreen
+        topMost: displaySettings.topMost
+        leftMost: displaySettings.leftMost
+        rightMost: displaySettings.rightMost
+        bottomMost: displaySettings.bottomMost
     }
 
     Settings {
@@ -59,12 +56,26 @@ Rectangle {
     StereoViewport {
         id: viewportRoot
         fillColor: "black"
-        //        width: rectRoot.width * 1.8
-        //        height: rectRoot.height * 1.8 // TODO: Check real ratio
-        width: mainScreenWidth / totalScreenWidth * parent.width * pixelScale
-        height: parent.height * pixelScale
+        width: displaySettings.viewportSize.width
+        height: displaySettings.viewportSize.height
         stereoType: StereoViewport.StretchedLeftRight
         fovzoom: false
+
+        Sphere {
+            effect: Effect {
+                color: "yellow"
+            }
+        }
+
+        Sphere {
+            x: -1
+            y: -1
+            z: -1
+            effect: Effect {
+                color: "red"
+            }
+        }
+
         light: Light {
             ambientColor: Qt.rgba(1,1,1,1)
             position: camera.eye
@@ -78,8 +89,8 @@ Rectangle {
             fieldOfView: 60
             center: Qt.vector3d(1,0,0)
             eye: Qt.vector3d(5,0,0)
-//            eyeSeparation: 0.06
-            eyeSeparation: 0.0
+            eyeSeparation: 0.06
+//            eyeSeparation: 0.0
         }
 
         MDStateManager {
@@ -101,26 +112,44 @@ Rectangle {
 
     ShaderEffectSource {
         id: viewportClone
+        visible: displaySettings.mainVisible
         property bool show3d: true
+        x: displaySettings.mainGeometry.x
+        y: displaySettings.mainGeometry.y
+        width: displaySettings.mainGeometry.width
+        height: displaySettings.mainGeometry.height
         sourceItem: viewportRoot
-        width: viewportRoot.width / pixelScale
-        height: viewportRoot.height / pixelScale
+        hideSource: true
         sourceRect: show3d ? Qt.rect(0,0,viewportRoot.width, viewportRoot.height)
                            : Qt.rect(0,0,viewportRoot.width / 2, viewportRoot.height)
+
+        onHeightChanged: {
+            console.log("Main:")
+            console.log(x + " " + y + " " + width + " " + height)
+        }
+        onWidthChanged: {
+            console.log("Main:")
+            console.log(x + " " + y + " " + width + " " + height)
+        }
+
+        FlyModeNavigator {
+            id: flyModeNavigator
+            camera: viewportRoot.camera
+        }
     }
 
-//    OculusView {
-//        anchors {
-//            right: parent.right
-//        }
-//        width: oculusScreenWidth / totalScreenWidth * parent.width
-//        height: oculusScreenHeight / mainScreenHeight * parent.height
-//        viewport: viewportRoot
-//    }
+    OculusView {
+        visible: displaySettings.oculusVisible
+        x: displaySettings.oculusGeometry.x
+        y: displaySettings.oculusGeometry.y
+        width: displaySettings.oculusGeometry.width * 1.01 // TODO figure out why we need a factor here to avoid errors without oculus
+        height: displaySettings.oculusGeometry.height
+        viewport: viewportRoot
 
-    FlyModeNavigator {
-        id: flyModeNavigator
-        camera: viewportRoot.camera
+        FlyModeNavigator {
+            id: flyModeNavigator2
+            camera: viewportRoot.camera
+        }
     }
 
     Rectangle {
@@ -260,9 +289,17 @@ Rectangle {
             case Qt.Key_O:
                 fileDataDialog.visible = true
                 flyModeNavigator.deactivate()
+                flyModeNavigator2.deactivate()
                 break;
             case Qt.Key_Q:
+                flyModeNavigator.deactivate()
+                flyModeNavigator2.deactivate()
                 Qt.quit();
+                break;
+            case Qt.Key_F:
+                displaySettings.visible = true
+                flyModeNavigator.deactivate()
+                flyModeNavigator2.deactivate()
                 break;
             }
         } else {
@@ -292,20 +329,16 @@ Rectangle {
         color: "white"
     }
 
-    Rectangle {
-        width: 100
-        height: 100
-        color: "red"
-        MouseArea {
-            anchors.fill: parent
-            onClicked: {
-                screenInfo.toggleFullscreen()
-            }
-        }
-    }
-
     DisplaySettings {
         id: displaySettings
+        visible: false
         screenInfo: screenInfo
+        onApply: {
+            screenInfo.apply()
+        }
+        onClose: {
+            displaySettings.visible = false
+        }
+        opacity: 1.0
     }
 }

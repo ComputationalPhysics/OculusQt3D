@@ -6,28 +6,30 @@
 #include "screeninfo.h"
 #include "screeninfoscreen.h"
 
+#ifdef Q_OS_LINUX
+#include <X11/Xlib.h>
+#include <X11/X.h>
+#endif
+
 ScreenInfo::ScreenInfo(QObject *parent) :
-    QObject(parent)
+    QObject(parent),
+    m_fullScreen(false),
+    m_topMost(0),
+    m_bottomMost(0),
+    m_leftMost(0),
+    m_rightMost(0)
 {
     QList<QScreen*> screenList = QGuiApplication::screens();
+    int id = 0;
     for(QScreen *screen : screenList) {
-        ScreenInfoScreen* screenInfoScreen = new ScreenInfoScreen(screen->geometry(), this);
+        ScreenInfoScreen* screenInfoScreen = new ScreenInfoScreen(screen->geometry(), id, this);
         m_screens.append(screenInfoScreen);
         emit screensChanged();
+        id++;
     }
 }
 
-QQmlListProperty<ScreenInfoScreen> ScreenInfo::screens()
-{
-    return QQmlListProperty<ScreenInfoScreen>(this, m_screens);
-}
-
-void ScreenInfo::setupWindowInformation() {
-
-}
-
-void ScreenInfo::toggleFullscreen()
-{
+void ScreenInfo::apply() {
     QQuickItem *parentItem = dynamic_cast<QQuickItem*>(parent());
     if(!parentItem) {
         qWarning() << "Could not find parent window!";
@@ -38,69 +40,102 @@ void ScreenInfo::toggleFullscreen()
         return;
     }
     QQuickWindow* rootWindow = parentItem->window();
-    qDebug() << "Window of parent is " << rootWindow->winId();
 #ifdef Q_OS_LINUX
+    Display* display;
     display = XOpenDisplay(NULL);
     XSynchronize(display, True);
-    x11root = XDefaultRootWindow(display);
 
-    long colorBlue = 0xff0000ff; // shows up if the Qt window is not on top
-
-    x11w = XCreateSimpleWindow(display, x11root, 0, 0, 640, 480, 0, 1 /*magic number*/, colorBlue);
-
-    int leftMost = 0;
-    int rightMost = 0;
-    int topMost = 0;
-    int bottomMost = 0;
-    int leftMostPixel = INFINITY;
-    int rightMostPixel = -INFINITY;
-    int topMostPixel = INFINITY;
-    int bottomMostPixel = -INFINITY;
-    QList<QScreen*> screenList = QGuiApplication::screens();
-    for(int screenID = 0; screenID < screenList.length(); screenID++) {
-        QScreen* screen = screenList.at(screenID);
-        int screenLeftMostPixel = screen->geometry().x();
-        int screenRightMostPixel = screen->geometry().x() + screen->geometry().width();
-        int screenTopMostPixel = screen->geometry().y();
-        int screenBottomMostPixel = screen->geometry().y() + screen->geometry().height();
-        if(screenLeftMostPixel < leftMostPixel) {
-            leftMostPixel = screenLeftMostPixel;
-            leftMost = screenID;
-        }
-        if(screenRightMostPixel > rightMostPixel) {
-            rightMostPixel = screenRightMostPixel;
-            rightMost = screenID;
-        }
-        if(screenTopMostPixel < topMostPixel) {
-            topMostPixel = screenTopMostPixel;
-            topMost = screenID;
-        }
-        if(screenBottomMostPixel > bottomMostPixel) {
-            bottomMostPixel = screenBottomMostPixel;
-            bottomMost = screenID;
-        }
-    }
-
-    if(rootWindow->visibility() == QQuickWindow::FullScreen) {
+    if(m_fullScreen) {
         rootWindow->setVisibility(QQuickWindow::Windowed);
-    } else {
+        Atom fullmons = XInternAtom(display, "_NET_WM_FULLSCREEN_MONITORS", False);
+        XEvent xev2;
+        memset(&xev2, 0, sizeof(xev2));
+        xev2.type = ClientMessage;
+        xev2.xclient.window = parentItem->window()->winId();
+        xev2.xclient.message_type = fullmons;
+        xev2.xclient.format = 32;
+        xev2.xclient.data.l[0] = m_topMost; /* your topmost monitor number */
+        xev2.xclient.data.l[1] = m_bottomMost; /* bottommost */
+        xev2.xclient.data.l[2] = m_leftMost; /* leftmost */
+        xev2.xclient.data.l[3] = m_rightMost; /* rightmost */
+        xev2.xclient.data.l[4] = 0; /* source indication */
+
+        XSendEvent (display, DefaultRootWindow(display), False,
+                    SubstructureRedirectMask | SubstructureNotifyMask, &xev2);
         rootWindow->setVisibility(QQuickWindow::FullScreen);
+    } else {
+        rootWindow->setVisibility(QQuickWindow::Windowed);
     }
-
-    Atom fullmons = XInternAtom(display, "_NET_WM_FULLSCREEN_MONITORS", False);
-    XEvent xev2;
-    memset(&xev2, 0, sizeof(xev2));
-    xev2.type = ClientMessage;
-    xev2.xclient.window = parentItem->window()->winId();
-    xev2.xclient.message_type = fullmons;
-    xev2.xclient.format = 32;
-    xev2.xclient.data.l[0] = topMost; /* your topmost monitor number */
-    xev2.xclient.data.l[1] = bottomMost; /* bottommost */
-    xev2.xclient.data.l[2] = leftMost; /* leftmost */
-    xev2.xclient.data.l[3] = rightMost; /* rightmost */
-    xev2.xclient.data.l[4] = 0; /* source indication */
-
-    XSendEvent (display, DefaultRootWindow(display), False,
-                SubstructureRedirectMask | SubstructureNotifyMask, &xev2);
+    XFlush(display);
 #endif
+}
+
+QQmlListProperty<ScreenInfoScreen> ScreenInfo::screens()
+{
+    return QQmlListProperty<ScreenInfoScreen>(this, m_screens);
+}
+
+bool ScreenInfo::fullScreen() const
+{
+    return m_fullScreen;
+}
+
+int ScreenInfo::topMost() const
+{
+    return m_topMost;
+}
+
+int ScreenInfo::bottomMost() const
+{
+    return m_bottomMost;
+}
+
+int ScreenInfo::leftMost() const
+{
+    return m_leftMost;
+}
+
+int ScreenInfo::rightMost() const
+{
+    return m_rightMost;
+}
+
+void ScreenInfo::setFullScreen(bool arg)
+{
+    if (m_fullScreen != arg) {
+        m_fullScreen = arg;
+        emit fullScreenChanged(arg);
+    }
+}
+
+void ScreenInfo::setTopMost(int arg)
+{
+    if (m_topMost != arg) {
+        m_topMost = arg;
+        emit topMostChanged(arg);
+    }
+}
+
+void ScreenInfo::setBottomMost(int arg)
+{
+    if (m_bottomMost != arg) {
+        m_bottomMost = arg;
+        emit bottomMostChanged(arg);
+    }
+}
+
+void ScreenInfo::setLeftMost(int arg)
+{
+    if (m_leftMost != arg) {
+        m_leftMost = arg;
+        emit leftMostChanged(arg);
+    }
+}
+
+void ScreenInfo::setRightMost(int arg)
+{
+    if (m_rightMost != arg) {
+        m_rightMost = arg;
+        emit rightMostChanged(arg);
+    }
 }

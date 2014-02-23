@@ -26,7 +26,7 @@ int main(int argc, char *argv[])
     qmlRegisterType<MDStateManager>("MDStateManager", 1, 0, "MDStateManager");
     qmlRegisterType<Settings>("Settings", 1, 0, "Settings");
     qmlRegisterType<ScreenInfo>("ScreenInfo", 1, 0, "ScreenInfo");
-    qmlRegisterType<ScreenInfoScreen>("ScreenInfoScreen", 1, 0, "ScreenInfoScreen");
+    qmlRegisterType<ScreenInfoScreen>("ScreenInfo", 1, 0, "ScreenInfoScreen");
 
     QGuiApplication app(argc, argv);
 
@@ -47,7 +47,7 @@ int main(int argc, char *argv[])
 //    view.engine()->addImportPath("/repos/flymodenavigator-qt3d/build-flymodenavigator-Desktop_Qt_5_2_0_clang_64bit-Release/src/libs");
 #endif
     view.setMainQmlFile("qml/oculus/main.qml");
-    view.fullScreenAllMonitors();
+//    view.fullScreenAllMonitors();
     view.show();
 
     return app.exec();
