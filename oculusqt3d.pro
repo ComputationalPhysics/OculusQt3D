@@ -1,3 +1,5 @@
+include(oculus.pri)
+
 QT += 3dquick
 
 # Add more folders to ship with the application, here
@@ -19,11 +21,6 @@ mac: LIBS += -framework IOKit
 mac: LIBS += -framework ApplicationServices
 mac: LIBS += -L/Users/anderhaf/Downloads/OculusSDK/LibOVR/Lib/MacOS/Release/ -lovr
 
-linux: INCLUDEPATH += /home/compphys/Downloads/OculusSDK/LibOVR/Include
-linux: INCLUDEPATH += /home/svenni/apps/oculus/Oculus/OculusSDK/LibOVR/Include
-#linux: QML_IMPORT_PATH += /home/compphys/sandbox/flymodenavigator-qt3d/build-flymodenavigator-Desktop_Qt_5_2_0_GCC_64bit-Release/src/libs
-linux: LIBS += -L/home/compphys/Downloads/OculusSDK/LibOVR/Lib/Linux/Release/x86_64/ -lovr
-linux: LIBS += -L/home/svenni/apps/oculus/Oculus/OculusSDK/LibOVR/Lib/Linux/Release/x86_64/ -lovr
 linux: LIBS += -lX11
 linux: LIBS += -lXinerama
 linux: LIBS += -ludev
