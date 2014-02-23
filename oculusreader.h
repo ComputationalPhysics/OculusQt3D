@@ -85,6 +85,7 @@ public slots:
     void setEnabled(bool arg)
     {
         if (m_enabled != arg) {
+            m_isFirst = true;
             m_enabled = arg;
             emit enabledChanged(arg);
         }

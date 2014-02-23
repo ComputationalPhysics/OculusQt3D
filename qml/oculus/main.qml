@@ -1,25 +1,49 @@
 import QtQuick 2.0
 import Qt3D 2.0
 import Qt3D.Shapes 2.0
+import QtQuick.Controls 1.1
+import QtQuick.Layouts 1.1
+import QtQuick.Dialogs 1.1
 import StereoViewport 1.0
-import FileIO 1.0
 import OculusReader 1.0
-import Mts0_io 1.0
+import MDStateManager 1.0
+import Settings 1.0
+import QtQuick.Window 2.0
+
 import CompPhys.MultiBillboard 1.0
 import CompPhys.FlyModeNavigator 1.0
-//import "../../../../flymodenavigator-qt3d/flymodenavigator-qt3d/qml/flymodenavigator"
+
+import ScreenInfo 1.0
 
 Rectangle {
     id: rectRoot
-    property point lensOffsetFromCenter: Qt.point(0,0)
-    property rect distortion: Qt.rect(1, 0.22, 0.24, 0.0)
-    property real aspectRatio: width / height;
-    property real fillScale: 1.8;
-    width: 1280
-    height: 720
+    property real pixelScale: 1.0
+    property int mainScreenWidth: 640
+    property int mainScreenHeight: 480
+    property int oculusScreenWidth: 320
+    property int oculusScreenHeight: 240
+    property int totalScreenWidth: 760
+    width: mainScreenWidth
+    height: mainScreenHeight
 
-    Mts0_io {
-        id: mts0_io
+    Component.onCompleted: {
+        rectRoot.forceActiveFocus()
+        console.log("width, height:")
+    }
+
+    ScreenInfo {
+        id: screenInfo
+        Component.onCompleted: {
+            mainScreenWidth = screens[0].geometry.width
+            mainScreenHeight = screens[0].geometry.height
+            oculusScreenWidth = screens[1].geometry.width
+            oculusScreenHeight = screens[1].geometry.height
+            totalScreenWidth = mainScreenWidth + oculusScreenWidth
+        }
+    }
+
+    Settings {
+        id: settings
     }
 
     OculusReader {
@@ -28,177 +52,239 @@ Rectangle {
         camera: viewportRoot.camera
     }
 
-    Viewport {
+    StereoViewport {
         id: viewportRoot
         fillColor: "black"
-//        width: rectRoot.width * 1.8
-//        height: rectRoot.height * 1.8 // TODO: Check real ratio
-        width: rectRoot.width
-        height: rectRoot.height
-//        stereoType: StereoViewport.None
+        //        width: rectRoot.width * 1.8
+        //        height: rectRoot.height * 1.8 // TODO: Check real ratio
+        width: mainScreenWidth / totalScreenWidth * parent.width * pixelScale
+        height: parent.height * pixelScale
+        stereoType: StereoViewport.StretchedLeftRight
         fovzoom: false
         light: Light {
-            position: Qt.vector3d(2.0, 1.0, 3.0)
+            ambientColor: Qt.rgba(1,1,1,1)
+            position: camera.eye
+            quadraticAttenuation: 0.0001
         }
 
         camera: Camera {
             id: camera
-            nearPlane: 2.0
+            nearPlane: 5.0
             farPlane: 500
             fieldOfView: 60
             center: Qt.vector3d(1,0,0)
             eye: Qt.vector3d(5,0,0)
-//            eyeSeparation: 0.03
+//            eyeSeparation: 0.06
+            eyeSeparation: 0.0
+        }
+
+        MDStateManager {
+            id: stateManager
+            onCurrentTimestepChanged: viewportRoot.update()
         }
 
         MultiBillboard {
             id: multiSphere
-            cullFaces: Item3D.CullBackFaces
+            dataSource: stateManager
 
-            dataSource: mts0_io
-
-            effect: ShaderProgram {
-                texture: "sphere2.png"
-
-                vertexShader: billboardsVertexShader.read()
-                fragmentShader: billboardsFragmentShader.read()
-            }
-        }
-
-        // TODO Fix bug in MolecularDynamics class and remove this Sphere
-        Sphere {
-            x: -1000
-            radius: 2.0
             effect: Effect {
-                color: "blue"
+                texture: "sphere2.png"
+                blending: true
+                useLighting: true
             }
         }
     }
 
-    FileIO {
-        id: vertexShaderFile
-        source: "oculus.vert"
-        onError: console.log(msg)
+    ShaderEffectSource {
+        id: viewportClone
+        property bool show3d: true
+        sourceItem: viewportRoot
+        width: viewportRoot.width / pixelScale
+        height: viewportRoot.height / pixelScale
+        sourceRect: show3d ? Qt.rect(0,0,viewportRoot.width, viewportRoot.height)
+                           : Qt.rect(0,0,viewportRoot.width / 2, viewportRoot.height)
     }
 
-    FileIO {
-        id: fragmentShaderFile
-        source: "oculus.frag"
-        onError: console.log(msg)
-    }
-
-    FileIO {
-        id: billboardsVertexShader
-        source: "billboards.vert"
-        onError: console.log(msg)
-    }
-
-    FileIO {
-        id: billboardsFragmentShader
-        source: "billboards.frag"
-        onError: console.log(msg)
-    }
-
-//    ShaderEffectSource {
-//        id: shaderEffectSourceLeft
-//        width: rectRoot.width / 2
+//    OculusView {
 //        anchors {
-//            left: rectRoot.left
-//            top: rectRoot.top
-//            bottom: rectRoot.bottom
+//            right: parent.right
 //        }
-//        visible: true
-
-//        hideSource: true
-//        sourceItem: viewportRoot
-//        sourceRect: Qt.rect(0, 0, viewportRoot.width / 2, viewportRoot.height)
-//    }
-
-//    ShaderEffectSource {
-//        id: shaderEffectSourceRight
-//        width: rectRoot.width / 2
-//        anchors {
-//            right: rectRoot.right
-//            top: rectRoot.top
-//            bottom: rectRoot.bottom
-//        }
-//        visible: true
-
-//        hideSource: true
-//        sourceItem: viewportRoot
-//        sourceRect: Qt.rect(viewportRoot.width / 2, 0, viewportRoot.width / 2, viewportRoot.height)
-//    }
-
-//    Item {
-//        width: rectRoot.width / 2
-//        anchors {
-//            left: rectRoot.left
-//            top: rectRoot.top
-//            bottom: rectRoot.bottom
-//        }
-//        clip: true
-//        ShaderEffect {
-//            width: parent.width + 100
-//            height: parent.height
-//            x: 0
-
-//            property variant qt_Texture0: shaderEffectSourceLeft
-//            property point lensOffsetFromCenter: rectRoot.lensOffsetFromCenter
-//            property rect distortion: rectRoot.distortion
-//            property real aspectRatio: rectRoot.aspectRatio
-//            property real fillScale: rectRoot.fillScale
-//            vertexShader: vertexShaderFile.read()
-//            fragmentShader: fragmentShaderFile.read()
-//        }r
-//    }
-
-//    Item {
-//        width: rectRoot.width / 2
-//        anchors {
-//            right: rectRoot.right
-//            top: rectRoot.top
-//            bottom: rectRoot.bottom
-//        }
-//        clip: true
-//        ShaderEffect {
-//            width: parent.width + 100
-//            height: parent.height
-//            x: -100
-
-//            property variant qt_Texture0: shaderEffectSourceRight
-//            property point lensOffsetFromCenter: Qt.point(-rectRoot.lensOffsetFromCenter.x, rectRoot.lensOffsetFromCenter.y)
-//            property rect distortion: rectRoot.distortion
-//            property real aspectRatio: rectRoot.aspectRatio
-//            property real fillScale: rectRoot.fillScale
-//            vertexShader: vertexShaderFile.read()
-//            fragmentShader: fragmentShaderFile.read()
-//        }
+//        width: oculusScreenWidth / totalScreenWidth * parent.width
+//        height: oculusScreenHeight / mainScreenHeight * parent.height
+//        viewport: viewportRoot
 //    }
 
     FlyModeNavigator {
-        focus: true
+        id: flyModeNavigator
         camera: viewportRoot.camera
     }
 
+    Rectangle {
+        id: fileDataDialog
+        anchors.fill: viewportClone
+        opacity: 0.95
+        visible: false
+        enabled: true
+        MouseArea {
+            anchors.fill: parent
+        }
+
+        GridLayout {
+            anchors.centerIn: parent
+            width: parent.width * 0.5
+            height: parent.height * 0.5
+            columns: 2
+            columnSpacing: parent.width * 0.01
+            rowSpacing: parent.width * 0.01
+            ExclusiveGroup { id: group }
+            Label {
+                text: "Format:"
+                Layout.minimumWidth: 150
+            }
+
+            Row {
+                spacing: 10
+                RadioButton {
+                    id: mts0Radio
+                    text: "mts0"
+                    exclusiveGroup: group
+                    checked: true
+                }
+                RadioButton {
+                    id: xyzRadio
+                    text: "xyz"
+                    exclusiveGroup: group
+                }
+            }
+
+            Label {
+                id: fileLabel
+                text: "Folder:"
+            }
+            TextField {
+                id: fileTextField
+                Layout.fillWidth: true
+                text: settings.value("previousFileDialogPath", "")
+            }
+            Button {
+                text: "Browse..."
+                onClicked: {
+                    fileDialog.open()
+                }
+            }
+
+            Item {
+                Layout.fillWidth: true
+            }
+            Label {
+                text: "Number of timesteps:"
+                visible: mts0Radio.checked
+            }
+            TextField {
+                id: nTimeStepsField
+                text:  settings.value("previousNTimeSteps", "1")
+                visible: mts0Radio.checked
+            }
+            Label {
+                text: "Number of CPUs:"
+                visible: mts0Radio.checked
+            }
+            Row {
+                TextField {
+                    width: 20
+                    id: nCPUsx
+                    text:  settings.value("previousNCPUsx", "2")
+                }
+                TextField {
+                    width: 20
+                    id: nCPUsy
+                    text:  settings.value("previousNCPUsy", "2")
+                }
+                TextField {
+                    width: 20
+                    id: nCPUsz
+                    text:  settings.value("previousNCPUsz", "2")
+                }
+                visible: mts0Radio.checked
+            }
+            Button {
+                text: "OK"
+                onClicked: {
+                    if(mts0Radio.checked) {
+                        stateManager.loadMts0(fileTextField.text, nTimeStepsField.text, Qt.vector3d(nCPUsx.text, nCPUsy.text, nCPUsz.text))
+                    } else {
+                        stateManager.loadXyz(fileTextField.text)
+                    }
+                    fileDataDialog.visible = false
+                    rectRoot.focus = true
+                    viewportRoot.update()
+                    settings.setValue("previousFileDialogPath", fileTextField.text)
+                    settings.setValue("previousNTimeSteps", nTimeStepsField.text)
+                    settings.setValue("previousNCPUsx", nCPUsx.text)
+                    settings.setValue("previousNCPUsy", nCPUsy.text)
+                    settings.setValue("previousNCPUsz", nCPUsz.text)
+                }
+            }
+            Button {
+                text: "Cancel"
+                onClicked:  {
+                    fileDataDialog.visible = false
+                    rectRoot.focus = true
+                }
+            }
+            Item {
+                Layout.fillHeight: true
+            }
+        }
+    }
+
+    FileDialog {
+        id: fileDialog
+        selectFolder: mts0Radio.checked
+        onAccepted: {
+            if(selectFolder) {
+                fileTextField.text = folder.toString().replace("file://", "")
+            } else {
+                fileTextField.text = fileUrl.toString().replace("file://", "")
+            }
+        }
+    }
+
     Keys.onPressed:  {
-        switch(event.key) {
-        case Qt.Key_R:
-            multiSphere.showWater = !multiSphere.showWater
-            break
-        case Qt.Key_O:
-            oculusReader.enabled = !oculusReader.enabled
-            break
+        if(event.modifiers & Qt.ControlModifier) {
+            switch(event.key) {
+            case Qt.Key_O:
+                fileDataDialog.visible = true
+                flyModeNavigator.deactivate()
+                break;
+            case Qt.Key_Q:
+                Qt.quit();
+                break;
+            }
+        } else {
+            switch(event.key) {
+            case Qt.Key_R:
+                stateManager.showWater = !stateManager.showWater
+                break
+            case Qt.Key_O:
+                oculusReader.enabled = !oculusReader.enabled
+                break
+            case Qt.Key_3:
+                console.log("3 clicked")
+                viewportClone.show3d = !viewportClone.show3d
+                break
+            }
         }
     }
 
     Text {
-        text: "FPS: "+multiSphere.fps.toFixed(2)
+        text: "FPS: "+ multiSphere.fps.toFixed(0)
         color: "white"
     }
 
     Text {
         y: 20
-        text: "Visible atoms: "+multiSphere.visibleAtoms
+        text: "Visible atoms: "+stateManager.numberOfAtoms
         color: "white"
     }
 }

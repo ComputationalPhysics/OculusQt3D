@@ -4,9 +4,13 @@
 #include <fileio.h>
 #include <OVR.h>
 #include <oculusreader.h>
-#include <mts0_io.h>
-#include <multibillboard.h>
 #include <oculusview.h>
+#include <mdstatemanager.h>
+#include <settings.h>
+#include <screeninfo.h>
+#include <screeninfoscreen.h>
+//#include <exampledatasource.h>
+
 //#include <mousemover.h>
 #include <QQmlContext>
 #include <QQuickView>
@@ -19,20 +23,31 @@ int main(int argc, char *argv[])
     qmlRegisterType<FileIO>("FileIO", 1, 0, "FileIO");
     qmlRegisterType<StereoViewport>("StereoViewport", 1, 0, "StereoViewport");
     qmlRegisterType<OculusReader>("OculusReader", 1, 0, "OculusReader");
-//    qmlRegisterType<MultiBillboard>("MultiBillboard", 1, 0, "MultiBillboard");
-    qmlRegisterType<Mts0_io>("Mts0_io", 1, 0, "Mts0_io");
-
+    qmlRegisterType<MDStateManager>("MDStateManager", 1, 0, "MDStateManager");
+    qmlRegisterType<Settings>("Settings", 1, 0, "Settings");
+    qmlRegisterType<ScreenInfo>("ScreenInfo", 1, 0, "ScreenInfo");
+    qmlRegisterType<ScreenInfoScreen>("ScreenInfoScreen", 1, 0, "ScreenInfoScreen");
 
     QGuiApplication app(argc, argv);
 
+    QSurfaceFormat format;
+    format.setMajorVersion(3);
+    format.setMinorVersion(3);
     OculusView view;
+    view.setFormat(format);
+#ifdef Q_OS_MACX
+    view.addImportPath(".");
+#else
+    view.addImportPath("../libs");
+#endif
+
 #ifdef Q_OS_LINUX
 //    view.engine()->addImportPath("/home/compphys/sandbox/flymodenavigator-qt3d/build-flymodenavigator-Desktop_Qt_5_2_0_GCC_64bit-Release/src/libs");
 #else
 //    view.engine()->addImportPath("/repos/flymodenavigator-qt3d/build-flymodenavigator-Desktop_Qt_5_2_0_clang_64bit-Release/src/libs");
 #endif
     view.setMainQmlFile("qml/oculus/main.qml");
-//    view.fullScreenAllMonitors();
+    view.fullScreenAllMonitors();
     view.show();
 
     return app.exec();

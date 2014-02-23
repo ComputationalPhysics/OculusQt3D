@@ -5,14 +5,16 @@ QT += 3dquick
 # Add more folders to ship with the application, here
 folder_01.source = qml/oculus
 folder_01.target = qml
+
 DEPLOYMENTFOLDERS = folder_01
-mac: CONFIG -= app_bundle
+#mac: CONFIG -= app_bundle
 
 QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.9
 
 # Additional import path used to resolve QML modules in Creator's code model
-QML_IMPORT_PATH =
-INCLUDEPATH += /Users/anderhaf/Downloads/OculusSDK/LibOVR/Include
+# QML_IMPORT_PATH = /repos/multibillboard/build-multibillboard-Desktop_Qt_5_2_0_clang_64bit-Release/src/libs
+mac: INCLUDEPATH += /Users/anderhaf/Downloads/OculusSDK/LibOVR/Include
+
 #INCLUDEPATH += /repos/flymodenavigator-qt3d/flymodenavigator-qt3d/
 DEPENDPATH += /Users/anderhaf/Downloads/OculusSDK/LibOVR/Include
 mac: LIBS += -framework CoreFoundation
@@ -20,6 +22,8 @@ mac: LIBS += -framework CoreGraphics
 mac: LIBS += -framework IOKit
 mac: LIBS += -framework ApplicationServices
 mac: LIBS += -L/Users/anderhaf/Downloads/OculusSDK/LibOVR/Lib/MacOS/Release/ -lovr
+mac: INCLUDEPATH += /Users/anderhaf/Qt/5.2.0/clang_64/include
+mac: LIBS += -L/Users/anderhaf/Qt/5.2.0/clang_64/lib
 
 linux: LIBS += -lX11
 linux: LIBS += -lXinerama
@@ -41,9 +45,12 @@ SOURCES += main.cpp \
     qgldrawbuffersurface.cpp \
     fileio.cpp \
     oculusreader.cpp \
-    mts0_io.cpp \
-    multibillboard.cpp \
-    oculusview.cpp
+    oculusview.cpp \
+    mdstatemanager.cpp \
+    mdstate.cpp \
+    settings.cpp \
+    screeninfo.cpp \
+    screeninfoscreen.cpp
 
 # Installation path
 # target.path =
@@ -58,15 +65,18 @@ HEADERS += \
     qgldrawbuffersurface_p.h \
     fileio.h \
     oculusreader.h \
-    mts0_io.h \
-    multibillboard.h \
-    oculusview.h
+    oculusview.h \
+    mdstatemanager.h \
+    mdstate.h \
+    settings.h \
+    screeninfo.h \
+    screeninfoscreen.h
 #    /repos/flymodenavigator-qt3d/flymodenavigator-qt3d/mousemover.h
 
-copydata.commands = $(COPY_DIR) $$PWD/qml $$OUT_PWD
-first.depends = $(first) copydata
-export(first.depends)
-export(copydata.commands)
-QMAKE_EXTRA_TARGETS += first copydata
+#copydata.commands = $(COPY_DIR) $$PWD/qml $$OUT_PWD
+#first.depends = $(first) copydata
+#export(first.depends)
+#export(copydata.commands)
+#QMAKE_EXTRA_TARGETS += first copydata
 
 QMAKE_CXXFLAGS += -std=c++0x
