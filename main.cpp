@@ -7,8 +7,6 @@
 #include <oculusview.h>
 #include <mdstatemanager.h>
 #include <settings.h>
-#include <screeninfo.h>
-#include <screeninfoscreen.h>
 //#include <exampledatasource.h>
 
 //#include <mousemover.h>
@@ -16,6 +14,8 @@
 #include <QQuickView>
 #include <QQmlEngine>
 #include <QScreen>
+#include <screeninfoscreen.h>
+#include <screeninfo.h>
 
 int main(int argc, char *argv[])
 {

@@ -39,6 +39,10 @@ Rectangle {
             oculusScreenWidth = screens[1].geometry.width
             oculusScreenHeight = screens[1].geometry.height
             totalScreenWidth = mainScreenWidth + oculusScreenWidth
+            screensChanged()
+        }
+        onScreensChanged: {
+            displaySettings.refresh()
         }
     }
 
@@ -286,5 +290,22 @@ Rectangle {
         y: 20
         text: "Visible atoms: "+stateManager.numberOfAtoms
         color: "white"
+    }
+
+    Rectangle {
+        width: 100
+        height: 100
+        color: "red"
+        MouseArea {
+            anchors.fill: parent
+            onClicked: {
+                screenInfo.toggleFullscreen()
+            }
+        }
+    }
+
+    DisplaySettings {
+        id: displaySettings
+        screenInfo: screenInfo
     }
 }
