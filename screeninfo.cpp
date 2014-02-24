@@ -7,6 +7,7 @@
 #include "screeninfoscreen.h"
 
 #ifdef Q_OS_LINUX
+#include <X11/extensions/Xinerama.h>
 #include <X11/Xlib.h>
 #include <X11/X.h>
 #endif
@@ -19,13 +20,20 @@ ScreenInfo::ScreenInfo(QObject *parent) :
     m_leftMost(0),
     m_rightMost(0)
 {
-    QList<QScreen*> screenList = QGuiApplication::screens();
-    int id = 0;
-    for(QScreen *screen : screenList) {
-        ScreenInfoScreen* screenInfoScreen = new ScreenInfoScreen(screen->geometry(), id, this);
+//    QList<QScreen*> screenList = QGuiApplication::screens();
+//    int id = 0;
+//    for(QScreen *screen : screenList) {
+    Display* display;
+    display = XOpenDisplay(NULL);
+    int snumber = 0;
+    XineramaScreenInfo *screens = XineramaQueryScreens(display, &snumber);
+    for (int i=0; i<snumber; ++i)
+    {
+        const XineramaScreenInfo& screen = screens[i];
+        QRect geometry(screen.x_org, screen.y_org, screen.width, screen.height);
+        ScreenInfoScreen* screenInfoScreen = new ScreenInfoScreen(geometry, i, this);
         m_screens.append(screenInfoScreen);
         emit screensChanged();
-        id++;
     }
 }
 
@@ -39,14 +47,16 @@ void ScreenInfo::apply() {
         qWarning() << "Could not find parent window!";
         return;
     }
+    qDebug() << "Applying new monitor settings, "
+             << "topMost:" << m_topMost << "bottomMost:" << m_bottomMost
+             << "leftMost:" << m_leftMost << "rightMost" << m_rightMost;
     QQuickWindow* rootWindow = parentItem->window();
-#ifdef Q_OS_LINUX
-    Display* display;
-    display = XOpenDisplay(NULL);
-    XSynchronize(display, True);
 
     if(m_fullScreen) {
-        rootWindow->setVisibility(QQuickWindow::Windowed);
+#ifdef Q_OS_LINUX
+        Display* display;
+        display = XOpenDisplay(NULL);
+        XSynchronize(display, True);
         Atom fullmons = XInternAtom(display, "_NET_WM_FULLSCREEN_MONITORS", False);
         XEvent xev2;
         memset(&xev2, 0, sizeof(xev2));
@@ -62,12 +72,13 @@ void ScreenInfo::apply() {
 
         XSendEvent (display, DefaultRootWindow(display), False,
                     SubstructureRedirectMask | SubstructureNotifyMask, &xev2);
+        XFlush(display);
+#endif
+
         rootWindow->setVisibility(QQuickWindow::FullScreen);
     } else {
         rootWindow->setVisibility(QQuickWindow::Windowed);
     }
-    XFlush(display);
-#endif
 }
 
 QQmlListProperty<ScreenInfoScreen> ScreenInfo::screens()

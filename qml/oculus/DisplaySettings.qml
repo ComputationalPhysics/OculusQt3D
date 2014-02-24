@@ -6,7 +6,8 @@ Rectangle {
     id: displaySettingsRoot
     property ScreenInfo screenInfo
     property list<Item> screenComponents
-    readonly property alias fullScreen: fullscreenCheckBox.checked
+    property alias fullScreen: fullscreenCheckBox.checked
+    property bool threedTV: false
     property size viewportSize: Qt.size(1920, 1080)
     property rect mainGeometry: Qt.rect(0,0,640,480)
     property rect oculusGeometry: Qt.rect(640,0,320,240)
@@ -70,6 +71,7 @@ Rectangle {
     function updateGeometry() {
         viewportSize.width = parseInt(widthTextField.text)
         viewportSize.height = parseInt(heightTextField.text)
+        threedTV = threedTVCheckBox.checked
         if(!fullScreen) {
             mainGeometry.x = 0
             mainGeometry.y = 0
@@ -197,8 +199,9 @@ Rectangle {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
         anchors.margins: parent.width * 0.1
+        anchors.bottom: controls.top
+        anchors.bottomMargin: parent.width * 0.02
         width: parent.width * 0.8
-        height: parent.height * 0.6
         color: "#8b9dc3"
         Rectangle {
             anchors.fill: parent
@@ -209,60 +212,63 @@ Rectangle {
         }
     }
 
-    Text {
-        id: infoText
+    Column {
+        id: controls
         anchors {
             horizontalCenter: parent.horizontalCenter
-            top: screenArea.bottom
+            bottom: parent.bottom
             margins: parent.width * 0.02
         }
-        color: screenArea.enabled ? "black" : "grey"
+        spacing: parent.width * 0.02
         width: parent.width * 0.9
-        text: "Select the displays you want to use. " +
-              "Click the circle to set it as the Oculus Rift display."
-        wrapMode: Text.WrapAtWordBoundaryOrAnywhere
-        horizontalAlignment: Text.AlignHCenter
-    }
+        Text {
+            id: infoText
+            color: screenArea.enabled ? "black" : "grey"
+            width: parent.width
+            text: "Select the displays you want to use. " +
+                  "Click the circle to set it as the Oculus Rift display."
+            wrapMode: Text.WrapAtWordBoundaryOrAnywhere
+            horizontalAlignment: Text.AlignHCenter
+        }
 
-    Row {
-        id: sizeRow
-        anchors {
-            horizontalCenter: parent.horizontalCenter
-            top: infoText.bottom
-            margins: parent.width * 0.02
+        CheckBox {
+            id: threedTVCheckBox
+            anchors.horizontalCenter: parent.horizontalCenter
+            text: "3D TV"
         }
-        Label {
-            text: "Source size: "
-        }
-        TextField {
-            id: widthTextField
-            text: "1920"
-        }
-        TextField {
-            id: heightTextField
-            text: "1080"
-        }
-    }
 
-    Row {
-        anchors {
-            horizontalCenter: parent.horizontalCenter
-            top: sizeRow.bottom
-            margins: parent.width * 0.02
-        }
-        Button {
-            text: "Apply"
-            enabled: applyableAsFullScreen || !fullScreen
-            onClicked: {
-                updateGeometry()
-                displaySettingsRoot.apply()
+        Row {
+            id: sizeRow
+            anchors.horizontalCenter: parent.horizontalCenter
+            Label {
+                text: "Source size: "
+            }
+            TextField {
+                id: widthTextField
+                text: "1920"
+            }
+            TextField {
+                id: heightTextField
+                text: "1080"
             }
         }
 
-        Button {
-            text: "Close"
-            onClicked: {
-                displaySettingsRoot.close()
+        Row {
+            anchors.horizontalCenter: parent.horizontalCenter
+            Button {
+                text: "Apply"
+                enabled: applyableAsFullScreen || !fullScreen
+                onClicked: {
+                    updateGeometry()
+                    displaySettingsRoot.apply()
+                }
+            }
+
+            Button {
+                text: "Close"
+                onClicked: {
+                    displaySettingsRoot.close()
+                }
             }
         }
     }

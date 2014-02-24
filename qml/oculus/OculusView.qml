@@ -8,6 +8,7 @@ Rectangle {
     color: "blue"
     property StereoViewport viewport
     property bool hideViewport: false
+    property bool stretchedSource: false
     property point lensOffsetFromCenter: Qt.point(0,0)
     property rect distortion: Qt.rect(1, 0.22, 0.24, 0.0)
     property real aspectRatio: width / height;
@@ -26,7 +27,8 @@ Rectangle {
 
         hideSource: hideViewport
         sourceItem: viewport
-        sourceRect: Qt.rect(viewport.width / 8, 0, viewport.width / 4, viewport.height)
+        sourceRect: stretchedSource ? Qt.rect(viewport.width / 8, 0, viewport.width / 4, viewport.height)
+                                    : Qt.rect(0, 0, viewport.width / 2, viewport.height)
     }
 
     ShaderEffectSource {
@@ -41,7 +43,8 @@ Rectangle {
 
         hideSource: hideViewport
         sourceItem: viewport
-        sourceRect: Qt.rect(viewport.width / 2 + viewport.width / 8, 0, viewport.width / 4, viewport.height)
+        sourceRect: stretchedSource ? Qt.rect(viewport.width / 2 + viewport.width / 8, 0, viewport.width / 4, viewport.height)
+                                    : Qt.rect(viewport.width / 2, 0, viewport.width / 2, viewport.height)
     }
 
     Item {
