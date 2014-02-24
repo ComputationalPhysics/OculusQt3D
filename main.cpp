@@ -50,5 +50,6 @@ int main(int argc, char *argv[])
 //    view.fullScreenAllMonitors();
     view.show();
 
+    setlocale (LC_ALL, "en_US.UTF8");
     return app.exec();
 }
