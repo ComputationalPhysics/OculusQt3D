@@ -58,7 +58,7 @@ Rectangle {
         fillColor: "black"
         width: displaySettings.viewportSize.width
         height: displaySettings.viewportSize.height
-        stereoType: StereoViewport.StretchedLeftRight
+        stereoType: displaySettings.threedTV ? StereoViewport.StretchedLeftRight : StereoViewport.LeftRight
         fovzoom: false
 
         light: Light {
@@ -75,7 +75,6 @@ Rectangle {
             center: Qt.vector3d(1,0,0)
             eye: Qt.vector3d(5,0,0)
             eyeSeparation: 0.06
-//            eyeSeparation: 0.0
         }
 
         MDStateManager {
@@ -117,6 +116,7 @@ Rectangle {
         width: displaySettings.oculusGeometry.width // TODO figure out why we need a factor here to avoid errors without oculus
         height: displaySettings.oculusGeometry.height
         viewport: viewportRoot
+        stretchedSource: displaySettings.threedTV
     }
 
     FlyModeNavigator {
