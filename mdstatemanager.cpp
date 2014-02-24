@@ -175,8 +175,8 @@ MDState *MDStateManager::loadTimestepMts0(string mts0_directory, QVector3D numbe
             }
         }
 
-        state->addAtoms(positionsThisCPU,atomTypesThisCPU, true, m_systemSize); // Switch these two to have cpu based periodic boundary conditions
-        //state->addAtoms(positionsThisCPU,atomTypesThisCPU);
+        //        state->addAtoms(positionsThisCPU,atomTypesThisCPU, true, m_systemSize); // Switch these two to have cpu based periodic boundary conditions
+        state->addAtoms(positionsThisCPU,atomTypesThisCPU);
     }
 
     positionsThisCPU.clear();
@@ -225,7 +225,9 @@ bool MDStateManager::loadXyz(QString filename) {
     bool hasNewTimestep = true;
 
     int numberOfAtoms, j;
-    float x,y,z;
+    float x = 1337;
+    float y = 1337;
+    float z = 1337;
 
     while(hasNewTimestep) {
         k = fgets(fileBuffer, 1024, filePointer);
@@ -244,7 +246,8 @@ bool MDStateManager::loadXyz(QString filename) {
         for(int i=0; i<numberOfAtoms; i++) {
             k = fgets(fileBuffer, 1024, filePointer);
             j = sscanf(fileBuffer, "%s %f %f %f", atomName, &x, &y, &z);
-
+            std::cout << atomName << " " << x << " " << y  << " " << z << std::endl;
+            std::cout << fileBuffer << std::endl;
             if (k == NULL) {
                 cerr << "Error reading file " << filename.toStdString() << endl;
                 return false;
@@ -254,12 +257,12 @@ bool MDStateManager::loadXyz(QString filename) {
             } else if (j >= 4) {
                 state->addAtom(QVector3D(x,y,z), atomName);
             } else {
-              break;
+                break;
             }
         }
 
         state->buildVertexBundle();
+        m_states.append(state);
     }
-
     return true;
 }
