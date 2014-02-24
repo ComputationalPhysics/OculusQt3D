@@ -39,7 +39,7 @@ tmppro.close()
 subprocess.call(qmake_path + " tmp.pro 2> errors.tmp", shell=True)
 errorstmp = open("errors.tmp", "r")
 errors = errorstmp.read()
-if errors == "Project MESSAGE: Warning: unknown QT: 3dquick\n" or True:
+if errors == "Project MESSAGE: Warning: unknown QT: 3dquick\n":
     print "Qt3D missing. Installing now..."
     qt3d_src_path = os.path.join(libs_path, "qt3d")
     if not os.path.exists(qt3d_src_path):
