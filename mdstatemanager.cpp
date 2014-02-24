@@ -249,7 +249,7 @@ bool MDStateManager::loadXyz(QString filename) {
                 cerr << "Error reading file " << filename.toStdString() << endl;
                 return false;
             } else if (j < 4) {
-                fprintf(stderr, "xyz timestep) missing type or coordinate(s) in file '%s' for atom '%d'\n",filename.toStdString().c_str(),i+1);
+                fprintf(stderr, "xyz timestep) missing type or coordinate(s) in file '%s' for atom '%d'. Found %d params.\n",filename.toStdString().c_str(),i+1,j);
                 return false;
             } else if (j >= 4) {
                 state->addAtom(QVector3D(x,y,z), atomName);

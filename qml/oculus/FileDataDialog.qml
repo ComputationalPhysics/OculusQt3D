@@ -9,7 +9,8 @@ Rectangle {
     id: fileDataDialogRoot
     property MDStateManager stateManager
     property Settings settings
-    anchors.fill: parent
+    width: 640
+    height: 480
     opacity: 0.95
     visible: false
     enabled: true

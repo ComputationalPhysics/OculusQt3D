@@ -108,14 +108,6 @@ Rectangle {
         sourceRect: show3d ? Qt.rect(0,0,viewportRoot.width, viewportRoot.height)
                            : Qt.rect(0,0,viewportRoot.width / 2, viewportRoot.height)
 
-        onHeightChanged: {
-            console.log("Main:")
-            console.log(x + " " + y + " " + width + " " + height)
-        }
-        onWidthChanged: {
-            console.log("Main:")
-            console.log(x + " " + y + " " + width + " " + height)
-        }
     }
 
     OculusView {
