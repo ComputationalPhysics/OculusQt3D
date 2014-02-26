@@ -175,8 +175,7 @@ MDState *MDStateManager::loadTimestepMts0(string mts0_directory, QVector3D numbe
             }
         }
 
-        //        state->addAtoms(positionsThisCPU,atomTypesThisCPU, true, m_systemSize); // Switch these two to have cpu based periodic boundary conditions
-        state->addAtoms(positionsThisCPU,atomTypesThisCPU);
+        state->addAtoms(positionsThisCPU,atomTypesThisCPU, m_periodic, m_systemSize); // Switch these two to have cpu based periodic boundary conditions
     }
 
     positionsThisCPU.clear();

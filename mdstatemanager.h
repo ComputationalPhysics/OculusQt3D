@@ -20,27 +20,7 @@ class MDStateManager : public DataSource
     Q_PROPERTY(bool showWater READ showWater WRITE setShowWater NOTIFY showWaterChanged)
     Q_PROPERTY(int numberOfAtoms READ numberOfAtoms WRITE setNumberOfAtoms NOTIFY numberOfAtomsChanged)
     Q_PROPERTY(QVector3D systemSize READ systemSize NOTIFY systemSizeChanged)
-
-    int m_playBackSpeed;
-    int m_currentTimestep;
-    int m_timeDirection;
-
-    bool m_showWater;
-
-    int m_numberOfAtoms;
-
-protected:
-    void readData(ifstream *file, void *value);
-    void readMts(char *filename, QArray<char*> &atomTypesThisCPU, QArray<int> &atomIdsThisCPU, QArray<QVector3D > &positionsThisCPU, QVector3D &systemSize);
-    void reset();
-    MDState *loadTimestepMts0(string mts0_directory, QVector3D numberOfCPUs);
-
-    QArray<MDState*> m_states;
-    QVector3D m_systemSize;
-    QArray<QColor4ub> tmpQColor4ubArray;
-    QArray<QVector3D> tmpQVector3DArray;
-    QArray<QVector2D> tmpQVector2DArray;
-    QTimer timer;
+    Q_PROPERTY(bool periodic READ periodic WRITE setPeriodic NOTIFY periodicChanged)
 
 public:
     MDStateManager();
@@ -79,6 +59,11 @@ public:
 
     QGLVertexBundle* vertexBundle();
 
+    bool periodic() const
+    {
+        return m_periodic;
+    }
+
 public slots:
     void updateNextTimestep();
     void setPlayBackSpeed(int arg)
@@ -115,12 +100,42 @@ public slots:
         }
     }
 
+    void setPeriodic(bool arg)
+    {
+        if (m_periodic != arg) {
+            m_periodic = arg;
+            emit periodicChanged(arg);
+        }
+    }
+
 signals:
     void playBackSpeedChanged(int arg);
     void currentTimestepChanged(int arg);
     void showWaterChanged(bool arg);
     void numberOfAtomsChanged(int arg);
     void systemSizeChanged(QVector3D arg);
+    void periodicChanged(bool arg);
+
+protected:
+    void readData(ifstream *file, void *value);
+    void readMts(char *filename, QArray<char*> &atomTypesThisCPU, QArray<int> &atomIdsThisCPU, QArray<QVector3D > &positionsThisCPU, QVector3D &systemSize);
+    void reset();
+    MDState *loadTimestepMts0(string mts0_directory, QVector3D numberOfCPUs);
+
+    QArray<MDState*> m_states;
+    QVector3D m_systemSize;
+    QArray<QColor4ub> tmpQColor4ubArray;
+    QArray<QVector3D> tmpQVector3DArray;
+    QArray<QVector2D> tmpQVector2DArray;
+    QTimer timer;
+
+private:
+    int m_playBackSpeed;
+    int m_currentTimestep;
+    int m_timeDirection;
+    bool m_showWater;
+    int m_numberOfAtoms;
+    bool m_periodic;
 };
 
 #endif // MDSTATEMANAGER_H
