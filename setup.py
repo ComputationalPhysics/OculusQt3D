@@ -20,8 +20,8 @@ if qmake_path[-5:] != "qmake":
 if not os.path.isfile(qmake_path):
     print "Cannot find qmake in " + qmake_path
     sys.exit(0)
-if oculus_path[-9:] != "OculusSDK":
-    oculus_path = os.path.join(oculust_path, "OculusSDK")
+if oculus_path[-9:] != "OculusSDK" and oculus_path[-10:] != "OculusSDK/":
+    oculus_path = os.path.join(oculus_path, "OculusSDK")
 if not os.path.exists(oculus_path):
     print "Cannot find Oculus SDK in " + oculust_path
 libs_path = os.path.join(libs_path, "oculusqt3d")
