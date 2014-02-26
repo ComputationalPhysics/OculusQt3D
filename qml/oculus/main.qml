@@ -89,12 +89,7 @@ Rectangle {
         MultiBillboard {
             id: multiSphere
             dataSource: stateManager
-
-            effect: Effect {
-                texture: "sphere2.png"
-                blending: true
-                useLighting: true
-            }
+            texture: "sphere2.png"
         }
     }
 
