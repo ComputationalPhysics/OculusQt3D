@@ -4,83 +4,59 @@
 MDState::MDState():
     m_showWater(1)
 {
-    colorMap.insert("Si", QColor4ub(230,230,0));
+    colorMap.insert("Si", QColor(230,230,0));
     sizeMap.insert("Si",QVector2D(1.11, 1.11));
 
-    colorMap.insert("A", QColor4ub(0,0,255));
+    colorMap.insert("A", QColor(0,0,255));
     sizeMap.insert("A",QVector2D(0.66, 0.66));
 
-    colorMap.insert("H", QColor4ub(255,255,255));
+    colorMap.insert("H", QColor(255,255,255));
     sizeMap.insert("H",QVector2D(0.35, 0.35));
 
-    colorMap.insert("O", QColor4ub(255,0,0));
+    colorMap.insert("O", QColor(255,0,0));
     sizeMap.insert("O",QVector2D(0.66, 0.66));
 
-    colorMap.insert("Na", QColor4ub(9,92,0));
+    colorMap.insert("Na", QColor(9,92,0));
     sizeMap.insert("Na",QVector2D(1.86, 1.86));
 
-    colorMap.insert("Cl", QColor4ub(95,216,250));
+    colorMap.insert("Cl", QColor(95,216,250));
     sizeMap.insert("Cl",QVector2D(1.02, 1.02));
 
-    colorMap.insert("N", QColor4ub(95,216,250));
+    colorMap.insert("N", QColor(95,216,250));
     sizeMap.insert("N",QVector2D(0.66, 0.66));
+
+    colorMap.insert("C", QColor(95,75,85));
+    sizeMap.insert("C",QVector2D(0.66, 0.66));
 }
 
-//{
-//    colorMap.insert("Si", QColor4ub(230,230,0));
-//    sizeMap.insert("Si",QVector2D(1.11, 1.11));
-
-//    colorMap.insert("A", QColor4ub(248,0,203));
-//    sizeMap.insert("A",QVector2D(0.66, 0.66));
-
-//    colorMap.insert("H", QColor4ub(255,255,255));
-//    sizeMap.insert("H",QVector2D(0.35, 0.35));
-
-//    colorMap.insert("O", QColor4ub(248,0,203));
-//    sizeMap.insert("O",QVector2D(0.66, 0.66));
-
-//    colorMap.insert("Na", QColor4ub(9,92,0));
-//    sizeMap.insert("Na",QVector2D(1.86, 1.86));
-
-//    colorMap.insert("Cl", QColor4ub(95,216,250));
-//    sizeMap.insert("Cl",QVector2D(1.02, 1.02));
-
-//    colorMap.insert("N", QColor4ub(248,0,203));
-//    sizeMap.insert("N",QVector2D(0.66, 0.66));
-//}
-
 MDState::~MDState() {
-    m_positions.clear();
-    m_atomTypes.clear();
-    m_colors.clear();
-    m_sizes.clear();
-    colorMap.clear();
-    sizeMap.clear();
 }
 
 int MDState::getNumberOfAtoms() {
-    return m_positions.size();
-}
-
-void MDState::reserveMemory(int numberOfAtoms) {
-    m_positions.reserve(numberOfAtoms);
-    m_colors.reserve(numberOfAtoms);
-    m_sizes.reserve(numberOfAtoms);
-    m_atomTypes.reserve(numberOfAtoms);
+    int sum = 0;
+    for(DataBundle& bundle : m_dataBundles) {
+        sum += bundle.positions().count();
+    }
+    return sum;
 }
 
 void MDState::addAtom(QVector3D positions, char *atomType, bool addPeriodicCopy, QVector3D systemSize) {
     if(strcmp(atomType,"Na") == 0 || strcmp(atomType,"Cl") == 0) return;
 
-    m_positions.push_back(positions);
-    m_atomTypes.push_back(atomType);
-    QMap<std::string, QColor4ub>::const_iterator colorIterator = colorMap.find(atomType);
-    if(colorIterator != colorMap.end()) m_colors.push_back(colorIterator.value());
-    else m_colors.push_back(QColor4ub(255,0,0));
+    if(!m_atomTypeToDataBundle.contains(atomType)) {
+        m_dataBundles.append(DataBundle());
+        DataBundle *bundle = &(m_dataBundles.last());
+        m_atomTypeToDataBundle.insert(atomType,bundle);
+        qDebug() << atomType;
+        qDebug() << colorMap.value(atomType);
+        bundle->setColor(colorMap.value(atomType, QColor(255, 255, 255, 255)));
+        bundle->setSize(sizeMap.value(atomType, QVector2D(0.1, 0.1)));
+    }
 
-    QMap<std::string, QVector2D>::const_iterator sizeIterator = sizeMap.find(atomType);
-    if(sizeIterator != sizeMap.end()) m_sizes.push_back(sizeIterator.value());
-    else m_sizes.push_back(QVector2D(1.0,1.0));
+    DataBundle* bundle = m_atomTypeToDataBundle.value(atomType);
+    Q_ASSERT(bundle);
+
+    bundle->positions().append(positions);
 
     if(addPeriodicCopy) {
         for(int i=-1; i<=1; i++) {
@@ -97,7 +73,7 @@ void MDState::addAtom(QVector3D positions, char *atomType, bool addPeriodicCopy,
 
 void MDState::addAtoms(QArray<QVector3D> positions, QArray<char *>atomTypes, bool addPeriodicCopy, QVector3D systemSize) {
     // Increase length of all arrays
-    reserveMemory(getNumberOfAtoms() + positions.size());
+//    reserveMemory(getNumberOfAtoms() + positions.size());
 
     for(int i=0; i<positions.size(); i++) {
         addAtom(positions.at(i), atomTypes.at(i), addPeriodicCopy, systemSize);
@@ -106,25 +82,33 @@ void MDState::addAtoms(QArray<QVector3D> positions, QArray<char *>atomTypes, boo
 }
 
 void MDState::buildVertexBundle() {
-    m_vertexBundle = QGLVertexBundle();
-    m_vertexBundle.addAttribute(QGL::Position, m_positions);
-    m_vertexBundle.addAttribute(QGL::Color, m_colors);
-    m_vertexBundle.addAttribute(QGL::CustomVertex0, m_sizes);
+    for(DataBundle &bundle : m_dataBundles) {
+        bundle.generateVertexBundle();
+    }
+//    m_vertexBundle = QGLVertexBundle();
+//    m_vertexBundle.addAttribute(QGL::Position, m_positions);
+//    m_vertexBundle.addAttribute(QGL::Color, m_colors);
+//    m_vertexBundle.addAttribute(QGL::CustomVertex0, m_sizes);
 }
 
-QGLVertexBundle *MDState::vertexBundle()
+QArray<DataBundle> *MDState::dataBundles()
 {
-    return &m_vertexBundle;
+    return &m_dataBundles;
 }
 
-const QArray<QVector3D> &MDState::getPositions() {
-    return m_positions;
-}
+//QGLVertexBundle *MDState::vertexBundle()
+//{
+//    return &m_vertexBundle;
+//}
 
-const QArray<QColor4ub> &MDState::getColors() {
-    return m_colors;
-}
+//const QArray<QVector3D> &MDState::getPositions() {
+//    return m_positions;
+//}
 
-const QArray<QVector2D> &MDState::getSizes() {
-    return m_sizes;
-}
+//const QArray<QColor4ub> &MDState::getColors() {
+//    return m_colors;
+//}
+
+//const QArray<QVector2D> &MDState::getSizes() {
+//    return m_sizes;
+//}

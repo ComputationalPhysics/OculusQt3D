@@ -48,9 +48,11 @@ public:
     Q_INVOKABLE bool loadXyz(QString filename);
     int getNumberOfTimesteps();
 
-    virtual const QArray<QVector3D> &getPositions();
-    virtual const QArray<QColor4ub> &getColors();
-    virtual const QArray<QVector2D > &getSizes();
+//    virtual const QArray<QVector3D> &getPositions();
+//    virtual const QArray<QColor4ub> &getColors();
+//    virtual const QArray<QVector2D > &getSizes();
+
+    virtual QArray<DataBundle> *dataBundles();
 
     int playBackSpeed() const
     {
