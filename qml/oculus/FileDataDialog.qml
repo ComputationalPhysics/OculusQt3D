@@ -96,9 +96,20 @@ Rectangle {
             }
             visible: mts0Radio.checked
         }
+
+        Item {
+            Layout.fillWidth: true
+        }
+
+        CheckBox {
+            id: periodicCheckBox
+            text: "Add periodic copies"
+        }
+
         Button {
             text: "OK"
             onClicked: {
+                stateManager.periodic = periodicCheckBox.checked
                 if(mts0Radio.checked) {
                     stateManager.loadMts0(fileTextField.text, nTimeStepsField.text, Qt.vector3d(nCPUsx.text, nCPUsy.text, nCPUsz.text))
                 } else {

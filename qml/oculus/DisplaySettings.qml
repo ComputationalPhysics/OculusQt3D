@@ -7,7 +7,7 @@ Rectangle {
     property ScreenInfo screenInfo
     property list<Item> screenComponents
     property alias fullScreen: fullscreenCheckBox.checked
-    property bool threedTV: false
+    property bool stretchedLeftRight: false
     property size viewportSize: Qt.size(1920, 1080)
     property rect mainGeometry: Qt.rect(0,0,640,480)
     property rect oculusGeometry: Qt.rect(640,0,320,240)
@@ -16,6 +16,7 @@ Rectangle {
     property int leftMost
     property int rightMost
     property bool applyableAsFullScreen
+    property bool applyableAsStretched
     property bool mainVisible: true
     property bool oculusVisible: true
     signal apply
@@ -23,6 +24,10 @@ Rectangle {
     width: 640
     height: 480
     color: "#dfe3ee"
+
+    onStretchedLeftRightChanged: {
+        console.log(stretchedLeftRight)
+    }
 
     function layoutScreens() {
         var screenComponentsTmp = []
@@ -60,18 +65,22 @@ Rectangle {
 
     function checkApplyability() {
         var applyableTmp = false
+        var applyableStretchedTmp = false
         for(var i in screenComponents) {
             if(screenComponents[i].use) {
                 applyableTmp = true
+                if(screenComponents[i].useAsOculus) {
+                    applyableStretchedTmp = true
+                }
             }
         }
         applyableAsFullScreen = applyableTmp
+        applyableAsStretched = applyableStretchedTmp
     }
 
     function updateGeometry() {
         viewportSize.width = parseInt(widthTextField.text)
         viewportSize.height = parseInt(heightTextField.text)
-        threedTV = threedTVCheckBox.checked
         if(!fullScreen) {
             mainGeometry.x = 0
             mainGeometry.y = 0
@@ -172,6 +181,11 @@ Rectangle {
             mainVisible = mainInUse
             oculusVisible = oculusInUse
         }
+        if(oculusVisible) {
+            stretchedLeftRight = stretchedLeftRightCheckBox.checked
+        } else {
+            stretchedLeftRight = true
+        }
     }
 
     MouseArea {
@@ -232,9 +246,10 @@ Rectangle {
         }
 
         CheckBox {
-            id: threedTVCheckBox
+            id: stretchedLeftRightCheckBox
+            enabled: applyableAsStretched
             anchors.horizontalCenter: parent.horizontalCenter
-            text: "3D TV"
+            text: "Stretched 3D mode"
         }
 
         Row {

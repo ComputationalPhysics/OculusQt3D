@@ -58,7 +58,11 @@ Rectangle {
         fillColor: "black"
         width: displaySettings.viewportSize.width
         height: displaySettings.viewportSize.height
-        stereoType: displaySettings.threedTV ? StereoViewport.StretchedLeftRight : StereoViewport.LeftRight
+        stereoType: displaySettings.stretchedLeftRight ? StereoViewport.StretchedLeftRight : StereoViewport.LeftRight
+        onStereoTypeChanged: {
+            console.log(stereoType)
+        }
+
         fovzoom: false
 
         light: Light {
@@ -100,7 +104,8 @@ Rectangle {
         sourceItem: viewportRoot
         hideSource: true
         sourceRect: show3d ? Qt.rect(0,0,viewportRoot.width, viewportRoot.height)
-                           : Qt.rect(0,0,viewportRoot.width / 2, viewportRoot.height)
+                           : (displaySettings.stretchedLeftRight ? Qt.rect(0,0,viewportRoot.width / 2, viewportRoot.height)
+                                                                 : Qt.rect(0,viewportRoot.height/4, viewportRoot.width / 2, viewportRoot.height / 2))
 
     }
 
@@ -111,7 +116,7 @@ Rectangle {
         width: displaySettings.oculusGeometry.width // TODO figure out why we need a factor here to avoid errors without oculus
         height: displaySettings.oculusGeometry.height
         viewport: viewportRoot
-        stretchedSource: displaySettings.threedTV
+        stretchedSource: displaySettings.stretchedLeftRight
     }
 
     FlyModeNavigator {

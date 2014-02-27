@@ -262,6 +262,7 @@ public:
     StereoViewport::StereoType stereoType;
     QGLAbstractSurface *leftSurface;
     QGLAbstractSurface *rightSurface;
+    bool surfaceDirty;
 
     void setDefaults(QGLPainter *painter);
     void setRenderSettings(QGLPainter *painter);
@@ -321,6 +322,7 @@ StereoViewportPrivate::StereoViewportPrivate()
     , stereoType(StereoViewport::LeftRight)
     , leftSurface(0)
     , rightSurface(0)
+    , surfaceDirty(true)
 {
 }
 
@@ -440,7 +442,10 @@ QGLAbstractSurface *StereoViewportPrivate::leftEyeSurface(const QRect &originalV
         adjust = 0.5f;
         break;
     }
-    if (!leftSurface) {
+    if (!leftSurface || surfaceDirty) {
+        if(leftSurface) {
+            delete leftSurface;
+        }
         if (adjust == 1.0f)
             leftSurface = new QGLSubsurface(mainSurface, viewport);
         else
@@ -502,7 +507,10 @@ QGLAbstractSurface *StereoViewportPrivate::rightEyeSurface(const QRect &original
         adjust = 0.5f;
         break;
     }
-    if (!rightSurface) {
+    if (!rightSurface  || surfaceDirty) {
+        if(rightSurface) {
+            delete rightSurface;
+        }
         if (adjust == 1.0f)
             rightSurface = new QGLSubsurface(mainSurface, viewport);
         else
@@ -1442,6 +1450,7 @@ void StereoViewport::setStereoType(StereoViewport::StereoType arg)
 {
     if (d->stereoType != arg) {
         d->stereoType = arg;
+        d->surfaceDirty = true;
         emit stereoTypeChanged(arg);
     }
 }
