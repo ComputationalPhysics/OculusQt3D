@@ -1,4 +1,5 @@
 #include <QtGui/QGuiApplication>
+#include "frameratecounter.h"
 #include "qtquick2applicationviewer.h"
 #include <stereoviewport.h>
 #include <fileio.h>
@@ -23,6 +24,7 @@ int main(int argc, char *argv[])
     qmlRegisterType<FileIO>("FileIO", 1, 0, "FileIO");
     qmlRegisterType<StereoViewport>("StereoViewport", 1, 0, "StereoViewport");
     qmlRegisterType<OculusReader>("OculusReader", 1, 0, "OculusReader");
+    qmlRegisterType<FrameRateCounter>("OculusReader", 1, 0, "FrameRateCounter");
     qmlRegisterType<MDStateManager>("MDStateManager", 1, 0, "MDStateManager");
     qmlRegisterType<Settings>("Settings", 1, 0, "Settings");
     qmlRegisterType<ScreenInfo>("ScreenInfo", 1, 0, "ScreenInfo");

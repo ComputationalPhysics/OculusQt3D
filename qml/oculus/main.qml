@@ -91,6 +91,9 @@ Rectangle {
             dataSource: stateManager
             texture: "sphere2.png"
         }
+        FrameRateCounter {
+            id: frameRate
+        }
     }
 
     ShaderEffectSource {
@@ -163,7 +166,7 @@ Rectangle {
     }
 
     Text {
-        text: "FPS: "+ multiSphere.fps.toFixed(0)
+        text: "FPS: "+ frameRate.fps.toFixed(0)
         color: "white"
     }
 

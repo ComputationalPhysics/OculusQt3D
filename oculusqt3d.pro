@@ -49,7 +49,8 @@ SOURCES += main.cpp \
     mdstate.cpp \
     settings.cpp \
     screeninfo.cpp \
-    screeninfoscreen.cpp
+    screeninfoscreen.cpp \
+    frameratecounter.cpp
 
 # Installation path
 # target.path =
@@ -69,7 +70,8 @@ HEADERS += \
     mdstate.h \
     settings.h \
     screeninfo.h \
-    screeninfoscreen.h
+    screeninfoscreen.h \
+    frameratecounter.h
 #    /repos/flymodenavigator-qt3d/flymodenavigator-qt3d/mousemover.h
 
 #copydata.commands = $(COPY_DIR) $$PWD/qml $$OUT_PWD
