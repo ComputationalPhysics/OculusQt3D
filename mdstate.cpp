@@ -33,7 +33,7 @@ MDState::MDState(QObject *parent) :
 MDState::~MDState() {
 }
 
-int MDState::getNumberOfAtoms() {
+int MDState::numberOfAtoms() {
     int sum = 0;
     for(DataBundle* bundle : m_dataBundles) {
         sum += bundle->positions().count();

@@ -161,6 +161,12 @@ Rectangle {
                 console.log("3 clicked")
                 viewportClone.show3d = !viewportClone.show3d
                 break
+            case Qt.Key_Plus:
+                displaySettings.linearAttenuation.value -= 0.001
+                break
+            case Qt.Key_Minus:
+                displaySettings.linearAttenuation.value += 0.001
+                break
             }
         }
     }

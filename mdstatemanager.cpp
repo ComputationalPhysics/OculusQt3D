@@ -63,7 +63,7 @@ void MDStateManager::updateNextTimestep() {
     }
 
     if(m_currentTimestep >= 0 && getNumberOfTimesteps()-1) {
-        setNumberOfAtoms(m_states.at(m_currentTimestep)->getNumberOfAtoms());
+        setNumberOfAtoms(m_states.at(m_currentTimestep)->numberOfAtoms());
     } else {
         setNumberOfAtoms(0);
     }
@@ -199,7 +199,7 @@ void MDStateManager::loadMts0(QString foldername, int numberOfTimesteps, QVector
         sprintf(mts0Directory,"%s/%06d/mts0/",foldername.toStdString().c_str(),timestep);
         MDState *state = this->loadTimestepMts0(mts0Directory, numberOfCPUs);
         state->buildVertexBundle();
-        cout << "Loaded " << state->getNumberOfAtoms() << " in timestep " << timestep+1 << " / " << numberOfTimesteps << endl;
+        cout << "Loaded " << state->numberOfAtoms() << " in timestep " << timestep+1 << " / " << numberOfTimesteps << endl;
         m_states.push_back(state);
     }
 }

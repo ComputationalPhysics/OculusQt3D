@@ -81,8 +81,6 @@ Rectangle {
     }
 
     function updateGeometry() {
-        viewportSize.width = parseInt(widthTextField.text)
-        viewportSize.height = parseInt(heightTextField.text)
         if(!fullScreen) {
             mainGeometry.x = 0
             mainGeometry.y = 0
@@ -182,12 +180,19 @@ Rectangle {
 
             mainVisible = mainInUse
             oculusVisible = oculusInUse
+
+            if(!customSourceSizeCheckBox.checked) {
+                widthTextField.text = mainGeometry.width
+                heightTextField.text = mainGeometry.height
+            }
         }
         if(oculusVisible) {
             stretchedLeftRight = stretchedLeftRightCheckBox.checked
         } else {
             stretchedLeftRight = true
         }
+        viewportSize.width = parseInt(widthTextField.text)
+        viewportSize.height = parseInt(heightTextField.text)
     }
 
     MouseArea {
@@ -276,13 +281,19 @@ Rectangle {
             Label {
                 text: "Source size: "
             }
+            CheckBox {
+                id: customSourceSizeCheckBox
+                text: "Custom"
+            }
             TextField {
                 id: widthTextField
                 text: "1920"
+                enabled: customSourceSizeCheckBox.checked
             }
             TextField {
                 id: heightTextField
                 text: "1080"
+                enabled: customSourceSizeCheckBox.checked
             }
         }
 
