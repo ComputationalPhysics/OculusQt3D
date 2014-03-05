@@ -17,27 +17,6 @@ MDStateManager::MDStateManager():
     timer.start();
 }
 
-//const QArray<QVector3D> &MDStateManager::getPositions() {
-//    if(m_states.size() == 0) return tmpQVector3DArray;
-//    return m_states.at(m_currentTimestep)->getPositions();
-//}
-
-//const QArray<QColor4ub> &MDStateManager::getColors() {
-//    if(m_states.size() == 0) return tmpQColor4ubArray;
-//    return m_states.at(m_currentTimestep)->getColors();
-//}
-
-//const QArray<QVector2D> &MDStateManager::getSizes() {
-//    if(m_states.size() == 0) return tmpQVector2DArray;
-//    return m_states.at(m_currentTimestep)->getSizes();
-//}
-
-//QGLVertexBundle *MDStateManager::vertexBundle()
-//{
-//    if(m_states.size() == 0) return 0;
-//    return m_states.at(m_currentTimestep)->vertexBundle();
-//}
-
 int MDStateManager::getNumberOfTimesteps() {
     return m_states.size();
 }

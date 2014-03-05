@@ -74,11 +74,30 @@ Rectangle {
         camera: Camera {
             id: camera
             nearPlane: 5.0
-            farPlane: 500
+            farPlane: 5000
             fieldOfView: 60
             center: Qt.vector3d(1,0,0)
             eye: Qt.vector3d(5,0,0)
             eyeSeparation: 0.06
+            onEyeChanged: {
+                if(multiSphere.hasPeriodicCopies) {
+                    var diffX = center.x - eye.x
+                    var diffY = center.y - eye.y
+                    var diffZ = center.z - eye.z
+                    if(eye.x > stateManager.systemSize.x) eye.x = 0
+                    if(eye.x < 0) eye.x = stateManager.systemSize.x
+
+                    if(eye.y > stateManager.systemSize.y) eye.y = 0
+                    if(eye.y < 0) eye.y = stateManager.systemSize.y
+
+                    if(eye.z > stateManager.systemSize.z) eye.z = 0
+                    if(eye.z < 0) eye.z = stateManager.systemSize.z
+
+                    center.x = eye.x + diffX
+                    center.y = eye.y + diffY
+                    center.z = eye.z + diffZ
+                }
+            }
         }
 
         MDStateManager {
@@ -88,6 +107,7 @@ Rectangle {
 
         MultiBillboard {
             id: multiSphere
+            hasPeriodicCopies: false
             dataSource: stateManager
             texture: "sphere2.png"
         }
@@ -157,6 +177,10 @@ Rectangle {
             case Qt.Key_O:
                 oculusReader.enabled = !oculusReader.enabled
                 break
+            case Qt.Key_P:
+                console.log("string")
+                multiSphere.hasPeriodicCopies = !multiSphere.hasPeriodicCopies
+                break;
             case Qt.Key_3:
                 console.log("3 clicked")
                 viewportClone.show3d = !viewportClone.show3d

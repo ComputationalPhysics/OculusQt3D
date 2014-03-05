@@ -54,6 +54,7 @@ void MDState::addAtom(QVector3D positions, char *atomType, bool addPeriodicCopy,
         qDebug() << atomType;
         qDebug() << colorMap.value(atomType);
         bundle->setColor(colorMap.value(atomType, QColor(255, 255, 255, 255)));
+        bundle->setSystemSize(systemSize);
         bundle->setSize(sizeMap.value(atomType, QVector2D(0.1, 0.1)));
     }
 
