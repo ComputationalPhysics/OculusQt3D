@@ -24,7 +24,7 @@ public:
 //    const QArray<QVector2D> &getSizes();
     void addAtom(QVector3D positions, char *atomType, bool addPeriodicCopy = false, QVector3D systemSize = QVector3D(0,0,0));
     void addAtoms(QArray<QVector3D> positions, QArray<char *>atomTypes, bool addPeriodicCopy = false, QVector3D systemSize = QVector3D(0,0,0));
-    int getNumberOfAtoms();
+    int numberOfAtoms();
 //    void reserveMemory(int numberOfAtoms);
     bool showWater() const
     {
