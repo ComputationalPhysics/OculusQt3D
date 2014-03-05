@@ -68,7 +68,7 @@ Rectangle {
         light: Light {
             ambientColor: Qt.rgba(1,1,1,1)
             position: camera.eye
-            linearAttenuation: 0.1
+            linearAttenuation: displaySettings.linearAttenuation.value
         }
 
         camera: Camera {

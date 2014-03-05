@@ -13,10 +13,11 @@ using std::cout;
 using std::endl;
 class MDState : public QObject
 {
+    Q_OBJECT
     Q_PROPERTY(bool showWater READ showWater WRITE setShowWater NOTIFY showWaterChanged)
 
 public:
-    MDState();
+    MDState(QObject *parent = 0);
     ~MDState();
 //    const QArray<QVector3D> &getPositions();
 //    const QArray<QColor4ub> &getColors();
@@ -31,20 +32,14 @@ public:
     }
     void buildVertexBundle();
 //    QGLVertexBundle* vertexBundle();
-    QArray<DataBundle> *dataBundles();
+    QArray<DataBundle *> *dataBundles();
 public slots:
     void setShowWater(bool arg)
     {
-//        if (m_showWater != arg) {
-//            m_showWater = arg;
-//            // emit showWaterChanged(arg);
-//            for(int i=0; i<getNumberOfAtoms(); i++) {
-//                if(strcmp(m_atomTypes[i],"H") == 0 || strcmp(m_atomTypes[i],"O") == 0) {
-//                    m_colors[i].setAlphaF(m_showWater);
-//                }
-//            }
-//            buildVertexBundle();
-//        }
+        if (m_showWater != arg) {
+            m_showWater = arg;
+            emit showWaterChanged(arg);
+        }
     }
 signals:
     void showWaterChanged(bool arg);
@@ -53,7 +48,8 @@ private:
 //    QMap<QString, QArray<QVector3D> > m_positions;
 //    QArray<QColor4ub> m_colors;
 //    QArray<QVector2D> m_sizes;
-    QArray<DataBundle> m_dataBundles;
+    QArray<DataBundle*> m_dataBundles;
+    QArray<DataBundle*> m_dataBundlesNoWater;
 //    QArray<char*> m_atomTypes;
 //    QGLVertexBundle m_vertexBundle;
     QMap<QString, QColor> colorMap;

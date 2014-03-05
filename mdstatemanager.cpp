@@ -42,7 +42,7 @@ int MDStateManager::getNumberOfTimesteps() {
     return m_states.size();
 }
 
-QArray<DataBundle> *MDStateManager::dataBundles()
+QArray<DataBundle*> *MDStateManager::dataBundles()
 {
     if(m_states.size() == 0) return 0;
     return m_states.at(m_currentTimestep)->dataBundles();

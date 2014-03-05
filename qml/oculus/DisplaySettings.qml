@@ -1,11 +1,13 @@
 import QtQuick 2.0
 import QtQuick.Controls 1.1
+import QtQuick.Layouts 1.1
 import ScreenInfo 1.0
 
 Rectangle {
     id: displaySettingsRoot
     property ScreenInfo screenInfo
     property list<Item> screenComponents
+    property alias linearAttenuation: linearAttenuationSlider
     property alias fullScreen: fullscreenCheckBox.checked
     property bool stretchedLeftRight: false
     property size viewportSize: Qt.size(1920, 1080)
@@ -226,7 +228,7 @@ Rectangle {
         }
     }
 
-    Column {
+    ColumnLayout {
         id: controls
         anchors {
             horizontalCenter: parent.horizontalCenter
@@ -234,7 +236,7 @@ Rectangle {
             margins: parent.width * 0.02
         }
         spacing: parent.width * 0.02
-        width: parent.width * 0.9
+        width: parent.width * 0.7
         Text {
             id: infoText
             color: screenArea.enabled ? "black" : "grey"
@@ -250,6 +252,22 @@ Rectangle {
             enabled: applyableAsStretched
             anchors.horizontalCenter: parent.horizontalCenter
             text: "Stretched 3D mode"
+        }
+
+
+        RowLayout {
+            anchors.horizontalCenter: parent.horizontalCenter
+            Layout.fillWidth: true
+            Label {
+                text: "Light falloff:"
+            }
+            Slider {
+                id: linearAttenuationSlider
+                minimumValue: 0.0001
+                maximumValue: 0.1
+                value: 0.01
+                Layout.fillWidth: true
+            }
         }
 
         Row {

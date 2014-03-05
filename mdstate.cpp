@@ -1,7 +1,8 @@
 #include "mdstate.h"
 #include <iostream>
 // double color_list[7][3] = {{1,1,1},{230.0/255,230.0/255,0},{0,0,1},{1.0,1.0,1.0},{1,0,0},{9.0/255,92.0/255,0},{95.0/255,216.0/255,250.0/255}};
-MDState::MDState():
+MDState::MDState(QObject *parent) :
+    QObject(parent),
     m_showWater(1)
 {
     colorMap.insert("Si", QColor(230,230,0));
@@ -34,8 +35,8 @@ MDState::~MDState() {
 
 int MDState::getNumberOfAtoms() {
     int sum = 0;
-    for(DataBundle& bundle : m_dataBundles) {
-        sum += bundle.positions().count();
+    for(DataBundle* bundle : m_dataBundles) {
+        sum += bundle->positions().count();
     }
     return sum;
 }
@@ -44,8 +45,11 @@ void MDState::addAtom(QVector3D positions, char *atomType, bool addPeriodicCopy,
     if(strcmp(atomType,"Na") == 0 || strcmp(atomType,"Cl") == 0) return;
 
     if(!m_atomTypeToDataBundle.contains(atomType)) {
-        m_dataBundles.append(DataBundle());
-        DataBundle *bundle = &(m_dataBundles.last());
+        DataBundle *bundle = new DataBundle();
+        m_dataBundles.append(bundle);
+        if(!(strcmp(atomType, "H") == 0 || strcmp(atomType, "O") == 0)) {
+            m_dataBundlesNoWater.append(bundle);
+        }
         m_atomTypeToDataBundle.insert(atomType,bundle);
         qDebug() << atomType;
         qDebug() << colorMap.value(atomType);
@@ -82,33 +86,16 @@ void MDState::addAtoms(QArray<QVector3D> positions, QArray<char *>atomTypes, boo
 }
 
 void MDState::buildVertexBundle() {
-    for(DataBundle &bundle : m_dataBundles) {
-        bundle.generateVertexBundle();
+    for(DataBundle *bundle : m_dataBundles) {
+        bundle->generateVertexBundle();
     }
-//    m_vertexBundle = QGLVertexBundle();
-//    m_vertexBundle.addAttribute(QGL::Position, m_positions);
-//    m_vertexBundle.addAttribute(QGL::Color, m_colors);
-//    m_vertexBundle.addAttribute(QGL::CustomVertex0, m_sizes);
 }
 
-QArray<DataBundle> *MDState::dataBundles()
+QArray<DataBundle*> *MDState::dataBundles()
 {
-    return &m_dataBundles;
+    if(m_showWater) {
+        return &m_dataBundles;
+    } else {
+        return &m_dataBundlesNoWater;
+    }
 }
-
-//QGLVertexBundle *MDState::vertexBundle()
-//{
-//    return &m_vertexBundle;
-//}
-
-//const QArray<QVector3D> &MDState::getPositions() {
-//    return m_positions;
-//}
-
-//const QArray<QColor4ub> &MDState::getColors() {
-//    return m_colors;
-//}
-
-//const QArray<QVector2D> &MDState::getSizes() {
-//    return m_sizes;
-//}

@@ -32,7 +32,7 @@ public:
 //    virtual const QArray<QColor4ub> &getColors();
 //    virtual const QArray<QVector2D > &getSizes();
 
-    virtual QArray<DataBundle> *dataBundles();
+    virtual QArray<DataBundle *> *dataBundles();
 
     int playBackSpeed() const
     {
