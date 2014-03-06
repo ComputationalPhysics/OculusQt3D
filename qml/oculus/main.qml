@@ -23,13 +23,59 @@ Rectangle {
     property int oculusScreenWidth: displaySettings.oculusGeometry.width
     property int oculusScreenHeight: displaySettings.oculusGeometry.height
     property int totalScreenWidth: mainScreenWidth + mainScreenHeight
-    width: 1280
-    height: 720
 
     Component.onCompleted: {
         rectRoot.forceActiveFocus()
         console.log("width, height:")
     }
+
+    Keys.onPressed:  {
+        if(event.modifiers & Qt.ControlModifier) {
+            switch(event.key) {
+            case Qt.Key_O:
+                displaySettings.visible = false
+                fileDataDialog.visible = !fileDataDialog.visible
+                flyModeNavigator.deactivate()
+                break;
+            case Qt.Key_Q:
+                flyModeNavigator.deactivate()
+                Qt.quit();
+                break;
+            case Qt.Key_F:
+                fileDataDialog.visible = false
+                displaySettings.visible = !displaySettings.visible
+                flyModeNavigator.deactivate()
+                break;
+            }
+        } else {
+            switch(event.key) {
+            case Qt.Key_Escape:
+                fileDataDialog.visible = false
+                displaySettings.visible = false
+                break
+            case Qt.Key_R:
+                stateManager.showWater = !stateManager.showWater
+                break
+            case Qt.Key_O:
+                oculusReader.enabled = !oculusReader.enabled
+                break
+            case Qt.Key_3:
+                console.log("3 clicked")
+                viewportClone.show3d = !viewportClone.show3d
+                break
+            case Qt.Key_Plus:
+                displaySettings.linearAttenuation.value -= 0.001
+                break
+            case Qt.Key_Minus:
+                displaySettings.linearAttenuation.value += 0.001
+                break
+            }
+        }
+    }
+
+    width: 1280
+    height: 720
+    focus: true
 
     ScreenInfo {
         id: screenInfo
@@ -125,53 +171,17 @@ Rectangle {
     FlyModeNavigator {
         id: flyModeNavigator
         camera: viewportRoot.camera
+        onFocusChanged: {
+            if(!flyModeNavigator.focus) {
+                rectRoot.focus = true
+            }
+        }
     }
 
     FileDataDialog {
         id: fileDataDialog
         stateManager: stateManager
         settings: settings
-    }
-
-    Keys.onPressed:  {
-        if(event.modifiers & Qt.ControlModifier) {
-            switch(event.key) {
-            case Qt.Key_O:
-                fileDataDialog.visible = !fileDataDialog.visible
-                flyModeNavigator.deactivate()
-                break;
-            case Qt.Key_Q:
-                flyModeNavigator.deactivate()
-                Qt.quit();
-                break;
-            case Qt.Key_F:
-                displaySettings.visible = !displaySettings.visible
-                flyModeNavigator.deactivate()
-                break;
-            }
-        } else {
-            switch(event.key) {
-            case Qt.Key_Escape:
-                stateManager.showWater = !stateManager.showWater
-                break
-            case Qt.Key_R:
-                stateManager.showWater = !stateManager.showWater
-                break
-            case Qt.Key_O:
-                oculusReader.enabled = !oculusReader.enabled
-                break
-            case Qt.Key_3:
-                console.log("3 clicked")
-                viewportClone.show3d = !viewportClone.show3d
-                break
-            case Qt.Key_Plus:
-                displaySettings.linearAttenuation.value -= 0.001
-                break
-            case Qt.Key_Minus:
-                displaySettings.linearAttenuation.value += 0.001
-                break
-            }
-        }
     }
 
     Text {

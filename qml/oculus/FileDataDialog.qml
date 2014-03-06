@@ -14,6 +14,15 @@ Rectangle {
     opacity: 0.95
     visible: false
     enabled: true
+
+    Keys.onPressed:  {
+        switch(event.key) {
+        case Qt.Key_Escape:
+            fileDataDialogRoot.visible = false
+            break
+        }
+    }
+
     MouseArea {
         anchors.fill: parent
     }

@@ -23,9 +23,14 @@ Rectangle {
     property bool oculusVisible: true
     signal apply
     signal close
-    width: 640
-    height: 480
-    color: "#dfe3ee"
+
+    Keys.onPressed:  {
+        switch(event.key) {
+        case Qt.Key_Escape:
+            displaySettingsRoot.visible = false
+            break
+        }
+    }
 
     onStretchedLeftRightChanged: {
         console.log(stretchedLeftRight)
@@ -194,6 +199,10 @@ Rectangle {
         viewportSize.width = parseInt(widthTextField.text)
         viewportSize.height = parseInt(heightTextField.text)
     }
+
+    width: 640
+    height: 480
+    color: "#dfe3ee"
 
     MouseArea {
         id: dummyArea
