@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
     QGuiApplication app(argc, argv);
 
     QSurfaceFormat format;
-    format.setMajorVersion(3);
+    format.setMajorVersion(4);
     format.setMinorVersion(3);
     OculusView view;
     view.setFormat(format);

@@ -7,7 +7,8 @@ Rectangle {
     id: displaySettingsRoot
     property ScreenInfo screenInfo
     property list<Item> screenComponents
-    property alias linearAttenuation: linearAttenuationSlider
+    property alias linearAttenuation: linearAttenuationSlider.value
+    property alias constantAttenuation: constantAttenuationSlider.value
     property alias fullScreen: fullscreenCheckBox.checked
     property bool stretchedLeftRight: false
     property size viewportSize: Qt.size(1920, 1080)
@@ -273,13 +274,29 @@ Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter
             Layout.fillWidth: true
             Label {
-                text: "Light falloff:"
+                text: "Light inverse falloff:"
             }
             Slider {
                 id: linearAttenuationSlider
+                minimumValue: 0.001
+                maximumValue: 0.5
+                value: 0.25
+                Layout.fillWidth: true
+            }
+        }
+
+
+        RowLayout {
+            anchors.horizontalCenter: parent.horizontalCenter
+            Layout.fillWidth: true
+            Label {
+                text: "Light linear falloff:"
+            }
+            Slider {
+                id: constantAttenuationSlider
                 minimumValue: 0.0001
-                maximumValue: 0.1
-                value: 0.01
+                maximumValue: 0.001
+                value: 0.0005
                 Layout.fillWidth: true
             }
         }

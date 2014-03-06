@@ -26,6 +26,7 @@ Rectangle {
 
     Component.onCompleted: {
         rectRoot.forceActiveFocus()
+        console.log("width, height:")
     }
 
     Keys.onPressed:  {
@@ -52,9 +53,6 @@ Rectangle {
                 fileDataDialog.visible = false
                 displaySettings.visible = false
                 break
-            case Qt.Key_P:
-                multiSphere.hasPeriodicCopies = !multiSphere.hasPeriodicCopies
-                break;
             case Qt.Key_R:
                 stateManager.showWater = !stateManager.showWater
                 break
@@ -62,13 +60,14 @@ Rectangle {
                 oculusReader.enabled = !oculusReader.enabled
                 break
             case Qt.Key_3:
+                console.log("3 clicked")
                 viewportClone.show3d = !viewportClone.show3d
                 break
             case Qt.Key_Plus:
-                displaySettings.linearAttenuation.value += 0.01
+                displaySettings.linearAttenuation.value -= 0.001
                 break
             case Qt.Key_Minus:
-                displaySettings.linearAttenuation.value -= 0.01
+                displaySettings.linearAttenuation.value += 0.001
                 break
             }
         }
@@ -115,8 +114,7 @@ Rectangle {
         light: Light {
             ambientColor: Qt.rgba(1,1,1,1)
             position: camera.eye
-            linearAttenuation: displaySettings.linearAttenuation
-            constantAttenuation: displaySettings.constantAttenuation
+            linearAttenuation: displaySettings.linearAttenuation.value
         }
 
         camera: Camera {
@@ -206,6 +204,51 @@ Rectangle {
         settings: settings
     }
 
+<<<<<<< HEAD
+=======
+    Keys.onPressed:  {
+        if(event.modifiers & Qt.ControlModifier) {
+            switch(event.key) {
+            case Qt.Key_O:
+                fileDataDialog.visible = true
+                flyModeNavigator.deactivate()
+                break;
+            case Qt.Key_Q:
+                flyModeNavigator.deactivate()
+                Qt.quit();
+                break;
+            case Qt.Key_F:
+                displaySettings.visible = true
+                flyModeNavigator.deactivate()
+                break;
+            }
+        } else {
+            switch(event.key) {
+            case Qt.Key_R:
+                stateManager.showWater = !stateManager.showWater
+                break
+            case Qt.Key_O:
+                oculusReader.enabled = !oculusReader.enabled
+                break
+            case Qt.Key_P:
+                console.log("string")
+                multiSphere.hasPeriodicCopies = !multiSphere.hasPeriodicCopies
+                break;
+            case Qt.Key_3:
+                console.log("3 clicked")
+                viewportClone.show3d = !viewportClone.show3d
+                break
+            case Qt.Key_Plus:
+                displaySettings.linearAttenuation.value -= 0.001
+                break
+            case Qt.Key_Minus:
+                displaySettings.linearAttenuation.value += 0.001
+                break
+            }
+        }
+    }
+
+>>>>>>> b2ec3fcaedefde994a2e65975c499dd3ab2e39b7
     Text {
         text: "FPS: "+ frameRate.fps.toFixed(0)
         color: "white"
