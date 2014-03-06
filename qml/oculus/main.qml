@@ -137,7 +137,7 @@ Rectangle {
         if(event.modifiers & Qt.ControlModifier) {
             switch(event.key) {
             case Qt.Key_O:
-                fileDataDialog.visible = true
+                fileDataDialog.visible = !fileDataDialog.visible
                 flyModeNavigator.deactivate()
                 break;
             case Qt.Key_Q:
@@ -145,12 +145,15 @@ Rectangle {
                 Qt.quit();
                 break;
             case Qt.Key_F:
-                displaySettings.visible = true
+                displaySettings.visible = !displaySettings.visible
                 flyModeNavigator.deactivate()
                 break;
             }
         } else {
             switch(event.key) {
+            case Qt.Key_Escape:
+                stateManager.showWater = !stateManager.showWater
+                break
             case Qt.Key_R:
                 stateManager.showWater = !stateManager.showWater
                 break
