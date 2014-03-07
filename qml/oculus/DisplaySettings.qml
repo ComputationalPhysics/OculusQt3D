@@ -285,7 +285,6 @@ Rectangle {
             }
         }
 
-
         RowLayout {
             anchors.horizontalCenter: parent.horizontalCenter
             Layout.fillWidth: true
