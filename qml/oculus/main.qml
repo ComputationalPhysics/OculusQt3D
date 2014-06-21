@@ -157,7 +157,7 @@ Rectangle {
             id: multiSphere
             hasPeriodicCopies: false
             dataSource: stateManager
-            texture: "sphere2.png"
+            texture: "sphere3.png"
         }
         FrameRateCounter {
             id: frameRate
